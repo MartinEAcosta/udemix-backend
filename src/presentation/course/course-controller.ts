@@ -1,3 +1,4 @@
+import { GetCourseById } from './../../domain/use-cases/course/get-course-by-id';
 import { Request, Response } from "express";
 import { CourseRepository } from "../../domain/repository/course.repository";
 import { GetAllCourses } from "../../domain/use-cases/course/get-all-courses";
@@ -13,6 +14,8 @@ export class CourseController {
         private readonly courseRepository : CourseRepository,
     ){ }
 
+    // * EXPRESS RECOMIENDA NO UTILIZAR TAREAS ASINCRONAS EN EL CONTROLADOR
+
     // * Ejemplo
     
 //   public getTodos = ( req: Request, res: Response ) => {
@@ -24,31 +27,41 @@ export class CourseController {
 
 //   };
 
-    public getAllCourses = async( req : Request , res : Response ) => {
+    public getAllCourses = ( req : Request , res : Response ) => {
 
-        const courses = await this.courseRepository.getAllCourses();
+        new GetAllCourses( this.courseRepository )
+            .execute()
+            .then( courses => res.json( courses ))
+            .catch( error => res.status(400).json({ error }));
+
+        // const courses = await this.courseRepository.getAllCourses();
         
-        return res.json(courses);
+        // return res.json(courses);
     }
 
-    public getCourseById = async( req : Request , res : Response ) => {
+    public getCourseById = ( req : Request , res : Response ) => {
 
         const { id }  = req.params;
 
-        try{
-            const course = await this.courseRepository.getCourseById( id );
+        new GetCourseById( this.courseRepository )
+            .execute( id )
+            .then( course => res.status(200).json( course ))
+            .catch( error => res.status(400).json({error}));
 
-            return res.status(200).json({
-                ok : true,
-                course,
-            });
-        }
-        catch(error){
-            return res.status(400).json({
-                ok : false,
-                errorMessage : error,
-            });
-        }
+        // try{
+        //     const course = await this.courseRepository.getCourseById( id );
+
+        //     return res.status(200).json({
+        //         ok : true,
+        //         course,
+        //     });
+        // }
+        // catch(error){
+        //     return res.status(400).json({
+        //         ok : false,
+        //         errorMessage : error,
+        //     });
+        // }
     }
 
 
