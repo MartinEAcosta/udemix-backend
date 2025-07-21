@@ -18,7 +18,7 @@ export class CreateCourseDto {
         const { title, description , category , imgUrl , owner , price , capacity } = props;
 
         if( !title ) return ['El titulo es requerido.', undefined];
-        if( !description ) return ['El titulo es requerido.', undefined];
+        if( !description ) return ['La descripción es requerida.', undefined];
         if( !owner ) return ['El creador del curso es requerido.', undefined];
         if( !price ) return ['El precio es requerido.', undefined];
     
