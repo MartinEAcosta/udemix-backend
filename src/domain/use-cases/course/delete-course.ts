@@ -1,4 +1,4 @@
-import { CourseRepository } from "../../repository/course.repository";
+import { CourseRepository } from "../../repository/course-repository";
 
 export interface DeleteCourseUseCase {
     execute( id : string ) : Promise<boolean>;

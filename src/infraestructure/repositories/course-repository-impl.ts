@@ -2,7 +2,7 @@ import { CourseDatasource } from '../../domain/datasources/course.datasource';
 import { CreateCourseDto } from '../../domain/dtos/course/create-course.dto';
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 import { CourseEntity } from '../../domain/entities/course.entity';
-import { CourseRepository } from '../../domain/repository/course.repository';
+import { CourseRepository } from '../../domain/repository/course-repository';
 
 export class CourseRepositoryImpl implements CourseRepository{
 

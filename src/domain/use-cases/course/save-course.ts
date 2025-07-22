@@ -1,6 +1,6 @@
 import { CreateCourseDto } from "../../dtos/course/create-course.dto";
 import { CourseEntity } from "../../entities/course.entity";
-import { CourseRepository } from "../../repository/course.repository";
+import { CourseRepository } from "../../repository/course-repository";
 
 export interface SaveCourseUseCase {
     execute( createCourseDto : CreateCourseDto ) : Promise<CourseEntity>;

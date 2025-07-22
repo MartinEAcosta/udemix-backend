@@ -1,5 +1,5 @@
 import { CourseController } from './course-controller';
-import { CourseRepositoryImpl } from './../../infraestructure/repositories/course.repository.impl';
+import { CourseRepositoryImpl } from '../../infraestructure/repositories/course-repository-impl';
 import { Router } from "express";
 import { CourseDatasourceImpl } from "../../infraestructure/datasources/course-datasource-impl";
 

@@ -1,6 +1,6 @@
 import { UpdateCourseDto } from "../../dtos/course/update-course.dto";
 import { CourseEntity } from "../../entities/course.entity";
-import { CourseRepository } from "../../repository/course.repository";
+import { CourseRepository } from "../../repository/course-repository";
 
 export interface UpdateCourseUseCase {
     execute( updateCourseDto : UpdateCourseDto ) : Promise<CourseEntity>;

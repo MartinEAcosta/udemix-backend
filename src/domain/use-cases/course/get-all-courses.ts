@@ -1,5 +1,5 @@
 import { CourseEntity } from "../../entities/course.entity";
-import { CourseRepository } from "../../repository/course.repository";
+import { CourseRepository } from "../../repository/course-repository";
 
 export interface GetAllCourseUseCase {
     execute ( ) : Promise<CourseEntity[]>

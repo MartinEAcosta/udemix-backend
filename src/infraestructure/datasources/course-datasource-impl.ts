@@ -1,7 +1,7 @@
 import { CreateCourseDto } from './../../domain/dtos/course/create-course.dto';
 import { CourseEntity } from '../../domain/entities/course.entity';
 import { CourseDatasource } from "../../domain/datasources/course.datasource";
-import { CourseModel } from "../../data/models/course.model";
+import { CourseModel } from "../../data/mongo/models/course.model";
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 
 export class CourseDatasourceImpl implements CourseDatasource {

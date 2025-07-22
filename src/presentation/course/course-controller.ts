@@ -1,6 +1,6 @@
 import { GetCourseById } from './../../domain/use-cases/course/get-course-by-id';
 import { Request, Response } from "express";
-import { CourseRepository } from "../../domain/repository/course.repository";
+import { CourseRepository } from "../../domain/repository/course-repository";
 import { GetAllCourses } from "../../domain/use-cases/course/get-all-courses";
 import { CreateCourseDto } from "../../domain/dtos/course/create-course.dto";
 import { UpdateCourseDto } from "../../domain/dtos/course/update-course.dto";

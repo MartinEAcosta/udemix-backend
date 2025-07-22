@@ -4,19 +4,23 @@ const userSchema = new mongoose.Schema({
 
     username : {
         type: String,
-        required: true,
+        required: [ true , 'El nombre de usuario es requerido.'],
     },
 
     email : {
         type: String,
-        required: true,
+        required: [ true , 'El email es requerido.'],
         unique: true,
     },
 
     password : {
         type: String,
-        required: true,
-    }
+        required: [ true , 'La contraseña es requerida.'],
+    },
+
+    // avatar : {
+    //     type: String,
+    // }
 
 });
 
