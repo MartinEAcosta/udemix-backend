@@ -55,11 +55,11 @@ export class CourseRouter {
         );
         
         // // Delete Course
-        // router.delete(
-        //   '/delete/:id',
-        //   validateJWT,
-        //   deleteCourse
-        // );
+        router.delete(
+          '/delete/:id',
+          // validateJWT,
+          courseController.deleteCourse
+        );
 
         return router;
     }

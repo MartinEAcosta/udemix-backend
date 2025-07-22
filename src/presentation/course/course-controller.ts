@@ -4,7 +4,7 @@ import { CourseRepository } from "../../domain/repository/course-repository";
 import { GetAllCourses } from "../../domain/use-cases/course/get-all-courses";
 import { CreateCourseDto } from "../../domain/dtos/course/create-course.dto";
 import { UpdateCourseDto } from "../../domain/dtos/course/update-course.dto";
-import { SaveCourse, UpdateCourse } from '../../domain/use-cases';
+import { DeleteCourse, SaveCourse, UpdateCourse } from '../../domain/use-cases';
 
 
 export class CourseController {
@@ -71,4 +71,14 @@ export class CourseController {
             .catch( error => res.json({errorMessage : error}) );
     }
 
+
+    public deleteCourse = async( req : Request , res : Response ) => {
+
+        const { id } = req.params;
+
+        new DeleteCourse( this.courseRepository )
+            .execute( id )
+            .then( hasBeenRemoved => res.status(200).json({ removed: hasBeenRemoved}))
+            .catch( error => res.json({errorMessage: error }));
+    }
 }

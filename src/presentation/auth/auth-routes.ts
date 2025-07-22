@@ -11,13 +11,13 @@ export class AuthRouter {
             const router = Router();
     
             const dataSource = new AuthDatasourceImpl();
-            // const authRepository = new AuthRepositoryImpl( dataSource );
-            // const authController = new AuthController( courseRepository );
+            const authRepository = new AuthRepositoryImpl( dataSource );
+            const authController = new AuthController( authRepository );
             
-            // router.post(
-            //   '/new',
-            //   authController.
-            // );
+            router.post(
+              '/new',
+              authController.registerUser
+            );
 
             // router.post(
             //     '/',

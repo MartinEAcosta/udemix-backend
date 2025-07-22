@@ -45,8 +45,7 @@ export class CourseEntity {
         if( price === null || price === undefined ) throw 'El precio es requerido.'
         
     
-        const course = new CourseEntity({ id : _id , title, description, category , imgURL , owner , price , capacity});
-        return course;
+        return new CourseEntity({ id : _id , title, description, category , imgURL , owner , price , capacity});
     }
 
 
