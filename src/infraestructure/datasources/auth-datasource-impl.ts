@@ -37,20 +37,5 @@ export class AuthDatasourceImpl implements AuthDatasource {
             throw CustomError.internalServer(`${error}`)
         }
     }
-
-    async loginUser( loginUserDto : LoginUserDto) {
-        const user = await UserModel.findOne({ email: loginUserDto.email });
-
-        if( !user ) throw CustomError.badRequest('El email indicado no corresponde a un usuario existente.')
-
-        const isMatching = BcryptAdapter.compare( loginUserDto.password , user.password );
-        if( !isMatching ) throw CustomError.badRequest('Chequee los campos e intente nuevamente.');
-        console.log(user);
-        const token = JwtAdapter.generateJwt( user.id , user.email );
-
-    }
-
-    
-
-    
+        
 }

@@ -3,6 +3,9 @@ import { RegisterUserDto } from "../../domain/dtos/auth/register-user-dto";
 import { RegisterUser } from "../../domain/use-cases/auth/register-user";
 import { AuthRepository } from "../../domain/repository/auth-repository";
 import { CustomError } from "../../domain/errors/custom-error";
+import { LoginUserDto } from "../../domain/dtos/auth/login-user-dto";
+import { LoginUser } from "../../domain/use-cases/auth/login-user";
+import { JwtAdapter } from "../../config/jwt.adapter";
 
 
 export class AuthController {
@@ -37,7 +40,18 @@ export class AuthController {
     }
 
     loginUser = ( req : Request , res : Response ) => {
-        throw 'login';
+        const [ error , loginUserDto ] = LoginUserDto.create( req.body );
+        if( error ) return res.status(400).json({
+            error : error,
+        })
+
+        new LoginUser( this.authRepository )
+            .execute( loginUserDto! )
+            .then( user => res.status(200).json({
+                    user : user,
+                    token : JwtAdapter.generateJwt( user.id , user.email ),
+                }))
+            .catch( error => this.handleError(error , res ) );
     }
 
     reloadToken = ( req : Request , res : Response ) => {

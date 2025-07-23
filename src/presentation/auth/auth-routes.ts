@@ -19,10 +19,10 @@ export class AuthRouter {
               authController.registerUser
             );
 
-            // router.post(
-            //     '/',
-            //     authController.
-            // );
+            router.post(
+                '/',
+                authController.loginUser
+            );
 
             // router.get(
             //     '/renew',
