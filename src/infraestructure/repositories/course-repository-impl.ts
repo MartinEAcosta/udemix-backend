@@ -10,20 +10,24 @@ export class CourseRepositoryImpl implements CourseRepository{
         private readonly courseDatasource : CourseDatasource, 
     ){ }
 
-    getAllCourses() : Promise<CourseEntity[]> {
-        return this.courseDatasource.getAllCourses();
+    async getAllCourses() : Promise<CourseEntity[]> {
+        const courses = await this.courseDatasource.getAllCourses();
+        return courses.map( course => CourseEntity.fromObject(course) );
     }
 
-    getCourseById( id: string ) : Promise<CourseEntity> {
-        return this.courseDatasource.getCourseById(id);
+    async getCourseById( id: string ) : Promise<CourseEntity> {
+        const course = await this.courseDatasource.getCourseById(id);
+        return CourseEntity.fromObject( course );
     }
 
-    saveCourse( createCourseDto : CreateCourseDto ) : Promise<CourseEntity> {
-        return this.courseDatasource.saveCourse( createCourseDto );
+    async saveCourse( createCourseDto : CreateCourseDto ) : Promise<CourseEntity> {
+        const courseSaved = await this.courseDatasource.saveCourse( createCourseDto );
+        return CourseEntity.fromObject( courseSaved );
     }
 
-    updateCourse( updateCourseDto : UpdateCourseDto ) : Promise<CourseEntity> {
-        return this.courseDatasource.updateCourse( updateCourseDto );
+    async updateCourse( updateCourseDto : UpdateCourseDto ) : Promise<CourseEntity> {
+        const courseUpdated = await this.courseDatasource.updateCourse( updateCourseDto );
+        return CourseEntity.fromObject(courseUpdated)
     }
 
     deleteCourse( id: string ) : Promise<boolean> {

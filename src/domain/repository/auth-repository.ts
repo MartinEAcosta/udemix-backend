@@ -6,5 +6,5 @@ import { UserEntity } from "../entities/user.entity";
 export abstract class AuthRepository {
 
     abstract registerUser( registerUserDto : RegisterUserDto ) : Promise<UserEntity>;
-    
+    abstract searchUserByEmail( email : string ) : Promise<UserEntity | null>;
 }

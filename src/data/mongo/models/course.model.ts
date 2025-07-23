@@ -1,4 +1,15 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
+
+export interface ICourseModel {
+    _id: Types.ObjectId,
+    title : string,
+    description : string,
+    category? : string | null,
+    imgUrl : String[],
+    owner : string,
+    price : number,
+    capacity? : number | null,
+}
 
 const courseSchema = new mongoose.Schema({
 
@@ -16,7 +27,7 @@ const courseSchema = new mongoose.Schema({
         type: String,
     },
 
-    imgURL : {
+    imgUrl : {
         type: [String],
     },
 
