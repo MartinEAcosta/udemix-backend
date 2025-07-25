@@ -1,16 +1,15 @@
-import bcrypt, { compareSync, genSaltSync, hashSync } from 'bcrypt';
+import { compareSync, genSaltSync, hashSync } from 'bcrypt';
+import { Encrypter } from '../domain/services/Encrypter';
+export class BcryptAdapter implements Encrypter {
 
-export class BcryptAdapter {
-
-    static hash = ( password : string ) : string => {
+    hash = ( password : string ) : string => {
         const salt = genSaltSync();
 
         return hashSync( password , salt );
     }
 
-    static compare = ( password : string , hashed : string ) => {
+    compare = ( password : string , hashed : string ) : boolean => {
         return compareSync( password , hashed );
     }
-
 
 }

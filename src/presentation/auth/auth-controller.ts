@@ -6,12 +6,16 @@ import { CustomError } from "../../domain/errors/custom-error";
 import { LoginUserDto } from "../../domain/dtos/auth/login-user-dto";
 import { LoginUser } from "../../domain/use-cases/auth/login-user";
 import { JwtAdapter } from "../../config/jwt.adapter";
+import { Encrypter } from "../../domain/services/Encrypter";
+import { TokenManager } from "../../domain/services/TokenManager";
 
 
 export class AuthController {
 
     constructor(
         private readonly authRepository : AuthRepository,
+        private readonly encrypter : Encrypter,
+        private readonly tokenManager : TokenManager,
     ){}
 
     private handleError = ( error : unknown , res : Response) => {
@@ -32,8 +36,7 @@ export class AuthController {
         if( error ) return res.status(400).json({
             error : error,
         });
-
-        new RegisterUser( this.authRepository )      
+        new RegisterUser( this.authRepository , this.encrypter )      
             .execute( registerUserDto! )
             .then( userResponse => res.status(201).json( userResponse ))
             .catch( error => this.handleError(error,res) );  
@@ -45,12 +48,9 @@ export class AuthController {
             error : error,
         })
 
-        new LoginUser( this.authRepository )
+        new LoginUser( this.authRepository , this.encrypter , this.tokenManager )
             .execute( loginUserDto! )
-            .then( user => res.status(200).json({
-                    user : user,
-                    token : JwtAdapter.generateJwt( user.id , user.email ),
-                }))
+            .then( loginResponse => res.status(200).json(loginResponse))
             .catch( error => this.handleError(error , res ) );
     }
 

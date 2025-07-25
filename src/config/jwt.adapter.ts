@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { envs } from './envs';
+import { TokenManager } from '../domain/services/TokenManager';
 
-export class JwtAdapter {
+export class JwtAdapter implements TokenManager{
 
-    static generateJwt = ( _id : string , email : string ) => {
+    generateToken = ( _id : string , email : string ) => {
         
         return new Promise( ( resolve , reject )  => {
 

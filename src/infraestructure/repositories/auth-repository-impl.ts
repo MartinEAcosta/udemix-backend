@@ -15,20 +15,9 @@ export class AuthRepositoryImpl implements AuthRepository {
     ) {}
 
     async registerUser(registerUserDto: RegisterUserDto) : Promise<UserEntity> {
-        const { password ,...rest } = registerUserDto;
-
-        const newUser = {...rest, password : BcryptAdapter.hash(password) };
-
-        const savedUser = await this.authDatasource.registerUser( newUser );
+        const savedUser = await this.authDatasource.registerUser( registerUserDto );
 
         return UserEntity.fromObject( savedUser );
-    }
-
-    async loginUser(loginUserDto: LoginUserDto , userRecord : IUserModel): Promise<UserEntity | null> {
-        const isMatching = BcryptAdapter.compare( loginUserDto.password , userRecord.password );
-        if( !isMatching ) return null;
-        
-        return UserEntity.fromObject( userRecord );
     }
 
     async searchUserByEmail( email : string ): Promise<UserEntity | null> {
