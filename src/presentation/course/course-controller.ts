@@ -28,7 +28,6 @@ export class CourseController {
 
     //   };
 
-    
     private handleError = ( error : unknown , res : Response) => {
         if( error instanceof CustomError ) {
             return res.status( error.statusCode ).json({
@@ -47,7 +46,7 @@ export class CourseController {
         new GetAllCourses( this.courseRepository )
             .execute()
             .then( courses => res.json( courses ))
-            .catch( error => res.status(400).json({errorMessage: error}));
+            .catch( error => this.handleError( error , res ));
     }
 
     public getCourseById = ( req : Request , res : Response ) => {
@@ -69,7 +68,7 @@ export class CourseController {
         new SaveCourse( this.courseRepository )
             .execute( createCourseDto! )
             .then( courseCreated => res.status(201).json( courseCreated ))
-            .catch( error => res.json({errorMessage : error}));
+            .catch( error => this.handleError( error , res ));
     }
 
     public updateCourse = async( req : Request , res : Response ) => {
@@ -77,13 +76,12 @@ export class CourseController {
         const { id } = req.params;
         
         const [ errorMessage , updateCourseDto ] = UpdateCourseDto.create( id , req.body );
-        
         if(errorMessage) return res.status(400).json({ errorMessage });
 
         new UpdateCourse( this.courseRepository )
             .execute( updateCourseDto! )
             .then( courseUpdated => res.status(200).json( courseUpdated ))
-            .catch( error => res.json({errorMessage : error}) );
+            .catch( error => this.handleError( error , res ) );
     }
 
 

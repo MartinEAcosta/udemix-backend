@@ -27,12 +27,14 @@ export class CourseRepositoryImpl implements CourseRepository{
 
     async updateCourse( updateCourseDto : UpdateCourseDto ) : Promise<CourseEntity> {
         const courseUpdated = await this.courseDatasource.updateCourse( updateCourseDto );
-        return CourseEntity.fromObject(courseUpdated)
+        if( courseUpdated ) return CourseEntity.fromObject( updateCourseDto );
+
+        return CourseEntity.fromObject(courseUpdated);
     }
 
     async deleteCourse( id: string ) : Promise<boolean> {
         const removed =  await this.courseDatasource.deleteCourse( id );
-        console.log(removed)
+
         return removed;
     }
     

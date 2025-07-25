@@ -1,5 +1,4 @@
 import { CreateCourseDto } from './../../domain/dtos/course/create-course.dto';
-import { CourseEntity } from '../../domain/entities/course.entity';
 import { CourseDatasource } from "../../domain/datasources/course.datasource";
 import { CourseModel, ICourseModel } from "../../data/mongo/models/course.model";
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
@@ -56,10 +55,8 @@ export class CourseDatasourceImpl implements CourseDatasource {
     async updateCourse( updateCourseDTO : UpdateCourseDto ) : Promise<ICourseModel>{
         try{
 
-            const courseToUpdate = this.getCourseById( updateCourseDTO.id );
-
-            const updatedCourse = await CourseModel.findByIdAndUpdate( updateCourseDTO.id , updateCourseDTO );
-
+            const updatedCourse = await CourseModel.findByIdAndUpdate({ _id: updateCourseDTO.id } , updateCourseDTO ).exec();
+            
             return updatedCourse!;
         }
         catch(error){

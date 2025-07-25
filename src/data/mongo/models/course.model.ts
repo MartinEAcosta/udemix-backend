@@ -1,7 +1,7 @@
 import mongoose, { Types } from "mongoose";
 
 export interface ICourseModel {
-    _id: Types.ObjectId,
+    _id?: Types.ObjectId,
     title : string,
     description : string,
     category? : string | null,

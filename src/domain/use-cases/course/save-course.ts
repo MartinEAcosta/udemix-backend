@@ -7,7 +7,7 @@ export interface SaveCourseUseCase {
 }
 
 export class SaveCourse implements SaveCourseUseCase {
-
+    
     constructor(
         private readonly courseRepository : CourseRepository, 
     ) {}

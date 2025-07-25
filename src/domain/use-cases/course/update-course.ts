@@ -1,5 +1,6 @@
 import { UpdateCourseDto } from "../../dtos/course/update-course.dto";
 import { CourseEntity } from "../../entities/course.entity";
+import { CustomError } from "../../errors/custom-error";
 import { CourseRepository } from "../../repository/course-repository";
 
 export interface UpdateCourseUseCase {
@@ -12,7 +13,10 @@ export class UpdateCourse implements UpdateCourseUseCase {
         private readonly courseRepository : CourseRepository, 
     ) {}
 
-    execute(updateCourseDto: UpdateCourseDto): Promise<CourseEntity> {
+    async execute(updateCourseDto: UpdateCourseDto): Promise<CourseEntity> {
+        const courseToUpdate = await this.courseRepository.getCourseById( updateCourseDto.id );
+        if( !courseToUpdate )  throw CustomError.notFound(`El curso con el id: ${updateCourseDto.id}, no fue encontrado`);
+
         return this.courseRepository.updateCourse( updateCourseDto );
     }
 
