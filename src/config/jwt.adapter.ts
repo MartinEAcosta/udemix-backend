@@ -1,25 +1,29 @@
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { envs } from './envs';
 import { TokenManager } from '../domain/services/TokenManager';
 
+const JWT_SEED = envs.SECRET_JWT_SEED;
 export class JwtAdapter implements TokenManager{
 
-    generateToken = ( _id : string , email : string ) => {
+    generateToken = ( payload : any  , duration: string = '2h' ) => {
         
-        return new Promise( ( resolve , reject )  => {
+        return new Promise( (resolve)  => {
 
-            const payload = { _id , email };
+            jwt.sign( payload , JWT_SEED!  , { expiresIn: duration } as SignOptions , 
+                ( error , token ) => {
+                    if( error ){
+                        console.log(error);
+                        return resolve(null);
+                    }
 
-            jwt.sign( payload , envs.SECRET_JWT_SEED! , {
-                expiresIn : '1h'
-            }, ( error , token ) => {
-                if( error ){
-                    console.log(error);
-                    reject('Hubo un error al generar el token.');
+                    return resolve(token);
                 }
-
-                resolve(token);
-            })
+            )
         });
     }
+
+    validateToken = ( token : string ) => {
+
+    }
+
 }

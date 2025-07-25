@@ -26,8 +26,14 @@ export class LoginUser implements LoginUserUseCase{
         const isMatching = this.encrypter.compare( password , userExists.password! );
         if( !isMatching ) throw CustomError.badRequest('Chequee las credenciales e intente nuevamente.');
 
-        const token = await this.tokenManager.generateToken( userExists.id , userExists.email );
+        const payload = {
+            id: userExists.id,
+            email: userExists.email 
+        }
 
+        const token = await this.tokenManager.generateToken( payload );
+        if( !token ) throw CustomError.internalServer('Error mientras se generaba el token.');
+        
         const { password:hashedOfDB , ...userWithoutPass } = userExists;  
 
         return {

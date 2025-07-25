@@ -2,6 +2,5 @@
 
 export abstract class TokenManager { 
 
-    abstract generateToken( _id : string , email : string ) : Promise<unknown>;
-    
+    abstract generateToken( payload : any , duration? : string ) : Promise<unknown>;
 }
