@@ -50,7 +50,7 @@ export class AuthController {
 
         new LoginUser( this.authRepository , this.encrypter , this.tokenManager )
             .execute( loginUserDto! )
-            .then( loginResponse => res.status(200).json(loginResponse))
+            .then( loginResponse => res.status(200).json( loginResponse ))
             .catch( error => this.handleError(error , res ) );
     }
 

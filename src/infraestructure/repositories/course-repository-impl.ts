@@ -15,9 +15,9 @@ export class CourseRepositoryImpl implements CourseRepository{
         return courses.map( course => CourseEntity.fromObject(course) );
     }
 
-    async getCourseById( id: string ) : Promise<CourseEntity> {
+    async getCourseById( id: string ) : Promise<CourseEntity | null> {
         const course = await this.courseDatasource.getCourseById(id);
-        return CourseEntity.fromObject( course );
+        return course ? CourseEntity.fromObject( course ) : null;
     }
 
     async saveCourse( createCourseDto : CreateCourseDto ) : Promise<CourseEntity> {
@@ -30,8 +30,10 @@ export class CourseRepositoryImpl implements CourseRepository{
         return CourseEntity.fromObject(courseUpdated)
     }
 
-    deleteCourse( id: string ) : Promise<boolean> {
-        return this.courseDatasource.deleteCourse(id);
+    async deleteCourse( id: string ) : Promise<boolean> {
+        const removed =  await this.courseDatasource.deleteCourse( id );
+        console.log(removed)
+        return removed;
     }
     
 

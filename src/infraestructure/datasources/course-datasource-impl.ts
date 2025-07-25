@@ -20,11 +20,9 @@ export class CourseDatasourceImpl implements CourseDatasource {
         }
     }
 
-    async getCourseById( id: string ): Promise<ICourseModel> {
+    async getCourseById( id: string ): Promise<ICourseModel | null> {
         try{
-            const course = await CourseModel.findById( id );
-        
-            if( !course ) throw CustomError.badRequest(`El curso con el id "${id}" no fue encontrado.`);
+            const course = await CourseModel.findById({ _id: id });
 
             return course;
         }
@@ -72,11 +70,10 @@ export class CourseDatasourceImpl implements CourseDatasource {
 
     async deleteCourse( id : string ) : Promise<boolean>{
         try{
-            const courseToRemove = await this.getCourseById( id );
-            if(!courseToRemove) return false;
-
-            await CourseModel.deleteOne({ id : courseToRemove._id });
-            return true;
+            const hasRemoved = await CourseModel.deleteOne({ _id: id });
+            if( hasRemoved.deletedCount != 0 ) return true;
+            
+            return false;
         }
         catch(error){
             console.log(error);

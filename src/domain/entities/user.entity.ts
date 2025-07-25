@@ -8,7 +8,6 @@ export interface UserEntityOptions {
     password : string,
 }
 
-
 export class UserEntity implements UserEntityOptions {
     public id : string;
     public username : string;

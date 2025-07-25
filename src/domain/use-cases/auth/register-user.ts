@@ -15,6 +15,7 @@ export class RegisterUser {
         private readonly encrypter : Encrypter,
     ){}
 
+    // TODO : CHEQuEAR RESPONSE JWT 
     async execute ( registerUserDto : RegisterUserDto ) : Promise<UserEntity> {
         
         const userExists = await this.authRepository.searchUserByEmail( registerUserDto.email );

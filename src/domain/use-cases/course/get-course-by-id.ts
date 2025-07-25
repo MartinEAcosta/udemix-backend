@@ -1,8 +1,9 @@
 import { CourseEntity } from "../../entities/course.entity";
+import { CustomError } from "../../errors/custom-error";
 import { CourseRepository } from "../../repository/course-repository";
 
 export interface GetCourseByIdUseCase {
-    execute( id : string ) : Promise<CourseEntity>;
+    execute( id : string ) : Promise<CourseEntity | null>;
 }
 
 export class GetCourseById implements GetCourseByIdUseCase {
@@ -11,8 +12,11 @@ export class GetCourseById implements GetCourseByIdUseCase {
         private readonly courseRepository : CourseRepository, 
     ) {}
 
-    execute(id: string): Promise<CourseEntity> {
-        return this.courseRepository.getCourseById( id );
+    async execute(id: string): Promise<CourseEntity | null> {
+        const course = await this.courseRepository.getCourseById( id );
+        if( !course ) throw CustomError.notFound(`El curso con el id: ${id}, no fue encontrado`);
+
+        return course;
     }
 
 }

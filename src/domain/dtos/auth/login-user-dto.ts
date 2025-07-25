@@ -1,10 +1,4 @@
 import { regularExps } from "../../../config";
-import { UserEntity } from "../../entities/user.entity";
-
-export interface LoginUserResponse {
-    user : UserEntity,
-    token : unknown,
-}
 
 export class LoginUserDto {
 

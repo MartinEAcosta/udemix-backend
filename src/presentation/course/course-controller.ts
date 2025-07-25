@@ -5,6 +5,7 @@ import { GetAllCourses } from "../../domain/use-cases/course/get-all-courses";
 import { CreateCourseDto } from "../../domain/dtos/course/create-course.dto";
 import { UpdateCourseDto } from "../../domain/dtos/course/update-course.dto";
 import { DeleteCourse, SaveCourse, UpdateCourse } from '../../domain/use-cases';
+import { CustomError } from '../../domain/errors/custom-error';
 
 
 export class CourseController {
@@ -27,6 +28,20 @@ export class CourseController {
 
     //   };
 
+    
+    private handleError = ( error : unknown , res : Response) => {
+        if( error instanceof CustomError ) {
+            return res.status( error.statusCode ).json({
+                error: error.message,
+            });
+        }
+
+        console.log( error );
+        return res.status(500).json({
+            error: 'Internal Server Error',
+        });
+    }
+
     public getAllCourses = ( req : Request , res : Response ) => {
 
         new GetAllCourses( this.courseRepository )
@@ -42,7 +57,7 @@ export class CourseController {
         new GetCourseById( this.courseRepository )
             .execute( id )
             .then( course => res.status(200).json( course ))
-            .catch( error => res.status(400).json({errorMessage : error}));
+            .catch( error => this.handleError( error , res ));
     }
 
 
@@ -79,6 +94,6 @@ export class CourseController {
         new DeleteCourse( this.courseRepository )
             .execute( id )
             .then( hasBeenRemoved => res.status(200).json({ removed: hasBeenRemoved}))
-            .catch( error => res.json({errorMessage: error }));
+            .catch( error => this.handleError(error , res) );
     }
 }
