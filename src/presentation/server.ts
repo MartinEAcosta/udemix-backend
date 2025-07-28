@@ -1,4 +1,5 @@
 import express, { Router } from 'express';
+import cors from 'cors';
 
 interface Options {
     port: number,
@@ -23,6 +24,7 @@ export class Server {
     async start() {
         // Lectura y parseo del body
         this.app.use( express.json() );
+        this.app.use( cors() );
 
         // Directorio publico
         this.app.use( express.static( 'public' ) );

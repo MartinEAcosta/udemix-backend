@@ -4,9 +4,7 @@ import { CourseRepositoryImpl } from '../../infraestructure/repositories/course-
 import { Router } from "express";
 import { CourseDatasourceImpl } from "../../infraestructure/datasources/course-datasource-impl";
 import { AuthMiddleware } from '../middlewares/auth.middleware';
-import { AuthRepository } from '../../domain/repository/auth-repository';
 import { AuthDatasourceImpl } from '../../infraestructure/datasources/auth-datasource-impl';
-import { TokenManager } from '../../domain/services/TokenManager';
 import { JwtAdapter } from '../../config/jwt.adapter';
 
 
@@ -34,7 +32,6 @@ export class CourseRouter {
         
         router.get(
           '/:id',
-          authMiddleware.validateJWT,
           // [
           //   check( 'id' , 'El id no puede estar vació.' ).notEmpty(),
           // ],
@@ -44,34 +41,21 @@ export class CourseRouter {
         // Create Course
         router.post(
           '/new',
-          
-          // [
-          //   check( 'title', 'El titulo no puede estar vació.' ).notEmpty(),
-          //   check( 'description', 'La descripción no puede estar vacia.' ).notEmpty(),
-          //   check( 'owner', 'El propietario no puede estar vacio.' ).notEmpty(),
-          //   validateFields,
-          //   validateJWT,
-          // ],
+          authMiddleware.validateJWT,
           courseController.saveCourse
         );
         
         // Edit Course 
         router.put(
           '/update/:id',
-          // [
-          //   check( 'title', 'El titulo no puede estar vació.' ).notEmpty(),
-          //   check( 'description', 'La descripción no puede estar vacia.' ).notEmpty(),
-          //   check( 'owner', 'El propietario no puede estar vacio.' ).notEmpty(),
-          //   validateFields,
-          //   validateJWT,
-          // ],
+          authMiddleware.validateJWT,
           courseController.updateCourse
         );
         
         // // Delete Course
         router.delete(
           '/delete/:id',
-          // validateJWT,
+          authMiddleware.validateJWT,
           courseController.deleteCourse
         );
 

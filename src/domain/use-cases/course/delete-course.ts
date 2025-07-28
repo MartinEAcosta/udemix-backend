@@ -1,4 +1,3 @@
-import { CourseModel } from "../../../data";
 import { CustomError } from "../../errors/custom-error";
 import { CourseRepository } from "../../repository/course-repository";
 

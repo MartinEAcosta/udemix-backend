@@ -5,7 +5,6 @@ import { AuthRepository } from "../../domain/repository/auth-repository";
 import { CustomError } from "../../domain/errors/custom-error";
 import { LoginUserDto } from "../../domain/dtos/auth/login-user-dto";
 import { LoginUser } from "../../domain/use-cases/auth/login-user";
-import { JwtAdapter } from "../../config/jwt.adapter";
 import { Encrypter } from "../../domain/services/Encrypter";
 import { TokenManager } from "../../domain/services/TokenManager";
 
@@ -50,7 +49,9 @@ export class AuthController {
 
         new LoginUser( this.authRepository , this.encrypter , this.tokenManager )
             .execute( loginUserDto! )
-            .then( loginResponse => res.status(200).json( loginResponse ))
+            .then( loginResponse => res.status(200).json( 
+                loginResponse 
+            ))
             .catch( error => this.handleError(error , res ) );
     }
 
