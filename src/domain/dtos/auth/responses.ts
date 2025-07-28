@@ -5,7 +5,7 @@ export interface UserResponse {
     username : string; 
 }
 
-export interface LoginUserResponse {
+export interface AuthSuccessResponse {
     user : UserResponse,
     token : unknown,
 }

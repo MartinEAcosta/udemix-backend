@@ -1,4 +1,4 @@
-import { UserEntity } from '../../entities/user.entity';
+import { AuthSuccessResponse } from '../../dtos/auth/responses';
 import { CustomError } from '../../errors/custom-error';
 import { AuthRepository } from '../../repository/auth-repository';
 import { Encrypter } from '../../services/Encrypter';
@@ -6,7 +6,7 @@ import { TokenManager } from '../../services/TokenManager';
 import { RegisterUserDto } from './../../dtos/auth/register-user-dto';
 
 export interface RegisterUserUseCase {
-    execute( registerUserDto : RegisterUserDto ) : Promise<UserEntity>;
+    execute( registerUserDto : RegisterUserDto ) : Promise<AuthSuccessResponse>;
 }
 
 export class RegisterUser {
@@ -18,7 +18,7 @@ export class RegisterUser {
     ){}
 
     // TODO : CHEQuEAR RESPONSE JWT 
-    async execute ( registerUserDto : RegisterUserDto ) : Promise<UserEntity> {
+    async execute ( registerUserDto : RegisterUserDto ) : Promise<AuthSuccessResponse> {
         
         const userExists = await this.authRepository.searchUserByEmail( registerUserDto.email );
         if( userExists ) throw CustomError.badRequest( 'Ya existe una cuenta asociada a este email.' );
@@ -31,8 +31,10 @@ export class RegisterUser {
         const token = await this.tokenManager.generateToken({ id : newUser.id });
         if( !token ) throw CustomError.internalServer('Error en la creación del token.');
 
-        return newUser;
+        return {
+            user: newUser,
+            token: token,
+        }
     }
 
-    
 }
