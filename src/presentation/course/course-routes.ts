@@ -1,7 +1,13 @@
+import { AuthRepositoryImpl } from './../../infraestructure/repositories/auth-repository-impl';
 import { CourseController } from './course-controller';
 import { CourseRepositoryImpl } from '../../infraestructure/repositories/course-repository-impl';
 import { Router } from "express";
 import { CourseDatasourceImpl } from "../../infraestructure/datasources/course-datasource-impl";
+import { AuthMiddleware } from '../middlewares/auth.middleware';
+import { AuthRepository } from '../../domain/repository/auth-repository';
+import { AuthDatasourceImpl } from '../../infraestructure/datasources/auth-datasource-impl';
+import { TokenManager } from '../../domain/services/TokenManager';
+import { JwtAdapter } from '../../config/jwt.adapter';
 
 
 export class CourseRouter {
@@ -13,6 +19,12 @@ export class CourseRouter {
         const dataSource = new CourseDatasourceImpl();
         const courseRepository = new CourseRepositoryImpl( dataSource );
         const courseController = new CourseController( courseRepository );
+
+        // ¿Necesario para el middleware?
+        const jwtAdapter = new JwtAdapter();
+        const authDatasource = new AuthDatasourceImpl();
+        const authRepository = new AuthRepositoryImpl( authDatasource );
+        const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
         
         // GetAll Courses
         router.get(
@@ -22,6 +34,7 @@ export class CourseRouter {
         
         router.get(
           '/:id',
+          authMiddleware.validateJWT,
           // [
           //   check( 'id' , 'El id no puede estar vació.' ).notEmpty(),
           // ],
@@ -31,6 +44,7 @@ export class CourseRouter {
         // Create Course
         router.post(
           '/new',
+          
           // [
           //   check( 'title', 'El titulo no puede estar vació.' ).notEmpty(),
           //   check( 'description', 'La descripción no puede estar vacia.' ).notEmpty(),

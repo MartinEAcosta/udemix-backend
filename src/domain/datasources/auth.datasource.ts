@@ -7,6 +7,5 @@ export abstract class AuthDatasource {
 
     abstract registerUser( registerUserDto : RegisterUserDto ) : Promise<IUserModel>;
     abstract searchUserByEmail( email : string ): Promise<IUserModel | null>;
-    // abstract loginUser() : Promise<UserEntity>;
-    // abstract renew() : Promise<bo>;
+    abstract searchUserById( id : string ) : Promise<IUserModel | null>;
 }

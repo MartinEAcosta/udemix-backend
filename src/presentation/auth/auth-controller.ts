@@ -36,7 +36,7 @@ export class AuthController {
         if( error ) return res.status(400).json({
             error : error,
         });
-        new RegisterUser( this.authRepository , this.encrypter )      
+        new RegisterUser( this.authRepository , this.encrypter , this.tokenManager )      
             .execute( registerUserDto! )
             .then( userResponse => res.status(201).json( userResponse ))
             .catch( error => this.handleError(error,res) );  
