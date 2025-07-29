@@ -6,6 +6,7 @@ export interface UserResponse {
 }
 
 export interface AuthSuccessResponse {
+    ok: boolean,
     user : UserResponse,
     token : string,
 }
