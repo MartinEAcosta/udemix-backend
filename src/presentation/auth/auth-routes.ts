@@ -5,6 +5,7 @@ import { AuthController } from "./auth-controller";
 import { Encrypter } from "../../domain/services/Encrypter";
 import { BcryptAdapter } from "../../config/bcrypt.adapter";
 import { JwtAdapter } from "../../config/jwt.adapter";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
 
 
 export class AuthRouter {
@@ -19,6 +20,10 @@ export class AuthRouter {
             const tokenManager = new JwtAdapter();
             const authController = new AuthController( authRepository , encrypter , tokenManager );
             
+            // ¿Necesario para el middleware?
+            const jwtAdapter = new JwtAdapter();
+            const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
+            
             router.post(
               '/new',
               authController.registerUser
@@ -29,10 +34,11 @@ export class AuthRouter {
                 authController.loginUser
             );
 
-            // router.get(
-            //     '/renew',
-            //     authController.
-            // );
+            router.get(
+                '/renew',
+                authMiddleware.validateJWT,
+                authController.reloadToken
+            );
         
             return router;
         }

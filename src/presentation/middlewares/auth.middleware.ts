@@ -38,7 +38,6 @@ export class AuthMiddleware {
                 res.status(400).json({ error: 'El usuario no existe.' });
                 return;
             }
-            console.log(user);
 
             (req as Request & { user?: UserEntity }).user = user;
             next();

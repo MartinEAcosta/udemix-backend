@@ -5,8 +5,10 @@ import { AuthRepository } from "../../domain/repository/auth-repository";
 import { LoginUserDto } from "../../domain/dtos/auth/login-user-dto";
 import { LoginUser } from "../../domain/use-cases/auth/login-user";
 import { Encrypter } from "../../domain/services/Encrypter";
+import { HandlerResponses } from './../helpers/handlerResponses';
 import { TokenManager } from "../../domain/services/TokenManager";
-import { HandlerResponses } from "../helpers/handlerResponses";
+import { UserEntity } from "../../domain/entities/user.entity";
+import { GetUserById } from "../../domain/use-cases/auth/get-user-by-id";
 
 export class AuthController {
 
@@ -39,7 +41,20 @@ export class AuthController {
             .catch( error => HandlerResponses.handleError(error , res ) );
     }
 
-    reloadToken = ( req : Request , res : Response ) => {
-        throw 'reload';
+    reloadToken = async( req : Request , res : Response ) => {
+
+        const user = (req as Request & { user?: UserEntity }).user;
+        if( !user ) return;
+
+        new GetUserById( this.authRepository )
+            .execute( user.id )
+            .then( async userResponse => {
+                const payload = { id: user.id.toString() };
+                const token = await this.tokenManager.generateToken( payload );
+                if( !token ) return HandlerResponses.handleError( 'Hubo un error al generar el token', res );
+                HandlerResponses.handleAuthSuccess( res , { user: userResponse , token } );
+            } )
+            .catch( error => HandlerResponses.handleError( error , res ) );
+        
     }
 }

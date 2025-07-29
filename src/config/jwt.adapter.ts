@@ -5,7 +5,7 @@ import { TokenManager } from '../domain/services/TokenManager';
 const JWT_SEED = envs.SECRET_JWT_SEED;
 export class JwtAdapter implements TokenManager{
 
-    generateToken = ( payload : any  , duration: string = '2h' ) : Promise<string | null> => {
+    generateToken = ( payload : any  , duration : string = '2h' ) : Promise<string | null> => {
         
         return new Promise( (resolve)  => {
 

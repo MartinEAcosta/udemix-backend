@@ -5,11 +5,11 @@ import { Encrypter } from '../../services/Encrypter';
 import { TokenManager } from '../../services/TokenManager';
 import { RegisterUserDto } from './../../dtos/auth/register-user-dto';
 
-export interface RegisterUserUseCase {
+interface RegisterUserUseCase {
     execute( registerUserDto : RegisterUserDto ) : Promise<AuthSuccessResponse>;
 }
 
-export class RegisterUser {
+export class RegisterUser implements RegisterUserUseCase {
 
     constructor(
         private readonly authRepository : AuthRepository,
