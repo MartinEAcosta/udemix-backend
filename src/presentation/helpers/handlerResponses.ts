@@ -1,6 +1,6 @@
+import { AuthSuccessResponse } from './../../domain/dtos/auth/responses';
 import { Response } from "express";
 import { CustomError } from "../../domain/errors/custom-error";
-import { UserEntity } from "../../domain/entities/user.entity";
 
 
 export class HandlerResponses {
@@ -26,11 +26,11 @@ export class HandlerResponses {
         });
     }
 
-    static handleAuthSuccess = ( res : Response , user : UserEntity , token : string , statusCode : number = 200 ) => {
+    static handleAuthSuccess = ( res : Response , authResponse : AuthSuccessResponse , statusCode : number = 200 ) => {
         return res.status(statusCode).json({
             ok: true,
-            user: user,
-            token: token,
+            user: authResponse.user,
+            token: authResponse.token,
         });
     }
 }

@@ -7,5 +7,5 @@ export interface UserResponse {
 
 export interface AuthSuccessResponse {
     user : UserResponse,
-    token : unknown,
+    token : string,
 }

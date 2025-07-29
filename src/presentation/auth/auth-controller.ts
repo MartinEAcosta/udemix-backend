@@ -23,7 +23,7 @@ export class AuthController {
         });
         new RegisterUser( this.authRepository , this.encrypter , this.tokenManager )      
             .execute( registerUserDto! )
-            .then( userResponse => res.status(201).json( userResponse ) )
+            .then( authResponse => HandlerResponses.handleAuthSuccess( res , authResponse , 201 ) )
             .catch( error => HandlerResponses.handleError(error,res) );  
     }
 
@@ -35,7 +35,7 @@ export class AuthController {
 
         new LoginUser( this.authRepository , this.encrypter , this.tokenManager )
             .execute( loginUserDto! )
-            .then( loginResponse => res.status(200).json( loginResponse ) )
+            .then( authResponse => HandlerResponses.handleAuthSuccess( res , authResponse , 200 ) )
             .catch( error => HandlerResponses.handleError(error , res ) );
     }
 
