@@ -1,11 +1,10 @@
 import { Router } from "express";
+
+import { AuthController } from "./auth-controller";
 import { AuthDatasourceImpl } from "../../infraestructure/datasources/auth-datasource-impl";
 import { AuthRepositoryImpl } from "../../infraestructure/repositories/auth-repository-impl";
-import { AuthController } from "./auth-controller";
-import { Encrypter } from "../../domain/services/Encrypter";
-import { BcryptAdapter } from "../../config/bcrypt.adapter";
-import { JwtAdapter } from "../../config/jwt.adapter";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
+import { BcryptAdapter , JwtAdapter } from "../../config/";
 
 
 export class AuthRouter {

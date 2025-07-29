@@ -1,5 +1,5 @@
 import { compareSync, genSaltSync, hashSync } from 'bcrypt';
-import { Encrypter } from '../domain/services/Encrypter';
+import { Encrypter } from '../../domain/services/Encrypter';
 export class BcryptAdapter implements Encrypter {
 
     hash = ( password : string ) : string => {

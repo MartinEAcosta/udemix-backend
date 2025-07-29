@@ -1,6 +1,7 @@
+import { CourseRepository } from "../../repository/course-repository";
+
 import { CourseEntity } from "../../entities/course.entity";
 import { CustomError } from "../../errors/custom-error";
-import { CourseRepository } from "../../repository/course-repository";
 
 export interface GetCourseByIdUseCase {
     execute( id : string ) : Promise<CourseEntity | null>;

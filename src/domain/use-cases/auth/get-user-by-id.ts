@@ -1,16 +1,14 @@
-import { UserResponse } from "../../dtos/auth/responses";
-import { CustomError } from "../../errors/custom-error";
 import { AuthRepository } from "../../repository/auth-repository";
+import { CustomError } from "../../errors/custom-error";
+import { UserResponse } from "../../dtos/auth/responses";
 
 interface GetUserByIdUseCase {
     execute( id : string ) : Promise<UserResponse>
 }
 
-
 export class GetUserById implements GetUserByIdUseCase{
 
     constructor( private readonly authRepository : AuthRepository ){ }
-
 
     async execute(id: string): Promise<UserResponse> {
         const userExists = await this.authRepository.searchUserById( id );

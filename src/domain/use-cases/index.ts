@@ -5,3 +5,4 @@ export * from '../use-cases/course/update-course';
 export * from '../use-cases/course/delete-course';
 export * from '../use-cases/auth/login-user';
 export * from '../use-cases/auth/register-user';
+export * from '../use-cases/auth/get-user-by-id';

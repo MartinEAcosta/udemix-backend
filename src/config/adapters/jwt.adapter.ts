@@ -1,6 +1,6 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
-import { envs } from './envs';
-import { TokenManager } from '../domain/services/TokenManager';
+import { envs } from '../envs';
+import { TokenManager } from '../../domain/services/TokenManager';
 
 const JWT_SEED = envs.SECRET_JWT_SEED;
 export class JwtAdapter implements TokenManager{

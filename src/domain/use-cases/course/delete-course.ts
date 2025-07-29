@@ -1,5 +1,6 @@
-import { CustomError } from "../../errors/custom-error";
 import { CourseRepository } from "../../repository/course-repository";
+
+import { CustomError } from "../../errors/custom-error";
 
 export interface DeleteCourseUseCase {
     execute( id : string ) : Promise<boolean>;

@@ -1,14 +1,12 @@
 import { Request, Response } from "express";
-import { RegisterUserDto } from "../../domain/dtos/auth/register-user-dto";
-import { RegisterUser } from "../../domain/use-cases/auth/register-user";
+
 import { AuthRepository } from "../../domain/repository/auth-repository";
-import { LoginUserDto } from "../../domain/dtos/auth/login-user-dto";
-import { LoginUser } from "../../domain/use-cases/auth/login-user";
 import { Encrypter } from "../../domain/services/Encrypter";
-import { HandlerResponses } from './../helpers/handlerResponses';
 import { TokenManager } from "../../domain/services/TokenManager";
 import { UserEntity } from "../../domain/entities/user.entity";
-import { GetUserById } from "../../domain/use-cases/auth/get-user-by-id";
+import { RegisterUserDto , LoginUserDto } from "../../domain/dtos";
+import { RegisterUser , LoginUser , GetUserById } from "../../domain/use-cases";
+import { HandlerResponses } from './../helpers/handlerResponses';
 
 export class AuthController {
 

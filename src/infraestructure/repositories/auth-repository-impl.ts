@@ -1,11 +1,9 @@
-import { BcryptAdapter } from "../../config/bcrypt.adapter";
-import { JwtAdapter } from "../../config/jwt.adapter";
-import { IUserModel, UserModel } from "../../data";
 import { AuthDatasource } from "../../domain/datasources/auth.datasource";
-import { LoginUserDto } from "../../domain/dtos/auth/login-user-dto";
-import { RegisterUserDto } from "../../domain/dtos/auth/register-user-dto";
-import { UserEntity } from "../../domain/entities/user.entity";
 import { AuthRepository } from "../../domain/repository/auth-repository";
+import { UserEntity } from "../../domain/entities/user.entity";
+import { RegisterUserDto } from "../../domain/dtos/auth/register-user-dto";
+import { IUserModel } from "../../data";
+import { JwtAdapter , BcryptAdapter} from "../../config/";
 
 
 export class AuthRepositoryImpl implements AuthRepository {

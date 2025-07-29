@@ -1,8 +1,9 @@
+import { AuthRepository } from '../../repository/auth-repository';
+import { TokenManager } from '../../services/TokenManager';
+import { Encrypter } from '../../services/Encrypter';
+
 import { AuthSuccessResponse } from '../../dtos/auth/responses';
 import { CustomError } from '../../errors/custom-error';
-import { AuthRepository } from '../../repository/auth-repository';
-import { Encrypter } from '../../services/Encrypter';
-import { TokenManager } from '../../services/TokenManager';
 import { RegisterUserDto } from './../../dtos/auth/register-user-dto';
 
 interface RegisterUserUseCase {

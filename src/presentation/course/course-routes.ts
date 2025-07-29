@@ -1,11 +1,12 @@
-import { AuthRepositoryImpl } from './../../infraestructure/repositories/auth-repository-impl';
-import { CourseController } from './course-controller';
-import { CourseRepositoryImpl } from '../../infraestructure/repositories/course-repository-impl';
 import { Router } from "express";
+
+import { CourseController } from './course-controller';
 import { CourseDatasourceImpl } from "../../infraestructure/datasources/course-datasource-impl";
-import { AuthMiddleware } from '../middlewares/auth.middleware';
+import { CourseRepositoryImpl } from '../../infraestructure/repositories/course-repository-impl';
 import { AuthDatasourceImpl } from '../../infraestructure/datasources/auth-datasource-impl';
-import { JwtAdapter } from '../../config/jwt.adapter';
+import { AuthRepositoryImpl } from './../../infraestructure/repositories/auth-repository-impl';
+import { AuthMiddleware } from '../middlewares/auth.middleware';
+import { JwtAdapter } from '../../config/';
 
 
 export class CourseRouter {
