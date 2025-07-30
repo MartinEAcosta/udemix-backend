@@ -49,14 +49,7 @@ export class CourseController {
 
     public saveCourse = ( req : AuthenticathedRequest , res : Response ) => {
 
-        const user = req.user; 
-        if(!user) return res.status(401).json({ 
-            ok : false,
-            error : 'Hubo un error al recopilar el usuario.'
-        });
-
-        const { owner , ...rest } = req.body;
-        const [ errorMessage , createCourseDto ] = CreateCourseDto.create( { user } );
+        const [ errorMessage , createCourseDto ] = CreateCourseDto.create( req.body );
         if( errorMessage ) return res.status(400).json({ errorMessage });
 
         new SaveCourse( this.courseRepository )

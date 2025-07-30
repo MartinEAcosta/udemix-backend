@@ -42,14 +42,14 @@ export class CourseRouter {
         // Create Course
         router.post(
           '/new',
-          authMiddleware.validateJWT,
+          [ authMiddleware.validateJWT , authMiddleware.validateAndAssignOwner ],
           courseController.saveCourse
         );
         
         // Edit Course 
         router.put(
           '/update/:id',
-          authMiddleware.validateJWT,
+          [ authMiddleware.validateJWT , authMiddleware.validateAndAssignOwner ],
           courseController.updateCourse
         );
         

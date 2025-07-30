@@ -51,5 +51,23 @@ export class AuthMiddleware {
             return;
         }
     }
-    
+
+    validateAndAssignOwner = ( req : AuthenticathedRequest , res : Response , next : NextFunction ) => {
+        const user = req.user;
+
+        if(!user) {
+            res.status(401).json({ 
+                ok : false,
+                error : 'Hubo un error al recopilar el usuario.'
+            });
+            return;
+        }
+
+        req.body = { 
+                    ...req.body,
+                    owner: user.id,
+                   };
+        next();
+    }
+
 }
