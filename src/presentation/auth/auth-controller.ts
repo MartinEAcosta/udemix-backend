@@ -6,7 +6,7 @@ import { TokenManager } from "../../domain/services/TokenManager";
 import { UserEntity } from "../../domain/entities/user.entity";
 import { RegisterUserDto , LoginUserDto } from "../../domain/dtos";
 import { RegisterUser , LoginUser , GetUserById } from "../../domain/use-cases";
-import { HandlerResponses } from './../helpers/handlerResponses';
+import { HandlerResponses } from '../helpers/handler-responses';
 
 export class AuthController {
 

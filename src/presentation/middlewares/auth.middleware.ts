@@ -3,6 +3,9 @@ import { TokenManager } from "../../domain/services/TokenManager";
 import { AuthRepository } from "../../domain/repository/auth-repository";
 import { UserEntity } from "../../domain/entities/user.entity";
 
+export interface AuthenticathedRequest extends Request {
+    user?: UserEntity;
+}
 
 export class AuthMiddleware {
 
@@ -10,7 +13,7 @@ export class AuthMiddleware {
                 private readonly authRepository : AuthRepository,
      ) {}
 
-    validateJWT = async( req : Request , res : Response , next : NextFunction ) : Promise<void> => {
+    validateJWT = async( req : AuthenticathedRequest , res : Response , next : NextFunction ) : Promise<void> => {
         
         const authorization = req.header('Authorization');
         console.log(authorization);
@@ -39,7 +42,7 @@ export class AuthMiddleware {
                 return;
             }
 
-            (req as Request & { user?: UserEntity }).user = user;
+            req.user = user;
             next();
         }
         catch(error){

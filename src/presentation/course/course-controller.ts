@@ -3,7 +3,9 @@ import { Request, Response } from "express";
 import { CourseRepository } from "../../domain/repository/course-repository";
 import { DeleteCourse, SaveCourse, UpdateCourse , GetAllCourses , GetCourseById} from '../../domain/use-cases';
 import { CreateCourseDto , UpdateCourseDto } from "../../domain/dtos";
-import { HandlerResponses } from './../helpers/handlerResponses';
+import { HandlerResponses } from '../helpers/handler-responses';
+import { AuthenticathedRequest } from "../middlewares/auth.middleware";
+import { CustomError } from "../../domain/errors/custom-error";
 
 
 export class CourseController {
@@ -45,9 +47,16 @@ export class CourseController {
     }
 
 
-    public saveCourse = ( req : Request , res : Response ) => {
+    public saveCourse = ( req : AuthenticathedRequest , res : Response ) => {
 
-        const [ errorMessage , createCourseDto ] = CreateCourseDto.create( req.body );
+        const user = req.user; 
+        if(!user) return res.status(401).json({ 
+            ok : false,
+            error : 'Hubo un error al recopilar el usuario.'
+        });
+
+        const { owner , ...rest } = req.body;
+        const [ errorMessage , createCourseDto ] = CreateCourseDto.create( { user } );
         if( errorMessage ) return res.status(400).json({ errorMessage });
 
         new SaveCourse( this.courseRepository )

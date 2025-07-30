@@ -1,4 +1,4 @@
-import mongoose, { Types } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 export interface ICourseModel {
     _id?: Types.ObjectId,
@@ -6,7 +6,7 @@ export interface ICourseModel {
     description : string,
     category? : string | null,
     imgUrl : String[],
-    owner : string,
+    owner : Types.ObjectId,
     price : number,
     capacity? : number | null,
 }
@@ -32,9 +32,8 @@ const courseSchema = new mongoose.Schema({
     },
 
     owner : {
-        type: String,
-        // type: mongoose.Schema.Types.ObjectId,
-        // ref: 'User',
+        type: Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
     },
 

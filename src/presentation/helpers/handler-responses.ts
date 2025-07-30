@@ -1,4 +1,4 @@
-import { AuthSuccessResponse } from './../../domain/dtos/auth/responses';
+import { AuthSuccessResponse } from '../../domain/dtos/auth/responses';
 import { Response } from "express";
 import { CustomError } from "../../domain/errors/custom-error";
 
