@@ -1,14 +1,24 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
+
+export interface IEnrollmentModel {
+    _id            :   Types.ObjectId;
+    id_user        :   Types.ObjectId;
+    id_course      :   Types.ObjectId;
+    purchaseDate   :   Date;
+    progress       :   number;
+    completionDate ?:   Date;
+
+}
 
 const enrollmentSchema = new mongoose.Schema({
 
-    idUser : {
+    id_user : {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
 
-    idCourse : {
+    id_course : {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Course',
         required: true,
@@ -17,6 +27,16 @@ const enrollmentSchema = new mongoose.Schema({
     purchaseDate : {
         type: Date,
         required: true,
+    },
+
+    progess : {
+        type: Number,
+        default : 0,
+    },
+
+    completionDate : {
+        type: Date,
+        default: null,
     },
 
 });
