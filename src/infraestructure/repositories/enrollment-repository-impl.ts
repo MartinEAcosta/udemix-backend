@@ -21,8 +21,10 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
         return EnrollmentEntity.fromObject( enrollment );
     }
     
-    getAllEnrollmentsByUserId = (uid: string): Promise<EnrollmentEntity> => {
-        throw new Error("Method not implemented.");
+    getAllEnrollmentsByUserId = async(uid: string): Promise<EnrollmentEntity[]> => {
+        const enrollments = await this.enrollmentDatasource.getAllEnrollmentsByUserId( uid );
+        if( !enrollments ) return [];
+        return enrollments.map( enrollment => EnrollmentEntity.fromObject( enrollment ));
     }
     
 }

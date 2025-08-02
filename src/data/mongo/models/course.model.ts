@@ -4,6 +4,8 @@ export interface ICourseModel {
     _id: Types.ObjectId,
     title : string,
     description : string,
+    // TODO: Reemplazar por entidad Category
+    //* category : Types.ObjectId;
     category? : string | null,
     imgUrl : String[],
     owner : Types.ObjectId,
