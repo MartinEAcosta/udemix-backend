@@ -1,5 +1,6 @@
 import express, { Router } from 'express';
 import cors from 'cors';
+import fileUpload from 'express-fileupload';
 
 interface Options {
     port: number,
@@ -25,6 +26,9 @@ export class Server {
         // Lectura y parseo del body
         this.app.use( express.json() );
         this.app.use( cors() );
+        this.app.use(fileUpload({
+            limits: { fileSize: 50 * 1024 * 1024 },
+        }));
 
         // Directorio publico
         this.app.use( express.static( 'public' ) );

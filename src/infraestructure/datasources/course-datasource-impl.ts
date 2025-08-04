@@ -51,7 +51,6 @@ export class CourseDatasourceImpl implements CourseDatasource {
         }
     }
 
-
     async updateCourse( updateCourseDTO : UpdateCourseDto ) : Promise<ICourseModel>{
         try{
 
