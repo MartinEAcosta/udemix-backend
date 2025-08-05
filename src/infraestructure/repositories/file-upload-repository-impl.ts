@@ -8,8 +8,8 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
 
     async uploadFile(file: FileEntity , folder : string): Promise<boolean> {
         try {
-            await this.fileUploadDatasource.uploadFile( file , folder );
-            return true;
+            const hasUploaded = await this.fileUploadDatasource.uploadFile( file , folder );
+            return hasUploaded;
         } catch (error) {
             console.log(error);
             return false;

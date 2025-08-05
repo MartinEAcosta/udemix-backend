@@ -16,34 +16,26 @@ export class FileUploadController {
 
     uploadFile = ( req : Request , res : Response ) => {
         // Propiedad creada automaticamente por el middleware file-upload.
-        const files = req.files;
-        if( !req.files || Object.keys(req.files).length === 0 ) {
-            return res.status(400).json({ error: 'No se han seleccionado archivos.' });
-        }
+        // req.files;
+        // El middleware ya se encargo de validar que haya un archivo existente.
+        const file = req.body.files.at(0);
+        console.log(file);
 
-        const uploadedFile = Array.isArray(files!.file) ? files!.file[0] : files!.file;
-
-        const type = uploadedFile.mimetype.split('/')[1] || '';
-        console.log(type);
-        if( !validExtensions.includes(type) ){
-            throw res.status(400).json({ error: `La extensión ${type} no es válida. Las extensiones permitidas son: ${ validExtensions }` });
-        }
-        
         const { folder } = req.params;
         if( !validFolders.includes(folder) ){
             return res.status(400).json({ error: `El parametro ${folder} no es válido.` });
         }
 
-        const file = new FileEntity({
-            name: `${ this.idGenerator.generateId() }.${ type }`,
-            size: uploadedFile.size,
-            data: uploadedFile.data as Buffer,
-            type: type,
+        const uploadedFile = new FileEntity({
+            name: `${ this.idGenerator.generateId() }}`,
+            size: file.size,
+            data: file.data as Buffer,
+            type: file.mimetype,
         });
         console.log(file);
 
         new UploadSingle( this.fileUploadRepository )
-            .execute( file , folder )
+            .execute( uploadedFile , folder )
             .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
             .catch( error => HandlerResponses.handleError( res , error ));
 
