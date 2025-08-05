@@ -6,9 +6,9 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
 
     constructor(private readonly fileUploadDatasource: FileUploadDatasource) {}
 
-    async uploadFile(file: FileEntity): Promise<boolean> {
+    async uploadFile(file: FileEntity , folder : string): Promise<boolean> {
         try {
-            await this.fileUploadDatasource.uploadFile(file);
+            await this.fileUploadDatasource.uploadFile( file , folder );
             return true;
         } catch (error) {
             console.log(error);

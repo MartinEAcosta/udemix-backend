@@ -2,8 +2,8 @@ import { Router } from "express";
 import { FileUploadController } from "./file-upload-controller";
 import { FileUploadDatasourceImpl } from "../../infraestructure/datasources/file-upload-datasource-impl";
 import { FileUploadRepositoryImpl } from "../../infraestructure/repositories/file-upload-repository-impl";
-import { IdGenerator } from "../../domain/services/IdGenerator";
 import { UuidAdapter } from "../../config/adapters/uuid.adapter";
+import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
 
 
 export class FileUploadRouter {
@@ -13,19 +13,20 @@ export class FileUploadRouter {
 
         const router = Router();
 
-        const datasource = new FileUploadDatasourceImpl();
+        const fileStorage = new CloudinaryAdapter();
+        const datasource = new FileUploadDatasourceImpl( fileStorage );
         const fileUploadRepository = new FileUploadRepositoryImpl( datasource );
         const idGenerator = new UuidAdapter();
         const fileUploadController = new FileUploadController( fileUploadRepository , idGenerator );
 
 
         router.post( 
-            '/single/:type',
+            '/single/:folder',
             fileUploadController.uploadFile
         );
 
         router.post(
-            '/multiple/:type',
+            '/multiple/:folder',
             fileUploadController.uploadMultipleFiles
         );
 
