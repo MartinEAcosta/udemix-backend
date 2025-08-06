@@ -1,4 +1,4 @@
-import { FileEntity } from "../../domain/entities/file.entity";
+import { FileEntity, ResourceValidTypes } from "../../domain/entities/file.entity";
 import { FileStorage } from "../../domain/services/FileStorage";
 import { v2 as cloudinary } from 'cloudinary';
 import { envs } from "../envs";
@@ -14,10 +14,9 @@ export class CloudinaryAdapter implements FileStorage {
     }
 
     // { resource_type :  file.type }
-    uploadFile(file: FileEntity , folder : string): Promise<boolean> {
+    uploadFile = ( file: FileEntity , folder : string ) : Promise<boolean> => {
         return new Promise((resolve , reject) => {
-
-            cloudinary.uploader.upload_stream({ folder } ,(error , result ) => {
+            cloudinary.uploader.upload_stream( { folder: folder , resource_type: file.type as ResourceValidTypes } ,(error , result ) => {
                 console.log("Cloudinary upload result:", result);
                 if (error) {
                     console.error("Error uploading to Cloudinary:", error);
