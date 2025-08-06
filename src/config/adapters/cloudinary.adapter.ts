@@ -1,7 +1,8 @@
-import { FileEntity, ResourceValidTypes } from "../../domain/entities/file.entity";
-import { FileStorage } from "../../domain/services/FileStorage";
 import { v2 as cloudinary } from 'cloudinary';
 import { envs } from "../envs";
+
+import { FileStorage } from "../../domain/services/FileStorage";
+import { FileEntity, ResourceValidTypes } from "../../domain/entities/file.entity";
 
 export class CloudinaryAdapter implements FileStorage {
 

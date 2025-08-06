@@ -1,14 +1,13 @@
-import { ResourceValidTypes, validTypes } from './../../domain/entities/file.entity';
 import { Request, Response } from "express";
-import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
-import { HandlerResponses } from "../helpers/handler-responses";
-import { FileEntity } from "../../domain/entities/file.entity";
-import { UploadSingle } from "../../domain/use-cases/file-upload/upload-single";
 import { IdGenerator } from "../../domain/services/IdGenerator";
+import { HandlerResponses } from "../helpers/handler-responses";
 import { CustomError } from "../../domain/errors/custom-error";
 
+import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
+import { FileEntity , ResourceValidTypes } from './../../domain/entities/file.entity';
+import { UploadSingle } from "../../domain/use-cases/file-upload/upload-single";
+
 // toLowerCase aplicado a la hora de comparar.
-export const validExtensions = [ 'jpg' , 'jpeg', 'png' ];
 export const validFolders = [ 'users' , 'courses' ];
 
 export class FileUploadController {

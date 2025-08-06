@@ -1,7 +1,7 @@
+import { FileStorage } from "../../domain/services/FileStorage";
 import { FileUploadDatasource } from "../../domain/datasources/file-upload.datasource";
 import { FileEntity } from "../../domain/entities/file.entity";
 import { CustomError } from "../../domain/errors/custom-error";
-import { FileStorage } from "../../domain/services/FileStorage";
 
 
 export class FileUploadDatasourceImpl implements FileUploadDatasource {

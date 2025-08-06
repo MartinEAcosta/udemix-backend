@@ -1,5 +1,5 @@
-import { FileUploadRepository } from "../../repository/file-upload-repository";
 import { FileEntity } from "../../entities/file.entity";
+import { FileUploadRepository } from "../../repository/file-upload-repository";
 import { CustomError } from "../../errors/custom-error";
 
 export interface UploadFileUseCase {

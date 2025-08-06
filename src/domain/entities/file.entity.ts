@@ -10,7 +10,6 @@ export interface FileEntityOptions {
     format : "image" | "video" | "raw" | "auto" | undefined;
 }
 
-
 export class FileEntity {
 
     public name : string;
@@ -28,7 +27,6 @@ export class FileEntity {
         this.format = format;
     }
 
-    
     static fromObject = ( object: { [ key: string ] : any } ): FileEntity => {
         const { name, size, data , type , format} = object;
         
