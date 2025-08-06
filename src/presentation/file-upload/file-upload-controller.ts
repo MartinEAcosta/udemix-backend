@@ -31,7 +31,6 @@ export class FileUploadController {
             type: file.mimetype.split('/')[0].toLowerCase(), // 'image' or 'video'
             format: file.mimetype.split('/')[1].toLowerCase() as ResourceValidTypes,
         });
-        console.log(uploadedFile);
 
         new UploadSingle( this.fileUploadRepository )
             .execute( uploadedFile , folder! )

@@ -7,7 +7,7 @@ export interface FileEntityOptions {
     size: number;
     data: Buffer;
     type : string;
-    format : "image" | "video" | "raw" | "auto" | undefined;
+    format : ResourceValidTypes;
 }
 
 export class FileEntity {
@@ -16,7 +16,7 @@ export class FileEntity {
     public size : number;
     public data : Buffer;
     public type : string;
-    public format : "image" | "video" | "raw" | "auto" | undefined;
+    public format : ResourceValidTypes
 
     constructor( fileOptions : FileEntityOptions ) {
         const { name, size, data, type, format } = fileOptions;
