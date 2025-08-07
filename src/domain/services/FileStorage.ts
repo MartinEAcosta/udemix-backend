@@ -1,5 +1,5 @@
 import { IFileModel } from "../../data/mongo/models/file.model";
-import { FileEntity } from "../entities/file.entity";
+import { FileEntity } from "../dtos/file-upload/file.dto";
 
 
 export abstract class FileStorage {

@@ -2,8 +2,8 @@ import { v2 as cloudinary } from 'cloudinary';
 import { envs } from "../envs";
 
 import { FileStorage } from "../../domain/services/FileStorage";
-import { FileEntity, ResourceValidTypes } from "../../domain/entities/file.entity";
 import { IFileModel } from '../../data/mongo/models/file.model';
+import { FileDto, ResourceValidTypes } from '../../domain/dtos/file-upload/file.dto';
 
 export class CloudinaryAdapter implements FileStorage {
 
@@ -15,9 +15,9 @@ export class CloudinaryAdapter implements FileStorage {
         });    
     }
 
-    uploadFile = ( file: FileEntity , folder : string ) : Promise<IFileModel> => {
+    uploadFile = ( file: FileDto , folder : string ) : Promise<IFileModel> => {
         return new Promise((resolve , reject) => {
-            cloudinary.uploader.upload_stream( { folder: folder , resource_type: file.type as ResourceValidTypes } ,(error , result ) => {
+            cloudinary.uploader.upload_stream( { folder: folder , resource_type: file.type! as ResourceValidTypes } ,(error , result ) => {
                 console.log("Cloudinary upload result:", result);
                 if (error) {
                     console.error("Error uploading to Cloudinary:", error);
@@ -32,11 +32,11 @@ export class CloudinaryAdapter implements FileStorage {
                     return reject(new Error(errorMsg));
                 }
                 else{
-                    const fileModel: IFileModel = {
-                        filename: file.name,
+                    const fileModel : IFileModel = {
+                        filename: file.filename,
                         size: result.bytes,
-                        type: file.type, 
-                        format: file.format as ResourceValidTypes,
+                        type: result.type,
+                        format: result.resource_type,
                     };
 
                     return resolve(fileModel);

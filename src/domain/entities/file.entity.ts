@@ -1,41 +1,39 @@
+import { ResourceValidTypes } from "../dtos/file-upload/file.dto";
 
-export type ResourceValidTypes = "image" | "video" | "raw" | "auto" | undefined;
-export const validTypes : ResourceValidTypes[] = ["image", "video", "raw", "auto", undefined];
-
-export interface FileEntityOptions {
-    name: string;
+interface FileEntityOptions {
+    filename: string;
     size: number;
-    data: Buffer;
     type : string;
     format : ResourceValidTypes;
+    public_url? : string;
 }
 
 export class FileEntity {
+    public filename: string;
+    public size: number;
+    public type: string;
+    public format: ResourceValidTypes;
 
-    public name : string;
-    public size : number;
-    public data : Buffer;
-    public type : string;
-    public format : ResourceValidTypes
-
-    constructor( fileOptions : FileEntityOptions ) {
-        const { name, size, data, type, format } = fileOptions;
-        this.name = name;
-        this.size = size;
-        this.data = data;
-        this.type = type;
-        this.format = format;
+    private constructor( options : FileEntityOptions ) {
+        this.filename =  options.filename;
+        this.size = options.size;
+        this.type = options.type;
+        this.format = options.type as ResourceValidTypes;
     }
 
-    static fromObject = ( object: { [ key: string ] : any } ): FileEntity => {
-        const { name, size, data , type , format} = object;
+    static fromObject = ( object: { [ key: string ] : any } ) : FileEntity => {
+        const { filename, size, type , format , public_url } = object;
         
-        if( !name ) throw 'El nombre del archivo es requerido.';
+        if( !filename ) throw 'El nombre del archivo es requerido.';
         if( size === null || size === undefined ) throw 'El tamaño del archivo es requerido.';
-        if( !validTypes.includes(type as any) ) throw `El tipo del archivo debe ser uno de los siguientes: ${validTypes.join(', ')}`;
-        if( !data ) throw 'Los datos del archivo son requeridos.';
 
-        return new FileEntity({ name, size, data , type , format});
+        return new FileEntity({
+            filename : filename ,
+            size : size,
+            type : type,
+            format : format,
+            public_url : public_url,
+        });
     }
 
 }

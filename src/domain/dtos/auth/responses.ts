@@ -1,4 +1,4 @@
-import { FileEntity, ResourceValidTypes } from './../../entities/file.entity';
+import { FileEntity } from "../../entities/file.entity";
 
 export interface UserResponse {
     id : string;
@@ -13,10 +13,7 @@ export interface AuthSuccessResponse {
 }
 
 export interface FileResponseData {
-    name: string;
-    size: number;
-    type: string;
-    format: ResourceValidTypes;
+    file : FileEntity | FileEntity[];
 }
 
 export interface FileResponse {

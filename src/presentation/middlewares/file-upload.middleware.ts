@@ -7,7 +7,7 @@ export class FileUploadMiddleware {
     containFiles = ( req : Request , res: Response , next : NextFunction )  => {
         if (!req.body) req.body = {};
 
-        console.log(req.files);
+        // console.log(req.files);
 
         if( !req.files || Object.keys(req.files).length === 0 ) {
             return res.status(400).json({ error: 'No se han seleccionado archivos.' });
