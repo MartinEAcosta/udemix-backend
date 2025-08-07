@@ -11,7 +11,7 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
         try {
             const fileUploaded = await this.fileUploadDatasource.uploadFile( file , folder );
             if( !fileUploaded ) return false;
-            
+            console.log(fileUploaded)
             const hasUploadedToDB = await this.fileUploadDatasource.saveFileOnDB( fileUploaded );
             if( !hasUploadedToDB ) return false;
 

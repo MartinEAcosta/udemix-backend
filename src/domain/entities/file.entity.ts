@@ -18,7 +18,7 @@ export class FileEntity {
         this.filename =  options.filename;
         this.size = options.size;
         this.type = options.type;
-        this.format = options.type as ResourceValidTypes;
+        this.format = options.format as ResourceValidTypes;
     }
 
     static fromObject = ( object: { [ key: string ] : any } ) : FileEntity => {

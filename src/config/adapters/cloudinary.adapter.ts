@@ -32,10 +32,12 @@ export class CloudinaryAdapter implements FileStorage {
                     return reject(new Error(errorMsg));
                 }
                 else{
+                    //TODO Arreglar nombrado:
+                    console.log(result);
                     const fileModel : IFileModel = {
                         filename: file.filename,
                         size: result.bytes,
-                        type: result.type,
+                        type: result.format,
                         format: result.resource_type,
                     };
 
