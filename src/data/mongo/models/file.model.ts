@@ -3,9 +3,10 @@ import mongoose from "mongoose";
 export interface IFileModel {
     id?: string; // Podría venir de la DB
     filename: string;
+    public_id : string,
     size: number;
-    type: string;
-    format?: "image" | "video" | "raw" | "auto";
+    extension: string;
+    resource_type?: "image" | "video" | "raw" | "auto";
 }
 
 const fileSchema = new mongoose.Schema({
@@ -15,15 +16,19 @@ const fileSchema = new mongoose.Schema({
         type     : String,
         required : true,
     },
+    public_id: {
+        type     : String,
+        required : true,
+    },
     size: {
         type     : Number,
         required : true,
     },
-    type: {
+    extension: {
         type     : String,
         required : true,
     },
-    format: {
+    resource_type: {
         type     : String,
         enum     : ["image", "video", "raw", "auto", undefined],
     }

@@ -9,7 +9,7 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
 
     constructor( private readonly fileStorage : FileStorage ) {}
 
-    uploadFile = async( file : FileDto , folder : string ): Promise<IFileModel | undefined> => {
+    uploadFile = async( file : FileDto , folder : string ) : Promise<IFileModel | undefined> => {
         try{
             const fileUploaded = await this.fileStorage.uploadFile( file , folder );
             return fileUploaded ? fileUploaded : undefined;
@@ -23,10 +23,11 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
     saveFileOnDB = async ( file : IFileModel ) : Promise<boolean> => {
         try{
             const fileSaved = await FileModel.create( {
-                filename : file.filename,
-                size : file.size,
-                type : file.type,
-                format : file?.format
+                filename      : file.filename,
+                public_id     : file.public_id,
+                size          : file.size,
+                extension     : file.extension,
+                resource_type : file?.resource_type,
             });
 
             return fileSaved ? true : false;

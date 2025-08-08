@@ -37,8 +37,8 @@ export class CloudinaryAdapter implements FileStorage {
                     const fileModel : IFileModel = {
                         filename: file.filename,
                         size: result.bytes,
-                        type: result.format,
-                        format: result.resource_type,
+                        extension: result.format,
+                        resource_type: result.resource_type,
                     };
 
                     return resolve(fileModel);
