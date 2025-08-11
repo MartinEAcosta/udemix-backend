@@ -35,7 +35,7 @@ export class AuthRouter {
 
             router.get(
                 '/renew',
-                authMiddleware.validateJWT,
+                [authMiddleware.validateJWT],
                 authController.reloadToken
             );
         

@@ -29,6 +29,14 @@ export class EnrollmentEntity {
         if( !id_user ) throw 'Es necesario un Usuario para realizar la inscripción.';
         if( !id_course ) throw 'Es necesario un Curso para realizar la inscripción.';
 
-        return new EnrollmentEntity({ id_user , id_course,  purchaseDate , progress , completionDate });
+        return new EnrollmentEntity(
+            { 
+                id_user, 
+                id_course,  
+                purchaseDate, 
+                progress, 
+                completionDate 
+            }
+        );
     }
 }

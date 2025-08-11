@@ -21,8 +21,8 @@ export class HandlerResponses {
 
     static handleSuccess = ( res : Response , data : unknown , statusCode : number = 200  ) => {
         return res.status(statusCode).json({
-            ok: true,
-            data: data,
+            ok   : true,
+            data : data,
         });
     }
 

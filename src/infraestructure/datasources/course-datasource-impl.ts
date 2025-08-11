@@ -42,7 +42,7 @@ export class CourseDatasourceImpl implements CourseDatasource {
             const newCourse = await CourseModel.create({
                 ...createCourseDto
             });
-    
+            console.log(newCourse);
             return newCourse;
         }
         catch(error){

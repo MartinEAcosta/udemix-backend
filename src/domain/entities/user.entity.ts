@@ -35,6 +35,13 @@ export class UserEntity implements UserEntityOptions {
         // if( !emailValidated === undefined ) throw CustomError.badRequest('');
         if( !password ) throw CustomError.badRequest('La contraseña es requerida.');
 
-        return new UserEntity({ id: _id || id , username , email , password });
+        return new UserEntity(
+            { 
+                id: _id || id, 
+                username, 
+                email, 
+                password
+            }
+        );
     }   
 }

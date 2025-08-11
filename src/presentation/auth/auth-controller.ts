@@ -50,7 +50,7 @@ export class AuthController {
                 const payload = { id: user.id.toString() };
                 const token = await this.tokenManager.generateToken( payload );
                 if( !token ) return HandlerResponses.handleError( 'Hubo un error al generar el token', res );
-                HandlerResponses.handleAuthSuccess( res , { user: userResponse , token } );
+                return HandlerResponses.handleAuthSuccess( res , { user: userResponse , token } );
             } )
             .catch( error => HandlerResponses.handleError( error , res ) );
         

@@ -14,9 +14,8 @@ export class AuthMiddleware {
      ) {}
 
     validateJWT = async( req : AuthenticathedRequest , res : Response , next : NextFunction ) : Promise<void> => {
-        
+        console.log('jwt pase')
         const authorization = req.header('Authorization');
-        console.log(authorization);
         if( !authorization ) {
             res.status(401).json({ error: 'No hay token en la petición.'});
             return;
@@ -54,6 +53,7 @@ export class AuthMiddleware {
 
     validateAndAssignOwner = ( req : AuthenticathedRequest , res : Response , next : NextFunction ) => {
         const user = req.user;
+        console.log('validate pase')
 
         if(!user) {
             res.status(401).json({ 

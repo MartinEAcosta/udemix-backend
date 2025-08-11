@@ -36,7 +36,7 @@ export class AuthDatasourceImpl implements AuthDatasource {
     async searchUserById( id : string ) : Promise<IUserModel | null> {
         try{
             const user = await UserModel.findById({ _id : id});
-            console.log(user);
+            // console.log(user);
             
             return user;
         }
