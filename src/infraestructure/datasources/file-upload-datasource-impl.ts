@@ -20,8 +20,9 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
         }
     }
 
-    saveFileOnDB = async ( file : IFileModel ) : Promise<boolean> => {
+    saveFileOnDB = async ( file : IFileModel ) : Promise<IFileModel> => {
         try{
+            
             const fileSaved = await FileModel.create( {
                 filename      : file.filename,
                 public_id     : file.public_id,
@@ -29,8 +30,8 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
                 extension     : file.extension,
                 resource_type : file?.resource_type,
             });
-
-            return fileSaved ? true : false;
+            fileSaved.id = fileSaved._id;
+            return fileSaved;
         }
         catch(error){
             console.error(error);

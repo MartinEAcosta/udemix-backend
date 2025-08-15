@@ -31,9 +31,7 @@ export class FileUploadController {
         if( error ) return res.status(400).json({
             error : error,
         });
-
-
-
+        
         const folder = this.obtainFolder( req , res );
 
         new UploadSingle( this.fileUploadRepository )

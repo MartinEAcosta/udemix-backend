@@ -11,7 +11,6 @@ export class AuthDatasourceImpl implements AuthDatasource {
         try{
             const savedUser = await UserModel.create( registerUserDto );
             if( !savedUser ) throw 'Hubo un error al registrar el usuario.'
-            
             return savedUser;
         }
         catch( error ){

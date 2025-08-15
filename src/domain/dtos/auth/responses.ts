@@ -1,4 +1,5 @@
 import { FileEntity } from "../../entities/file.entity";
+import { ResourceValidTypes } from "../file-upload/file.dto";
 
 export interface UserResponse {
     id : string;
@@ -12,11 +13,15 @@ export interface AuthSuccessResponse {
     token : string,
 }
 
-export interface FileResponseData {
-    file : FileEntity | FileEntity[];
-}
+// export interface FileResponseData {
+//     file : FileEntity | FileEntity[];
+// }
 
 export interface FileResponse {
-    ok?: boolean;
-    data: FileResponseData;
+    id            : string,
+    filename      : string,
+    size          : number,
+    extension     : string,
+    resource_type : ResourceValidTypes,
+    public_id     : string,
 }

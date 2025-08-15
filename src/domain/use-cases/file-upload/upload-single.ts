@@ -19,10 +19,7 @@ export class UploadSingle implements UploadFileUseCase {
         }
 
         return {
-            ok: res ? true : false,
-            data: {
-                file: res
-            }
+            ...res,
         };        
     }
     

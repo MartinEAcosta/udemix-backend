@@ -4,10 +4,10 @@ export interface CourseEntityOptions {
     title : string ;
     description : string; 
     category : string;
-    imgUrl : string[];
+    thumbnail_url : string[];
     owner : string;
     price : number;
-    capacity : number;
+    capacity ?: number;
 }
 
 
@@ -16,19 +16,19 @@ export class CourseEntity {
     public title : string;
     public description : string;
     public category : string;
-    public imgUrl : string[];
+    public thumbnail_url : string[];
     public owner : string;
     public price : number;
-    public capacity : number;
+    public capacity ?: number;
 
 
     constructor ( courseOptions : CourseEntityOptions){
-        const { id , title , description , category , imgUrl, owner , price , capacity } = courseOptions;
+        const { id , title , description , category , thumbnail_url, owner , price , capacity } = courseOptions;
         this.id = id;       
         this.title = title;
         this.description = description;
         this.category = category;
-        this.imgUrl = imgUrl;
+        this.thumbnail_url = thumbnail_url;
         this.owner = owner;
         this.price = price;
         this.capacity = capacity;
@@ -36,7 +36,7 @@ export class CourseEntity {
 
 
     static fromObject = ( object: { [ key: string ] : any } ): CourseEntity => {
-        const { _id , title, description, category  ,imgUrl = [] ,
+        const { _id , title, description, category  , thumbnail_url ,
                  owner , price , capacity = undefined  } = object;
 
         if( !title ) throw 'El titulo es requerido.'
@@ -50,7 +50,7 @@ export class CourseEntity {
                 title,
                 description,
                 category, 
-                imgUrl, 
+                thumbnail_url, 
                 owner, 
                 price,
                 capacity,

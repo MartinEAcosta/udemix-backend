@@ -13,10 +13,10 @@ export class FileUploadMiddleware {
             return res.status(400).json({ error: 'No se han seleccionado archivos.' });
         }
         if( !Array.isArray( req.files.file ) ){
-            req.body.files = [ req.files.file ];
+            req.body.files = [ req.files.files ];
         }
         else {
-            req.body.files = req.files.file;
+            req.body.files = req.files.files;
         }
 
         next();

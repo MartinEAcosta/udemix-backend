@@ -18,7 +18,17 @@ export class UpdateCourse implements UpdateCourseUseCase {
         const courseToUpdate = await this.courseRepository.getCourseById( updateCourseDto.id );
         if( !courseToUpdate )  throw CustomError.notFound(`El curso con el id: ${updateCourseDto.id}, no fue encontrado`);
 
-        return this.courseRepository.updateCourse( updateCourseDto );
+        const updatedCourse = await this.courseRepository.updateCourse( updateCourseDto );
+        return {
+            id: updateCourseDto.id,
+            title: updatedCourse.title,
+            description: updatedCourse.description,
+            category: updatedCourse.category,
+            thumbnail_url: updatedCourse.thumbnail_url,
+            owner: updateCourseDto.owner ?? courseToUpdate.owner,
+            price: updateCourseDto.price ? courseToUpdate.price : 0,
+            capacity: updateCourseDto.capacity,
+        };
     }
 
 }

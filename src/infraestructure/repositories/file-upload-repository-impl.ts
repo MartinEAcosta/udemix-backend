@@ -11,11 +11,11 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
         try {
             const fileUploaded = await this.fileUploadDatasource.uploadFile( file , folder );
             if( !fileUploaded ) return false;
-            console.log(fileUploaded)
-            const hasUploadedToDB = await this.fileUploadDatasource.saveFileOnDB( fileUploaded );
-            if( !hasUploadedToDB ) return false;
+            
+            const uploadedFileinDB = await this.fileUploadDatasource.saveFileOnDB( fileUploaded );
+            if( !uploadedFileinDB) return false;
 
-            return FileEntity.fromObject( fileUploaded );
+            return FileEntity.fromObject( uploadedFileinDB );
         } catch (error) {
             console.log(error);
             return false;

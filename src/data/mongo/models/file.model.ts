@@ -6,7 +6,7 @@ export interface IFileModel {
     public_id : string,
     size: number;
     extension: string;
-    resource_type?: "image" | "video" | "raw" | "auto";
+    resource_type?: "image" | "video" | "raw" | "auto" | null;
 }
 
 const fileSchema = new mongoose.Schema({
