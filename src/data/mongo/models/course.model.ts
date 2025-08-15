@@ -7,7 +7,7 @@ export interface ICourseModel {
     // TODO: Reemplazar por entidad Category
     //* category : Types.ObjectId;
     category? : string | null,
-    thumbnail_url : String[],
+    thumbnail_url : string,
     owner : Types.ObjectId,
     price : number,
     capacity? : number | null,
@@ -30,7 +30,8 @@ const courseSchema = new mongoose.Schema({
     },
 
     thumbnail_url : {
-        type: [String],
+        type: String,
+        default: "",
     },
 
     owner : {

@@ -7,7 +7,7 @@ export class UpdateCourseDto {
         public readonly title? : string,
         public readonly description? : string,
         public readonly category? : string,
-        public readonly thumbnail_url? : string[],
+        public readonly thumbnail_url? : string,
         public readonly owner? : string,
         public readonly price? : number,
         public readonly capacity? : number,

@@ -4,7 +4,7 @@ export interface CourseEntityOptions {
     title : string ;
     description : string; 
     category : string;
-    thumbnail_url : string[];
+    thumbnail_url : string;
     owner : string;
     price : number;
     capacity ?: number;
@@ -16,7 +16,7 @@ export class CourseEntity {
     public title : string;
     public description : string;
     public category : string;
-    public thumbnail_url : string[];
+    public thumbnail_url : string;
     public owner : string;
     public price : number;
     public capacity ?: number;
