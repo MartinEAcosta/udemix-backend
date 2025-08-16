@@ -17,7 +17,13 @@ export class CloudinaryAdapter implements FileStorage {
 
     uploadFile = ( file: FileDto , folder : string ) : Promise<IFileModel> => {
         return new Promise((resolve , reject) => {
-            cloudinary.uploader.upload_stream( { folder: folder , resource_type: file.type! as ResourceValidTypes } ,(error , result ) => {
+            cloudinary.uploader.upload_stream( { 
+                                                folder: folder ,
+                                                resource_type: file.type! as ResourceValidTypes,
+                                                width: 355,
+                                                height: 240,
+                                                crop: 'fill',
+                                            } ,(error , result ) => {
                 console.log("Cloudinary upload result:", result);
                 if (error) {
                     console.error("Error uploading to Cloudinary:", error);
