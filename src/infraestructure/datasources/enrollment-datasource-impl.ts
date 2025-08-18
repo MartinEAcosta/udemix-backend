@@ -1,7 +1,10 @@
+import { Types } from "mongoose";
 import { EnrollmentModel, IEnrollmentModel } from "../../data";
 import { EnrollmentDatasource } from "../../domain/datasources/enrollment.datasource";
 import { CreateEnrollmentDto } from "../../domain/dtos/enrollment/create-enrollment.dto";
 import { CustomError } from "../../domain/errors/custom-error";
+import { FileMapper } from "../mappers/file.mapper";
+import { EnrollmentMapper } from "../mappers/enrollment.mapper";
 
 
 export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
@@ -12,7 +15,7 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
             const savedEnrollment= await EnrollmentModel.create( enrollmentDto );
             if( !savedEnrollment ) throw 'Hubo un error al registrar el usuario.';
                 
-            return savedEnrollment;
+            return EnrollmentMapper.fromIEnrollmentModel( savedEnrollment );
         } 
         catch (error) {
             console.log(error);
@@ -24,7 +27,7 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
         try{
             const listOfEnrollments = await EnrollmentModel.find({ id_user: uid }); 
             if( !listOfEnrollments ) return;
-            return listOfEnrollments;
+            return listOfEnrollments.map( EnrollmentMapper.fromIEnrollmentModel );
         }
         catch(error){
             console.log(error);
@@ -37,7 +40,7 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
             
             const enrollment = await EnrollmentModel.findOne({ id_user: uid, id_course: courseId });
             if( !enrollment ) return null;
-            return enrollment;
+            return EnrollmentMapper.fromIEnrollmentModel( enrollment );
         }
         catch(error){
             console.log(error);

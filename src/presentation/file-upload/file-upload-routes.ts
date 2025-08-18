@@ -23,7 +23,7 @@ export class FileUploadRouter {
         const fileUploadMiddleware = new FileUploadMiddleware();
 
         router.post( 
-            '/single/:folder',
+            '/:folder/:id_course',
             fileUploadMiddleware.containFiles,
             fileUploadController.uploadFile
         );

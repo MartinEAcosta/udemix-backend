@@ -2,8 +2,8 @@ import { v2 as cloudinary } from 'cloudinary';
 import { envs } from "../envs";
 
 import { FileStorage } from "../../domain/services/FileStorage";
-import { IFileModel } from '../../data/mongo/models/file.model';
-import { FileDto, ResourceValidTypes } from '../../domain/dtos/file-upload/file.dto';
+import { FileStorageAdapterResponse, IFileModel } from '../../data/mongo/models/file.model';
+import { UploadFileDto, ResourceValidTypes } from '../../domain/dtos/file-upload/upload-file.dto';
 
 export class CloudinaryAdapter implements FileStorage {
 
@@ -15,7 +15,7 @@ export class CloudinaryAdapter implements FileStorage {
         });    
     }
 
-    uploadFile = ( file: FileDto , folder : string ) : Promise<IFileModel> => {
+    uploadFile = ( file: UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponse> => {
         return new Promise((resolve , reject) => {
             cloudinary.uploader.upload_stream( { 
                                                 folder: folder ,
@@ -40,15 +40,19 @@ export class CloudinaryAdapter implements FileStorage {
                 else{
                     //TODO Arreglar nombrado:
                     console.log(result);
-                    const fileModel : IFileModel = {
-                        filename: file.filename,
-                        public_id : result.secure_url,
+                    const fileResponse : FileStorageAdapterResponse = {
+                        id_course     : file.id_course,
+                        lesson_title  : file.lesson_title,
+                        unit      : file.unit,
+                        chapter   : file.chapter,
+                        public_id : result.public_id,
+                        url       : result.secure_url,
                         size: result.bytes,
                         extension: result.format,
                         resource_type: result.resource_type,
                     };
 
-                    return resolve(fileModel);
+                    return resolve(fileResponse);
                 }
             }).end(file.data);
         });

@@ -1,9 +1,9 @@
-import { IFileModel } from "../../data/mongo/models/file.model";
-import { FileDto } from "../dtos/file-upload/file.dto";
+import { FileStorageAdapterResponse } from "../../data/mongo/models/file.model";
+import { UploadFileDto } from "../dtos/file-upload/upload-file.dto";
 
 
 export abstract class FileStorage {
 
-    abstract uploadFile( file : FileDto, folder : string ) : Promise<IFileModel>;
+    abstract uploadFile( file : UploadFileDto, folder : string ) : Promise<FileStorageAdapterResponse>;
 
 }

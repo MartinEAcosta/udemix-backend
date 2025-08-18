@@ -1,17 +1,17 @@
 import { FileUploadRepository } from "../../repository/file-upload-repository";
 import { CustomError } from "../../errors/custom-error";
 import { FileResponse } from "../../dtos/auth/responses";
-import { FileDto } from "../../dtos/file-upload/file.dto";
+import { UploadFileDto } from "../../dtos/file-upload/upload-file.dto";
 
 export interface UploadFileUseCase {
-    execute( files : FileDto , folder : string ) : Promise<FileResponse>;
+    execute( files : UploadFileDto , folder : string ) : Promise<FileResponse>;
 }
 
 export class UploadSingle implements UploadFileUseCase {
 
     constructor( private readonly fileUploadRepository : FileUploadRepository ) { }
     
-    execute = async( file : FileDto , folder : string ): Promise<FileResponse> =>  {
+    execute = async( file : UploadFileDto , folder : string ): Promise<FileResponse> =>  {
         
         const res = await this.fileUploadRepository.uploadFile( file , folder );
         if( !res ){

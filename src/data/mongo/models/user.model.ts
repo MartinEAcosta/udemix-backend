@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 export interface IUserModel {
-  id?: string; // Podría venir de la DB
-  username: string;
-  email: string;
-  password: string;
+  _id?     : Types.ObjectId; // Podría venir de la DB
+  username : string;
+  email    : string;
+  password : string;
 }
 
 const userSchema = new mongoose.Schema({
@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema({
         required: [ true , 'La contraseña es requerida.'],
     },
 
+    
     // avatar : {
     //     type: String,
     // }

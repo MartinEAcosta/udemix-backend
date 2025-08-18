@@ -1,7 +1,7 @@
 import { AuthRepositoryImpl } from './../../infraestructure/repositories/auth-repository-impl';
-import { EnrollmentRepositoryImpl } from '../../infraestructure/repositories/enrollment-repository-impl';
-import { EnrollmentDatasourceImpl } from './../../infraestructure/datasources/enrollment-datasource-impl';
 import { Router } from 'express';
+import { EnrollmentDatasourceImpl } from './../../infraestructure/datasources/enrollment-datasource-impl';
+import { EnrollmentRepositoryImpl } from '../../infraestructure/repositories/enrollment-repository-impl';
 import { EnrollmentController } from './enrollement-controller';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 import { JwtAdapter } from '../../config';

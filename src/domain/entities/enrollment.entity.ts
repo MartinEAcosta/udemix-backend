@@ -15,7 +15,7 @@ export class EnrollmentEntity {
     public progress : number;
     public completionDate : number;
 
-    constructor( options : EnrollmentEntity ){
+    private constructor( options : EnrollmentEntity ){
         this.id_user = options.id_user;
         this.id_course = options.id_course;
         this.purchaseDate = options.purchaseDate;

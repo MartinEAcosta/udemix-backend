@@ -1,20 +1,50 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
+
+export interface FileStorageAdapterResponse {
+    id_course        : string;
+    lesson_title     : string;
+    unit             : number;
+    chapter          : number;
+    public_id        : string;
+    url              : string,
+    size             : number;
+    extension        : string;
+    resource_type    : "image" | "video" | "raw" | "auto" | null;
+}
+
 
 export interface IFileModel {
-    id?: string; // Podría venir de la DB
-    filename: string;
-    public_id : string,
-    size: number;
-    extension: string;
-    resource_type?: "image" | "video" | "raw" | "auto" | null;
+    _id?             : Types.ObjectId; // Podría venir de la DB
+    id_course        : Types.ObjectId;
+    title            : string;
+    unit             : number;
+    chapter          : number;
+    public_id        : string;
+    size             : number;
+    extension        : string;
+    resource_type    : "image" | "video" | "raw" | "auto" | null;
 }
+
+// Esta entidad sera la encargada de perpetuar en la base datos cada uno de los archivos que se asignaran a un curso 
+// en especifico.
 
 const fileSchema = new mongoose.Schema({
     
-    filename: {
+    id_course: {
+        type     : Types.ObjectId,
+        ref      : 'Course',
+        required : true,
+    },
+    title: {
         unique   : true,
         type     : String,
         required : true,
+    },
+    unit:  {
+        type     : Number,
+    },
+    chapter: {
+        type     : Number,
     },
     public_id: {
         type     : String,
@@ -30,8 +60,9 @@ const fileSchema = new mongoose.Schema({
     },
     resource_type: {
         type     : String,
-        enum     : ["image", "video", "raw", "auto", undefined],
-    }
+        enum     : ["image", "video", "raw", "auto"],
+        required : true,
+    },
 
 });
 

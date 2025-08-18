@@ -15,9 +15,7 @@ export class UserEntity implements UserEntityOptions {
     //public  emailValidated : boolean;
     public password : string;
 
-    constructor(
-        options : UserEntityOptions,
-    ){
+    private constructor( options : UserEntityOptions ){
         const { id , username , email , password} = options;
         this.id = id;
         this.username = username;

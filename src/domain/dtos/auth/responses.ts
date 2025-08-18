@@ -1,5 +1,5 @@
 import { FileEntity } from "../../entities/file.entity";
-import { ResourceValidTypes } from "../file-upload/file.dto";
+import { ResourceValidTypes } from "../file-upload/upload-file.dto";
 
 export interface UserResponse {
     id : string;
@@ -19,7 +19,10 @@ export interface AuthSuccessResponse {
 
 export interface FileResponse {
     id            : string,
-    filename      : string,
+    id_course     : string,
+    title         : string,
+    unit          : number,
+    chapter       : number,
     size          : number,
     extension     : string,
     resource_type : ResourceValidTypes,

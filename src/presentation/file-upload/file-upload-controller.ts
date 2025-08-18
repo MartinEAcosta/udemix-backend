@@ -5,9 +5,9 @@ import { CustomError } from "../../domain/errors/custom-error";
 
 import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
 import { UploadSingle } from "../../domain/use-cases/file-upload/upload-single";
-import { FileDto } from "../../domain/dtos/file-upload/file.dto";
+import { UploadFileDto } from "../../domain/dtos/file-upload/upload-file.dto";
 // toLowerCase aplicado a la hora de comparar.
-export const validFolders = [ 'users' , 'courses' ];
+export const validFolders = [ 'user' , 'course' ];
 
 export class FileUploadController {
 
@@ -20,14 +20,21 @@ export class FileUploadController {
         // req.files;
         // El middleware ya se encargo de validar que haya un archivo existente.
         const file = req.body.files.at(0);
+        const { id_course } = req.params;
+        const { lesson_title , unit, chapter } = req.body;
+
         if( !file ) return HandlerResponses.handleError( CustomError.badRequest('Error inesperado al leer el archivo') , res );
 
-        const [ error , fileToUploadDto] = FileDto.create( {
-            filename: this.idGenerator.generateId(),
-            size : file.size,
-            data : file.data,
-            mimetype : file.mimetype,
+        const [ error , fileToUploadDto] = UploadFileDto.create( {
+            lesson_title  : lesson_title,
+            unit      : unit,
+            chapter   : chapter,
+            size      : file.size,
+            data      : file.data,
+            mimetype  : file.mimetype,
+            id_course : id_course, 
         });
+
         if( error ) return res.status(400).json({
             error : error,
         });

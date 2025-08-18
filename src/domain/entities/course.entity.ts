@@ -5,7 +5,7 @@ export interface CourseEntityOptions {
     description : string; 
     category : string;
     thumbnail_url : string;
-    owner : string;
+    id_owner : string;
     price : number;
     capacity ?: number;
 }
@@ -17,19 +17,19 @@ export class CourseEntity {
     public description : string;
     public category : string;
     public thumbnail_url : string;
-    public owner : string;
+    public id_owner : string;
     public price : number;
     public capacity ?: number;
 
 
-    constructor ( courseOptions : CourseEntityOptions){
-        const { id , title , description , category , thumbnail_url, owner , price , capacity } = courseOptions;
+    private constructor ( courseOptions : CourseEntityOptions){
+        const { id , title , description , category , thumbnail_url, id_owner , price , capacity } = courseOptions;
         this.id = id;       
         this.title = title;
         this.description = description;
         this.category = category;
         this.thumbnail_url = thumbnail_url;
-        this.owner = owner;
+        this.id_owner = id_owner;
         this.price = price;
         this.capacity = capacity;
     }
@@ -37,11 +37,11 @@ export class CourseEntity {
 
     static fromObject = ( object: { [ key: string ] : any } ): CourseEntity => {
         const { _id , title, description, category  , thumbnail_url ,
-                 owner , price , capacity = undefined  } = object;
+                 id_owner , price , capacity = undefined  } = object;
 
         if( !title ) throw 'El titulo es requerido.'
         if( !description ) throw 'La descripción es requerida.'
-        if( !owner ) throw 'El creador del curso es requerido.'
+        if( !id_owner ) throw 'El creador del curso es requerido.'
         if( price === null || price === undefined ) throw 'El precio es requerido.'
     
         return new CourseEntity(
@@ -51,7 +51,7 @@ export class CourseEntity {
                 description,
                 category, 
                 thumbnail_url, 
-                owner, 
+                id_owner, 
                 price,
                 capacity,
             }

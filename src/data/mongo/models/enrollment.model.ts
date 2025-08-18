@@ -5,20 +5,20 @@ export interface IEnrollmentModel{
     id_user        :   Types.ObjectId;
     id_course      :   Types.ObjectId;
     purchaseDate   :   Date;
-    progress       ?:   number;
-    completionDate ?:   Date;
+    progress       ?:  number;
+    completionDate ?:  Date;
 }
 
 const enrollmentSchema = new mongoose.Schema({
 
     id_user : {
-        type: Schema.Types.ObjectId,
+        type: Types.ObjectId,
         ref: 'User',
         required: true,
     },
 
     id_course : {
-        type: Schema.Types.ObjectId, 
+        type: Types.ObjectId, 
         ref: 'Course',
         required: true,
     },

@@ -1,16 +1,16 @@
 import mongoose, { Schema, Types } from "mongoose";
 
 export interface ICourseModel {
-    _id: Types.ObjectId,
-    title : string,
-    description : string,
+    _id           : Types.ObjectId,
+    title         : string,
+    description   : string,
     // TODO: Reemplazar por entidad Category
     //* category : Types.ObjectId;
-    category? : string | null,
+    category     ?: string | null,
     thumbnail_url : string,
-    owner : Types.ObjectId,
-    price : number,
-    capacity? : number | null,
+    id_owner         : Types.ObjectId,
+    price         : number,
+    capacity     ?: number | null,
 }
 
 const courseSchema = new mongoose.Schema({
@@ -34,7 +34,7 @@ const courseSchema = new mongoose.Schema({
         default: "",
     },
 
-    owner : {
+    id_owner : {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
