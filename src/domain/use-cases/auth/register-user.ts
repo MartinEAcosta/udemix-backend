@@ -2,12 +2,12 @@ import { AuthRepository } from '../../repository/auth-repository';
 import { TokenManager } from '../../services/TokenManager';
 import { Encrypter } from '../../services/Encrypter';
 
-import { AuthSuccessResponse } from '../../dtos/auth/responses';
 import { CustomError } from '../../errors/custom-error';
-import { RegisterUserDto } from './../../dtos/auth/register-user-dto';
+import { RegisterUserDto } from '../../dtos/auth/register-user.dto';
+import { AuthSuccessResponseDto } from '../../dtos/auth/auth.responses.dto';
 
 interface RegisterUserUseCase {
-    execute( registerUserDto : RegisterUserDto ) : Promise<AuthSuccessResponse>;
+    execute( registerUserDto : RegisterUserDto ) : Promise<AuthSuccessResponseDto>;
 }
 
 export class RegisterUser implements RegisterUserUseCase {
@@ -19,7 +19,7 @@ export class RegisterUser implements RegisterUserUseCase {
     ){}
 
     // TODO : CHEQuEAR RESPONSE JWT 
-    async execute ( registerUserDto : RegisterUserDto ) : Promise<AuthSuccessResponse> {
+    async execute ( registerUserDto : RegisterUserDto ) : Promise<AuthSuccessResponseDto> {
         
         const userExists = await this.authRepository.searchUserByEmail( registerUserDto.email );
         if( userExists ) throw CustomError.badRequest( 'Ya existe una cuenta asociada a este email.' );

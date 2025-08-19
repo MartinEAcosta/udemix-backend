@@ -1,10 +1,11 @@
 import mongoose, { Types } from 'mongoose';
 
 export interface IUserModel {
-  _id?     : Types.ObjectId; // Podría venir de la DB
+  _id     : Types.ObjectId; // Podría venir de la DB
   username : string;
   email    : string;
   password : string;
+  balance  : number;
 }
 
 const userSchema = new mongoose.Schema({
@@ -28,6 +29,11 @@ const userSchema = new mongoose.Schema({
     password : {
         type: String,
         required: [ true , 'La contraseña es requerida.'],
+    },
+    
+    balance : {
+        type: Number,
+        default: 100,
     },
 
     

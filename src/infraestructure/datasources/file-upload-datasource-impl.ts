@@ -1,8 +1,8 @@
 import { Types } from 'mongoose';
 import { FileStorage } from "../../domain/services/FileStorage";
-import { FileUploadDatasource } from "../../domain/datasources/file-upload.datasource";
+import { FileResponse, FileStorageAdapterResponse, FileUploadDatasource } from "../../domain/datasources/file-upload.datasource";
 import { CustomError } from "../../domain/errors/custom-error";
-import { FileModel, FileStorageAdapterResponse, IFileModel } from "../../data/mongo/models/file.model";
+import { FileModel, IFileModel } from "../../data/mongo/models/file.model";
 import { UploadFileDto } from "../../domain/dtos/file-upload/upload-file.dto";
 import { FileMapper } from '../mappers/file.mapper';
 
@@ -11,12 +11,12 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
 
     constructor( private readonly fileStorage : FileStorage ) {}
 
-    uploadFile = async( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponse | undefined> => {
+    uploadFile = async( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponse> => {
         try{
             const fileUploaded = await this.fileStorage.uploadFile( file , folder );
             if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al subir el archivo.');
 
-            return fileUploaded ? fileUploaded : undefined;
+            return fileUploaded;
         }
         catch(error){
             console.error(error);
@@ -24,7 +24,7 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
         }
     }
 
-    saveFileOnDB = async ( file : FileStorageAdapterResponse ) : Promise<IFileModel> => {
+    saveFileOnDB = async ( file : FileStorageAdapterResponse ) : Promise<FileResponse> => {
         try{
             
             const fileSaved = await FileModel.create( {
@@ -38,7 +38,7 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
                 resource_type : file?.resource_type,
             });
 
-            return FileMapper.fromIFileModel( fileSaved );
+            return FileMapper.fromFileResponse( fileSaved );
         }
         catch(error){
             console.error(error);

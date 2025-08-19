@@ -2,8 +2,8 @@ import { v2 as cloudinary } from 'cloudinary';
 import { envs } from "../envs";
 
 import { FileStorage } from "../../domain/services/FileStorage";
-import { FileStorageAdapterResponse, IFileModel } from '../../data/mongo/models/file.model';
 import { UploadFileDto, ResourceValidTypes } from '../../domain/dtos/file-upload/upload-file.dto';
+import { FileStorageAdapterResponse } from '../../domain/datasources/file-upload.datasource';
 
 export class CloudinaryAdapter implements FileStorage {
 

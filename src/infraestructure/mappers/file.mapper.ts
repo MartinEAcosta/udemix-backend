@@ -1,14 +1,14 @@
 import { Types } from "mongoose";
-import { IFileModel } from "../../data/mongo/models/file.model";
+import { FileResponse } from "../../domain/datasources/file-upload.datasource";
 
 
 export class FileMapper {
 
 
-    static fromIFileModel ( fileDoc : any ) : IFileModel {
+    static fromFileResponse ( fileDoc : any ) : FileResponse {
         return {
-            _id: fileDoc._id,
-            id_course: new Types.ObjectId(fileDoc.id_course),
+            id: fileDoc._id,
+            id_course: fileDoc.id_course,
             title: fileDoc.title,
             unit: fileDoc.unit,
             chapter: fileDoc.chapter,

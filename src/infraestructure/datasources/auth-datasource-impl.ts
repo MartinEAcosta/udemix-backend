@@ -1,13 +1,14 @@
 
-import { RegisterUserDto } from './../../domain/dtos/auth/register-user-dto';
 import { AuthDatasource } from "../../domain/datasources/auth.datasource";
-import { IUserModel, UserModel } from './../../data/mongo/models/user.model';
 import { CustomError } from '../../domain/errors/custom-error';
+import { UserModel } from './../../data/mongo/models/user.model';
+import { RegisterUserDto } from '../../domain/dtos/auth/register-user.dto';
+import { UserResponseDto } from "../../domain/dtos/auth/auth.responses.dto";
 
 
 export class AuthDatasourceImpl implements AuthDatasource {
 
-    async registerUser( registerUserDto : RegisterUserDto ) : Promise<IUserModel>{
+    async registerUser( registerUserDto : RegisterUserDto ) : Promise<UserResponseDto>{
         try{
             const savedUser = await UserModel.create( registerUserDto );
             if( !savedUser ) throw 'Hubo un error al registrar el usuario.'
@@ -19,7 +20,7 @@ export class AuthDatasourceImpl implements AuthDatasource {
         }
     }
 
-    async searchUserByEmail( email : string ): Promise<IUserModel | null> {
+    async searchUserByEmail( email : string ): Promise<UserResponseDto | null> {
         try{
             const userExists = await UserModel.findOne({ 'email': email });
             if( !userExists ) return null;
@@ -32,7 +33,7 @@ export class AuthDatasourceImpl implements AuthDatasource {
         }
     }
 
-    async searchUserById( id : string ) : Promise<IUserModel | null> {
+    async searchUserById( id : string ) : Promise<UserResponseDto | null> {
         try{
             const user = await UserModel.findById({ _id : id});
             // console.log(user);

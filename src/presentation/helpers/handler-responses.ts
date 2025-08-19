@@ -1,6 +1,6 @@
-import { AuthSuccessResponse } from '../../domain/dtos/auth/responses';
 import { Response } from "express";
 import { CustomError } from "../../domain/errors/custom-error";
+import { AuthSuccessResponseDto } from "../../domain/dtos/auth/auth.responses.dto";
 
 
 export class HandlerResponses {
@@ -26,7 +26,7 @@ export class HandlerResponses {
         });
     }
 
-    static handleAuthSuccess = ( res : Response , authResponse : AuthSuccessResponse , statusCode : number = 200 ) => {
+    static handleAuthSuccess = ( res : Response , authResponse : AuthSuccessResponseDto , statusCode : number = 200 ) => {
         return res.status(statusCode).json({
             ok: true,
             user: authResponse.user,

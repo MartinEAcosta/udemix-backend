@@ -2,12 +2,12 @@ import { AuthRepository } from "../../repository/auth-repository";
 import { TokenManager } from "../../services/TokenManager";
 import { Encrypter } from "../../services/Encrypter";
 
-import { LoginUserDto } from "../../dtos/auth/login-user-dto";
-import { AuthSuccessResponse } from "../../dtos/auth/responses";
+import { LoginUserDto } from "../../dtos/auth/login-user.dto";
 import { CustomError } from "../../errors/custom-error";
+import { AuthSuccessResponseDto } from "../../dtos/auth/auth.responses.dto";
 
 interface LoginUserUseCase {
-    execute( loginUserDto : LoginUserDto ) : Promise<AuthSuccessResponse> ;
+    execute( loginUserDto : LoginUserDto ) : Promise<AuthSuccessResponseDto> ;
 }
 
 export class LoginUser implements LoginUserUseCase{
@@ -18,7 +18,7 @@ export class LoginUser implements LoginUserUseCase{
         private readonly tokenManager : TokenManager,
     ) {}
 
-    async execute(loginUserDto: LoginUserDto) : Promise<AuthSuccessResponse> {
+    async execute(loginUserDto: LoginUserDto) : Promise<AuthSuccessResponseDto> {
         
         const userExists = await this.authRepository.searchUserByEmail( loginUserDto.email );
         if( !userExists ) throw CustomError.badRequest('El email ingresado no se encuentra vinculado a una cuenta.');

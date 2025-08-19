@@ -1,16 +1,16 @@
 import { AuthRepository } from "../../repository/auth-repository";
 import { CustomError } from "../../errors/custom-error";
-import { UserResponse } from "../../dtos/auth/responses";
+import { UserResponseDto } from "../../dtos/auth/auth.responses.dto";
 
 interface GetUserByIdUseCase {
-    execute( id : string ) : Promise<UserResponse>
+    execute( id : string ) : Promise<UserResponseDto>
 }
 
 export class GetUserById implements GetUserByIdUseCase{
 
     constructor( private readonly authRepository : AuthRepository ){ }
 
-    async execute(id: string): Promise<UserResponse> {
+    async execute(id: string): Promise<UserResponseDto>{
         const userExists = await this.authRepository.searchUserById( id );
         if( !userExists ) throw CustomError.badRequest( `El usuario con el id: ${id} no fue encontrado.`);
         const { password , ...rest } = userExists;

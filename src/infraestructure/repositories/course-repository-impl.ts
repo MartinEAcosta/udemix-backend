@@ -2,7 +2,9 @@ import { CourseDatasource } from '../../domain/datasources/course.datasource';
 import { CreateCourseDto } from '../../domain/dtos/course/create-course.dto';
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 import { CourseEntity } from '../../domain/entities/course.entity';
+import { CustomError } from '../../domain/errors/custom-error';
 import { CourseRepository } from '../../domain/repository/course-repository';
+import { HandlerResponses } from '../../presentation/helpers/handler-responses';
 
 export class CourseRepositoryImpl implements CourseRepository{
 
@@ -11,31 +13,57 @@ export class CourseRepositoryImpl implements CourseRepository{
     ){ }
 
     async getAllCourses() : Promise<CourseEntity[]> {
-        const courses = await this.courseDatasource.getAllCourses();
-        return courses.map( course => CourseEntity.fromObject(course) );
+        try{
+            const courses = await this.courseDatasource.getAllCourses();
+            return courses.map( course => CourseEntity.fromObject(course) );
+        }
+        catch( error ){
+            throw CustomError.internalServer('Hubo un error al obtener todos los cursos.')
+        }
     }
 
     async getCourseById( id: string ) : Promise<CourseEntity | null> {
-        const course = await this.courseDatasource.getCourseById(id);
-        return course ? CourseEntity.fromObject( course ) : null;
+        try{
+            const course = await this.courseDatasource.getCourseById(id);
+            return course ? CourseEntity.fromObject( course ) : null;
+        }
+        catch( error ){
+            throw CustomError.internalServer('Hubo un error al obtener el curso.');
+        }
     }
 
     async saveCourse( createCourseDto : CreateCourseDto ) : Promise<CourseEntity> {
-        const courseSaved = await this.courseDatasource.saveCourse( createCourseDto );
-        return CourseEntity.fromObject( courseSaved );
+        try{
+            const courseSaved = await this.courseDatasource.saveCourse( createCourseDto );
+            return CourseEntity.fromObject( courseSaved );
+        }
+        catch( error ){
+            throw CustomError.internalServer('Hubo un error al crear el curso.');
+        }
+            
     }
 
     async updateCourse( updateCourseDto : UpdateCourseDto ) : Promise<CourseEntity> {
-        const courseUpdated = await this.courseDatasource.updateCourse( updateCourseDto );
-        if( courseUpdated ) return CourseEntity.fromObject( updateCourseDto );
-
-        return CourseEntity.fromObject(courseUpdated);
+        try{
+            const courseUpdated = await this.courseDatasource.updateCourse( updateCourseDto );
+            if( courseUpdated ) return CourseEntity.fromObject( updateCourseDto );
+    
+            return CourseEntity.fromObject(courseUpdated);
+        }
+        catch( error ){
+            throw CustomError.internalServer('Hubo un error al actualizar el curso.');
+        }
     }
 
     async deleteCourse( id: string ) : Promise<boolean> {
-        const removed =  await this.courseDatasource.deleteCourse( id );
-
-        return removed;
+        try{
+            const removed =  await this.courseDatasource.deleteCourse( id );
+    
+            return removed;
+        }
+        catch( error ){
+            throw CustomError.internalServer('Hubo un error al eliminar el curso.');
+        }
     }
     
 

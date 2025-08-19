@@ -1,17 +1,5 @@
 import mongoose, { Types } from "mongoose";
-
-export interface FileStorageAdapterResponse {
-    id_course        : string;
-    lesson_title     : string;
-    unit             : number;
-    chapter          : number;
-    public_id        : string;
-    url              : string,
-    size             : number;
-    extension        : string;
-    resource_type    : "image" | "video" | "raw" | "auto" | null;
-}
-
+import { ResourceValidTypes } from "../../../domain/dtos/file-upload/upload-file.dto";
 
 export interface IFileModel {
     _id?             : Types.ObjectId; // Podría venir de la DB
@@ -22,7 +10,7 @@ export interface IFileModel {
     public_id        : string;
     size             : number;
     extension        : string;
-    resource_type    : "image" | "video" | "raw" | "auto" | null;
+    resource_type    : ResourceValidTypes;
 }
 
 // Esta entidad sera la encargada de perpetuar en la base datos cada uno de los archivos que se asignaran a un curso 

@@ -6,9 +6,9 @@ export interface ICourseModel {
     description   : string,
     // TODO: Reemplazar por entidad Category
     //* category : Types.ObjectId;
-    category     ?: string | null,
+    category      : string,
     thumbnail_url : string,
-    id_owner         : Types.ObjectId,
+    id_owner      : Types.ObjectId,
     price         : number,
     capacity     ?: number | null,
 }
@@ -27,6 +27,7 @@ const courseSchema = new mongoose.Schema({
 
     category : {
         type: String,
+        required: true,
     },
 
     thumbnail_url : {

@@ -1,7 +1,7 @@
 import { FileUploadRepository } from "../../repository/file-upload-repository";
 import { CustomError } from "../../errors/custom-error";
-import { FileResponse } from "../../dtos/auth/responses";
 import { UploadFileDto } from "../../dtos/file-upload/upload-file.dto";
+import { FileResponse } from "../../datasources/file-upload.datasource";
 
 export interface UploadFileUseCase {
     execute( files : UploadFileDto , folder : string ) : Promise<FileResponse>;

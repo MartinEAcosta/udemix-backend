@@ -8,6 +8,5 @@ export abstract class EnrollmentDatasource {
     // dado su id.
     abstract getAllEnrollmentsByUserId( uid : string ) : Promise<IEnrollmentModel[] | undefined>;
     abstract getEnrollmentByUserIdAndCourseId( uid : string , courseId : string ) : Promise<IEnrollmentModel| null>;
-    
 
 }
