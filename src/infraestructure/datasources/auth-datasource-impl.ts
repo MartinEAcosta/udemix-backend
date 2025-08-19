@@ -9,41 +9,20 @@ import { UserResponseDto } from "../../domain/dtos/auth/auth.responses.dto";
 export class AuthDatasourceImpl implements AuthDatasource {
 
     async registerUser( registerUserDto : RegisterUserDto ) : Promise<UserResponseDto>{
-        try{
             const savedUser = await UserModel.create( registerUserDto );
-            if( !savedUser ) throw 'Hubo un error al registrar el usuario.'
             return savedUser;
-        }
-        catch( error ){
-            console.log(error);
-            throw CustomError.internalServer(`${error}`)
-        }
     }
 
     async searchUserByEmail( email : string ): Promise<UserResponseDto | null> {
-        try{
             const userExists = await UserModel.findOne({ 'email': email });
             if( !userExists ) return null;
 
             return userExists;
-        }
-        catch(error){
-            console.log(error);
-            throw CustomError.internalServer(`${error}`);
-        }
     }
 
     async searchUserById( id : string ) : Promise<UserResponseDto | null> {
-        try{
             const user = await UserModel.findById({ _id : id});
-            // console.log(user);
-            
             return user;
-        }
-        catch(error){
-            console.log(error);
-            throw CustomError.internalServer(`${error}`);
-        }
     }
         
 }
