@@ -1,5 +1,6 @@
 import { RegisterUserDto } from "../dtos/auth/register-user.dto";
 import { UserResponseDto } from "../dtos/auth/auth.responses.dto";
+
 export abstract class AuthDatasource {
 
     abstract registerUser( registerUserDto : RegisterUserDto ) : Promise<UserResponseDto>;

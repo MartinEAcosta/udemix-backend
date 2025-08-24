@@ -1,4 +1,4 @@
-import { ResourceValidTypes } from "../dtos/file-upload/upload-file.dto";
+import { ResourceValidTypes } from "../dtos/file-upload/file-upload.dto";
 
 interface FileEntityOptions {
     id : string;

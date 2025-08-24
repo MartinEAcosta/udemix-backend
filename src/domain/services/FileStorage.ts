@@ -1,5 +1,5 @@
 import { FileStorageAdapterResponse } from "../../data/mongo/models/file.model";
-import { UploadFileDto } from "../dtos/file-upload/upload-file.dto";
+import { UploadFileDto } from "../dtos/file-upload/file-upload.dto";
 
 
 export abstract class FileStorage {

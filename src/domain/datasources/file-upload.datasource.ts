@@ -1,30 +1,9 @@
-import { ResourceValidTypes, UploadFileDto } from "../dtos/file-upload/upload-file.dto";
+import { UploadFileDto } from "../dtos/file-upload/file-upload.dto";
+import { FileResponseDto, FileStorageAdapterResponseDto } from "../dtos/file-upload/file-upload.response.dto";
 
-export interface FileResponse {
-    id               : string; // Podría venir de la DB
-    id_course        : string;
-    title            : string;
-    unit             : number;
-    chapter          : number;
-    public_id        : string;
-    size             : number;
-    extension        : string;
-    resource_type    : ResourceValidTypes;
-}
-export interface FileStorageAdapterResponse {
-    id_course        : string;
-    lesson_title     : string;
-    unit             : number;
-    chapter          : number;
-    public_id        : string;
-    url              : string,
-    size             : number;
-    extension        : string;
-    resource_type    : ResourceValidTypes;
-}
 export abstract class FileUploadDatasource {
 
-    abstract uploadFile( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponse>;
-    abstract saveFileOnDB( file : FileStorageAdapterResponse ) : Promise<FileResponse>;
+    abstract uploadFile( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponseDto>;
+    abstract saveFileOnDB( file : FileStorageAdapterResponseDto ) : Promise<FileResponseDto>;
 
 }

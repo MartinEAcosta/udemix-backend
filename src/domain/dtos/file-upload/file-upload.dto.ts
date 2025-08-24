@@ -11,7 +11,6 @@ interface UploadFileDtoOptions {
     data            : Buffer;
     mimetype        : string;
     id_course       : string;
-    // format : ResourceValidmTypes;
 }
 
 export class UploadFileDto {

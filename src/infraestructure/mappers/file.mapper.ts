@@ -1,11 +1,8 @@
-import { Types } from "mongoose";
-import { FileResponse } from "../../domain/datasources/file-upload.datasource";
-
+import { FileResponseDto } from "../../domain/dtos/file-upload/file-upload.response.dto";
 
 export class FileMapper {
 
-
-    static fromFileResponse ( fileDoc : any ) : FileResponse {
+    static fromFileResponse ( fileDoc : any ) : FileResponseDto {
         return {
             id: fileDoc._id,
             id_course: fileDoc.id_course,

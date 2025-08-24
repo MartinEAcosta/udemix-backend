@@ -63,8 +63,9 @@ export class AuthMiddleware {
 
         req.body = { 
                     ...req.body,
-                    owner: user.id,
+                    id_owner: user.id,
                    };
+
         next();
     }
 

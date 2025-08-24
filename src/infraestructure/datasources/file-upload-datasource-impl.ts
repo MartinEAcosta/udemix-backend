@@ -1,17 +1,18 @@
 import { Types } from 'mongoose';
 import { FileStorage } from "../../domain/services/FileStorage";
-import { FileResponse, FileStorageAdapterResponse, FileUploadDatasource } from "../../domain/datasources/file-upload.datasource";
 import { CustomError } from "../../domain/errors/custom-error";
 import { FileModel, IFileModel } from "../../data/mongo/models/file.model";
-import { UploadFileDto } from "../../domain/dtos/file-upload/upload-file.dto";
+import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { FileMapper } from '../mappers/file.mapper';
+import { FileUploadDatasource } from '../../domain/datasources/file-upload.datasource';
+import { FileResponseDto, FileStorageAdapterResponseDto } from '../../domain/dtos/file-upload/file-upload.response.dto';
 
 
 export class FileUploadDatasourceImpl implements FileUploadDatasource {
 
     constructor( private readonly fileStorage : FileStorage ) {}
 
-    uploadFile = async( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponse> => {
+    uploadFile = async( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponseDto> => {
         try{
             const fileUploaded = await this.fileStorage.uploadFile( file , folder );
             if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al subir el archivo.');
@@ -24,7 +25,7 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
         }
     }
 
-    saveFileOnDB = async ( file : FileStorageAdapterResponse ) : Promise<FileResponse> => {
+    saveFileOnDB = async ( file : FileStorageAdapterResponseDto ) : Promise<FileResponseDto> => {
         try{
             
             const fileSaved = await FileModel.create( {

@@ -1,6 +1,6 @@
 import { CreateCourseDto } from './../../domain/dtos/course/create-course.dto';
 import { CourseDatasource } from "../../domain/datasources/course.datasource";
-import { CourseModel, ICourseModel } from "../../data/mongo/models/course.model";
+import { CourseModel } from "../../data/mongo/models/course.model";
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 import { CourseResponseDto } from '../../domain/dtos/course/course.responses';
 import { CourseMapper } from '../mappers/course.mapper';
@@ -26,7 +26,6 @@ export class CourseDatasourceImpl implements CourseDatasource {
     
             // if( !userExists )
                 // throw `El Usuario asignado como creador del curso no existe.`
-    
             const newCourse = await CourseModel.create({
                 ...createCourseDto
             });

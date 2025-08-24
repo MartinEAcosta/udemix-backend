@@ -49,7 +49,7 @@ export class CourseController {
     public saveCourse = ( req : AuthenticathedRequest , res : Response ) => {
         const [ errorMessage , createCourseDto ] = CreateCourseDto.create( req.body );
         if( errorMessage ) return res.status(400).json({ errorMessage });
-
+        
         new SaveCourse( this.courseRepository )
             .execute( createCourseDto! )
             .then( courseCreated => HandlerResponses.handleSuccess( res, courseCreated , 201 ) )

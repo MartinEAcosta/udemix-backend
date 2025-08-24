@@ -38,6 +38,7 @@ export class CourseRepositoryImpl implements CourseRepository{
             return CourseEntity.fromObject( courseSaved );
         }
         catch( error ){
+            console.log(error);
             throw CustomError.internalServer('Hubo un error al crear el curso.');
         }
             

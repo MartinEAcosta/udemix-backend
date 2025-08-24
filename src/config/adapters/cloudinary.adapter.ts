@@ -2,8 +2,8 @@ import { v2 as cloudinary } from 'cloudinary';
 import { envs } from "../envs";
 
 import { FileStorage } from "../../domain/services/FileStorage";
-import { UploadFileDto, ResourceValidTypes } from '../../domain/dtos/file-upload/upload-file.dto';
-import { FileStorageAdapterResponse } from '../../domain/datasources/file-upload.datasource';
+import { UploadFileDto, ResourceValidTypes } from '../../domain/dtos/file-upload/file-upload.dto';
+import { FileStorageAdapterResponseDto } from '../../domain/dtos/file-upload/file-upload.response.dto';
 
 export class CloudinaryAdapter implements FileStorage {
 
@@ -15,7 +15,7 @@ export class CloudinaryAdapter implements FileStorage {
         });    
     }
 
-    uploadFile = ( file: UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponse> => {
+    uploadFile = ( file: UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponseDto> => {
         return new Promise((resolve , reject) => {
             cloudinary.uploader.upload_stream( { 
                                                 folder: folder ,
@@ -40,7 +40,7 @@ export class CloudinaryAdapter implements FileStorage {
                 else{
                     //TODO Arreglar nombrado:
                     console.log(result);
-                    const fileResponse : FileStorageAdapterResponse = {
+                    const fileResponse : FileStorageAdapterResponseDto = {
                         id_course     : file.id_course,
                         lesson_title  : file.lesson_title,
                         unit      : file.unit,

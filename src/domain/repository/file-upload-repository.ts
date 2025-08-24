@@ -1,4 +1,4 @@
-import { FileDto } from "../dtos/file-upload/upload-file.dto";
+import { FileDto } from "../dtos/file-upload/file-upload.dto";
 import { FileEntity } from "../entities/file.entity";
 
 

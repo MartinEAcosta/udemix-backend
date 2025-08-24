@@ -5,7 +5,7 @@ import { CustomError } from "../../domain/errors/custom-error";
 
 import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
 import { UploadSingle } from "../../domain/use-cases/file-upload/upload-single";
-import { UploadFileDto } from "../../domain/dtos/file-upload/upload-file.dto";
+import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 // toLowerCase aplicado a la hora de comparar.
 export const validFolders = [ 'user' , 'course' ];
 
