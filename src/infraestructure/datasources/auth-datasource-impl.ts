@@ -1,6 +1,5 @@
 
 import { AuthDatasource } from "../../domain/datasources/auth.datasource";
-import { CustomError } from '../../domain/errors/custom-error';
 import { UserModel } from './../../data/mongo/models/user.model';
 import { RegisterUserDto } from '../../domain/dtos/auth/register-user.dto';
 import { UserResponseDto } from "../../domain/dtos/auth/auth.responses.dto";

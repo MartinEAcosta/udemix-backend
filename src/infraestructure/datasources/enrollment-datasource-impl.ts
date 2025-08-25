@@ -1,4 +1,4 @@
-import { EnrollmentModel, IEnrollmentModel } from "../../data";
+import { EnrollmentModel } from "../../data";
 import { EnrollmentDatasource } from "../../domain/datasources/enrollment.datasource";
 import { CreateEnrollmentDto } from "../../domain/dtos/enrollment/create-enrollment.dto";
 import { CustomError } from "../../domain/errors/custom-error";

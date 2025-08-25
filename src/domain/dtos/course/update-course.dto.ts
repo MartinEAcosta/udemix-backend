@@ -4,12 +4,12 @@ export class UpdateCourseDto {
 
     private constructor(
         public readonly id : string,
-        public readonly title? : string,
-        public readonly description? : string,
-        public readonly category? : string,
-        public readonly thumbnail_url? : string,
-        public readonly id_owner? : string,
-        public readonly price? : number,
+        public readonly title : string,
+        public readonly description : string,
+        public readonly category : string,
+        public readonly thumbnail_url : string,
+        public readonly id_owner : string,
+        public readonly price : number,
         public readonly capacity? : number,
     ){}
         

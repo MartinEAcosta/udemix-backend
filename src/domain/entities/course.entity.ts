@@ -36,7 +36,7 @@ export class CourseEntity {
 
 
     static fromObject = ( object: { [ key: string ] : any } ): CourseEntity => {
-        const { _id , title, description, category  , thumbnail_url ,
+        const { id , title, description, category  , thumbnail_url ,
                  id_owner , price , capacity = undefined  } = object;
 
         if( !title ) throw 'El titulo es requerido.'
@@ -46,7 +46,7 @@ export class CourseEntity {
     
         return new CourseEntity(
             { 
-                id : _id ,
+                id ,
                 title,
                 description,
                 category, 

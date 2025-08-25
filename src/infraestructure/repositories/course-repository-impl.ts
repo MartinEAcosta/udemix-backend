@@ -4,7 +4,6 @@ import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 import { CourseEntity } from '../../domain/entities/course.entity';
 import { CustomError } from '../../domain/errors/custom-error';
 import { CourseRepository } from '../../domain/repository/course-repository';
-import { HandlerResponses } from '../../presentation/helpers/handler-responses';
 
 export class CourseRepositoryImpl implements CourseRepository{
 

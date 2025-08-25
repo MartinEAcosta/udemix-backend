@@ -10,7 +10,6 @@ export class CourseDatasourceImpl implements CourseDatasource {
     async getAllCourses(): Promise<CourseResponseDto[]> {
         const courses = await CourseModel.find({});
         if( !courses ) return [];
-
         return courses.map( CourseMapper.fromCourseDto );
     }
 
@@ -32,8 +31,14 @@ export class CourseDatasourceImpl implements CourseDatasource {
             return CourseMapper.fromCourseDto( newCourse );
     }
 
-    async updateCourse( updateCourseDTO : UpdateCourseDto ) : Promise<CourseResponseDto>{
-        const updatedCourse = await CourseModel.findByIdAndUpdate({ _id: updateCourseDTO.id } , updateCourseDTO ).exec();
+    async updateCourse( updateCourseDTO : UpdateCourseDto ) : Promise<CourseResponseDto> {
+        const updatedCourse = await CourseModel.findByIdAndUpdate(  {
+                                                                         _id: updateCourseDTO.id 
+                                                                    }, 
+                                                                    updateCourseDTO,
+                                                                    { new : true } 
+                                                                ).exec();
+                                                                
         return CourseMapper.fromCourseDto(updatedCourse!);
     } 
 

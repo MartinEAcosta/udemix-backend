@@ -26,7 +26,7 @@ export class UpdateCourse implements UpdateCourseUseCase {
             category: updatedCourse.category,
             thumbnail_url: updatedCourse.thumbnail_url,
             id_owner: updateCourseDto.id_owner ?? courseToUpdate.id_owner,
-            price: updateCourseDto.price ? courseToUpdate.price : 0,
+            price: updateCourseDto.price,
             capacity: updateCourseDto.capacity,
         };
     }

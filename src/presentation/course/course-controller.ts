@@ -57,9 +57,8 @@ export class CourseController {
     }
 
     public updateCourse = async( req : Request , res : Response ) => {
-        
         const { id } = req.params;
-        
+        console.log(req.body)
         const [ errorMessage , updateCourseDto ] = UpdateCourseDto.create( id , req.body );
         if(errorMessage) return res.status(400).json({ errorMessage });
 

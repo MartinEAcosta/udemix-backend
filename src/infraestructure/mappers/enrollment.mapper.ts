@@ -1,4 +1,3 @@
-import { IEnrollmentModel } from "../../data";
 import { EnrollmentResponseDto } from "../../domain/dtos/enrollment/enrollment.response.dto";
 
 export class EnrollmentMapper {
