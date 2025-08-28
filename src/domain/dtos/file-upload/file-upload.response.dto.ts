@@ -13,14 +13,15 @@ export interface FileStorageAdapterResponseDto {
 }
 
 export interface FileResponseDto {
-    id               : string; // Podría venir de la DB
-    id_course        : string;
-    title            : string;
-    unit             : number;
-    chapter          : number;
-    public_id        : string;
-    size             : number;
-    extension        : string;
-    resource_type    : ResourceValidTypes;
+    id           : string;
+    id_course    : string;
+    title       ?: string;
+    unit        ?: number;
+    chapter     ?: number;
+    size:          number;
+    extension:     string;
+    resource_type: ResourceValidTypes;
+    public_id:     string;
+
 }
 

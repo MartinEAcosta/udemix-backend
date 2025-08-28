@@ -23,29 +23,22 @@ const fileSchema = new mongoose.Schema({
         ref      : 'Course',
         required : true,
     },
-    title: {
-        unique   : true,
-        type     : String,
-        required : true,
-    },
-    unit:  {
-        type     : Number,
-    },
-    chapter: {
-        type     : Number,
-    },
+
     public_id: {
         type     : String,
         required : true,
     },
+    
     size: {
         type     : Number,
         required : true,
     },
+
     extension: {
         type     : String,
         required : true,
     },
+    
     resource_type: {
         type     : String,
         enum     : ["image", "video", "raw", "auto"],

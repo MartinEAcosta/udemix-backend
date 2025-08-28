@@ -12,7 +12,6 @@ export class UploadSingle implements UploadFileUseCase {
     constructor( private readonly fileUploadRepository : FileUploadRepository ) { }
     
     execute = async( file : UploadFileDto , folder : string ): Promise<FileResponseDto> =>  {
-        
         const res = await this.fileUploadRepository.uploadFile( file , folder );
         if( !res ){
             throw CustomError.badRequest('Hubo un error al subir el archivo: ' + file );

@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 
-
 export class FileUploadMiddleware {
     // Utilizado para el estandarizado de respuesta, dado que Clodinary retorna un objeto cuando se sube un solo archivo y 
     // un array cuando se se suben varios arhivos.

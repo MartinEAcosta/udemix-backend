@@ -37,12 +37,12 @@ export class FileEntity {
     }
 
     static fromObject = ( object: { [ key: string ] : any } ) : FileEntity => {
-        const { id , _id , id_course, title, unit, chapter, size, extension , resource_type , public_id } = object;
+        const { id  , id_course, title, unit, chapter, size, extension , resource_type , public_id } = object;
         if( !title ) throw 'El nombre del archivo es requerido.';
         if( size === null || size === undefined ) throw 'El tamaño del archivo es requerido.';
 
         return new FileEntity({
-            id : id || _id,
+            id : id,
             id_course : id_course,
             title : title ,
             unit : unit,

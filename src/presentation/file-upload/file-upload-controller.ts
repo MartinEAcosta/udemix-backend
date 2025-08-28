@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { IdGenerator } from "../../domain/services/IdGenerator";
 import { HandlerResponses } from "../helpers/handler-responses";
 import { CustomError } from "../../domain/errors/custom-error";
 
@@ -7,13 +6,11 @@ import { FileUploadRepository } from "../../domain/repository/file-upload-reposi
 import { UploadSingle } from "../../domain/use-cases/file-upload/upload-single";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 // toLowerCase aplicado a la hora de comparar.
-export const validFolders = [ 'user' , 'course' ];
+export const validFolders = [ 'user' , 'courses' ];
 
 export class FileUploadController {
 
-    constructor( private readonly fileUploadRepository : FileUploadRepository,
-                 private readonly idGenerator : IdGenerator,
-     ) { }
+    constructor( private readonly fileUploadRepository : FileUploadRepository ) { }
 
     uploadFile = ( req : Request , res : Response ) => {
         // Propiedad creada automaticamente por el middleware file-upload.
@@ -21,12 +18,12 @@ export class FileUploadController {
         // El middleware ya se encargo de validar que haya un archivo existente.
         const file = req.body.files.at(0);
         const { id_course } = req.params;
-        const { lesson_title , unit, chapter } = req.body;
-
+        const { lesson_title , unit, chapter, thumbnail = false } = req.body;
+        
         if( !file ) return HandlerResponses.handleError( CustomError.badRequest('Error inesperado al leer el archivo') , res );
-
+        
         const [ error , fileToUploadDto] = UploadFileDto.create( {
-            lesson_title  : lesson_title,
+            lesson_title  : lesson_title ?? id_course,
             unit      : unit,
             chapter   : chapter,
             size      : file.size,
@@ -34,11 +31,13 @@ export class FileUploadController {
             mimetype  : file.mimetype,
             id_course : id_course, 
         });
-
-        if( error ) return res.status(400).json({
-            error : error,
-        });
         
+        if( error ) {
+            
+            return res.status(400).json({
+                error : error,
+            });
+        }
         const folder = this.obtainFolder( req , res );
 
         new UploadSingle( this.fileUploadRepository )
