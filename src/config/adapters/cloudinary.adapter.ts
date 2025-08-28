@@ -41,10 +41,6 @@ export class CloudinaryAdapter implements FileStorage {
                     //TODO Arreglar nombrado:
                     console.log(result);
                     const fileResponse : FileStorageAdapterResponseDto = {
-                        id_course     : file.id_course,
-                        lesson_title  : file.lesson_title ?? result.original_filename,
-                        unit      : file.unit,
-                        chapter   : file.chapter,
                         public_id : result.public_id,
                         url       : result.secure_url,
                         size: result.bytes,

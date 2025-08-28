@@ -29,10 +29,6 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
         try{
             
             const fileSaved = await FileModel.create( {
-                id_course     : new Types.ObjectId(file.id_course),
-                title         : file.lesson_title,
-                unit          : file.unit,
-                chapter       : file.chapter,
                 public_id     : file.public_id,
                 size          : file.size,
                 extension     : file.extension,
