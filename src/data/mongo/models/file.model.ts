@@ -3,10 +3,6 @@ import { ResourceValidTypes } from "../../../domain/dtos/file-upload/file-upload
 
 export interface IFileModel {
     _id?             : Types.ObjectId; // Podría venir de la DB
-    id_course        : Types.ObjectId;
-    title            : string;
-    unit             : number;
-    chapter          : number;
     public_id        : string;
     size             : number;
     extension        : string;
@@ -18,12 +14,6 @@ export interface IFileModel {
 
 const fileSchema = new mongoose.Schema({
     
-    id_course: {
-        type     : Types.ObjectId,
-        ref      : 'Course',
-        required : true,
-    },
-
     public_id: {
         type     : String,
         required : true,
@@ -47,4 +37,4 @@ const fileSchema = new mongoose.Schema({
 
 });
 
-export const FileModel = mongoose.model('File', fileSchema);
+export const FileModel = mongoose.model( 'File' , fileSchema );

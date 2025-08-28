@@ -5,6 +5,7 @@ export interface CourseResponseDto {
     description : string,
     category : string ,
     thumbnail_url : string,
+    thumbnail_id  : string,
     id_owner : string,
     price : number,
     capacity ?: number | null,
