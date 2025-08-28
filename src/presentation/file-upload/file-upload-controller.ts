@@ -17,23 +17,14 @@ export class FileUploadController {
         // req.files;
         // El middleware ya se encargo de validar que haya un archivo existente.
         const file = req.body.files.at(0);
-        const { id_course } = req.params;
-        const { lesson_title , unit, chapter, thumbnail = false } = req.body;
-        
         if( !file ) return HandlerResponses.handleError( CustomError.badRequest('Error inesperado al leer el archivo') , res );
-        
         const [ error , fileToUploadDto] = UploadFileDto.create( {
-            lesson_title  : lesson_title ?? id_course,
-            unit      : unit,
-            chapter   : chapter,
             size      : file.size,
             data      : file.data,
             mimetype  : file.mimetype,
-            id_course : id_course, 
         });
         
         if( error ) {
-            
             return res.status(400).json({
                 error : error,
             });

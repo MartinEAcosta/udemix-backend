@@ -46,8 +46,6 @@ export class CourseRepositoryImpl implements CourseRepository{
     async updateCourse( updateCourseDto : UpdateCourseDto ) : Promise<CourseEntity> {
         try{
             const courseUpdated = await this.courseDatasource.updateCourse( updateCourseDto );
-            if( courseUpdated ) return CourseEntity.fromObject( updateCourseDto );
-    
             return CourseEntity.fromObject(courseUpdated);
         }
         catch( error ){

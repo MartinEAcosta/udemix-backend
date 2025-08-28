@@ -10,7 +10,6 @@ interface UploadFileDtoOptions {
 }
 
 export class UploadFileDto {
-
     public size      : number;
     public data      : Buffer;
     public mimetype  : string;

@@ -42,10 +42,10 @@ export class CourseEntity {
         const { id , title, description, category  , thumbnail_url, thumbnail_id,
                  id_owner , price , capacity = undefined  } = object;
 
-        if( !title ) throw 'El titulo es requerido.'
-        if( !description ) throw 'La descripción es requerida.'
-        if( !id_owner ) throw 'El creador del curso es requerido.'
-        if( price === null || price === undefined ) throw 'El precio es requerido.'
+        if( !title ) throw 'El titulo es requerido.';
+        if( !description ) throw 'La descripción es requerida.';
+        if( !id_owner ) throw 'El creador del curso es requerido.';
+        if( price === null || price === undefined ) throw 'El precio es requerido.';
     
         return new CourseEntity(
             { 

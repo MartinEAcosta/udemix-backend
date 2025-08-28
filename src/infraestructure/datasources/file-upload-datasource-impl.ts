@@ -14,9 +14,9 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
 
     uploadFile = async( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponseDto> => {
         try{
-            const fileUploaded = await this.fileStorage.uploadFile( file , folder );
+            const fileUploaded : FileStorageAdapterResponseDto = await this.fileStorage.uploadFile( file , folder );
             if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al subir el archivo.');
-
+            console.log({...fileUploaded})
             return fileUploaded;
         }
         catch(error){

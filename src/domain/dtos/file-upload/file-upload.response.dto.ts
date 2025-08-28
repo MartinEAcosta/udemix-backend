@@ -10,10 +10,10 @@ export interface FileStorageAdapterResponseDto {
 
 export interface FileResponseDto {
     id           : string;
-    size:          number;
+    size         : number;
+    url         ?: string | null;    
     extension:     string;
     resource_type: ResourceValidTypes;
     public_id:     string;
-
 }
 

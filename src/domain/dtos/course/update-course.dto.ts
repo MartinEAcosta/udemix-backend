@@ -17,16 +17,15 @@ export class UpdateCourseDto {
 
     static create = ( id : string, props: { [ key:string ] : any } ) : [ string? , UpdateCourseDto? ] => {
         const { title, description, category, thumbnail_url, thumbnail_id , id_owner, price, capacity } = props;
-
         return [ undefined, new UpdateCourseDto( 
                                                 id, 
                                                 title, 
                                                 description, 
                                                 category, 
-                                                thumbnail_url, 
-                                                thumbnail_id , 
                                                 id_owner, 
                                                 price, 
+                                                thumbnail_url, 
+                                                thumbnail_id , 
                                                 capacity
                                             ) 
                 ];
