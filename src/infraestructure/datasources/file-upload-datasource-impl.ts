@@ -16,7 +16,7 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
         try{
             const fileUploaded : FileStorageAdapterResponseDto = await this.fileStorage.uploadFile( file , folder );
             if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al subir el archivo.');
-            console.log({...fileUploaded})
+
             return fileUploaded;
         }
         catch(error){
@@ -34,8 +34,11 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
                 extension     : file.extension,
                 resource_type : file?.resource_type,
             });
+            if( !fileSaved ) throw CustomError.internalServer('Hubo un error al grabar el archivo en la base de datos.')
+            
+            file.id = fileSaved._id.toString();
 
-            return FileMapper.fromFileResponse( fileSaved );
+            return FileMapper.fromFileResponse( file );
         }
         catch(error){
             console.error(error);

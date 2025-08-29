@@ -17,18 +17,10 @@ export class UpdateCourse implements UpdateCourseUseCase {
     async execute(updateCourseDto: UpdateCourseDto): Promise<CourseEntity> {
         const courseToUpdate = await this.courseRepository.getCourseById( updateCourseDto.id );
         if( !courseToUpdate )  throw CustomError.notFound(`El curso con el id: ${updateCourseDto.id}, no fue encontrado`);
-
         const updatedCourse = await this.courseRepository.updateCourse( updateCourseDto );
+
         return {
-            id: updateCourseDto.id,
-            title: updatedCourse.title,
-            description: updatedCourse.description,
-            category: updatedCourse.category,
-            thumbnail_url: updatedCourse.thumbnail_url,
-            thumbnail_id: updatedCourse.thumbnail_id,
-            id_owner: updateCourseDto.id_owner ?? courseToUpdate.id_owner,
-            price: updateCourseDto.price,
-            capacity: updateCourseDto.capacity,
+           ...updatedCourse
         };
     }
 
