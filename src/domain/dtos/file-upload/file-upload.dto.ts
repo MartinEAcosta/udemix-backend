@@ -10,24 +10,20 @@ interface UploadFileDtoOptions {
 }
 
 export class UploadFileDto {
+
     public size      : number;
     public data      : Buffer;
     public mimetype  : string;
-
-
-    // public format : ResourceValidTypes
 
     constructor( options : UploadFileDtoOptions ) {
         const { size, data, mimetype } = options;
         this.size = size;
         this.data = data;
         this.mimetype = mimetype;
-        // this.format = format;
     }
 
-
     static create = ( props : { [ key : string ] : any } ) : [ string? , UploadFileDto?] => {
-        const { size, data, mimetype , format, id_course } = props;
+        const { size, data, mimetype , format } = props;
 
         if( size === null || size === undefined ) return ['El tamaño del archivo es requerido.', undefined];
         if( !data ) return ['Los datos del archivo son requeridos.', undefined];

@@ -1,8 +1,8 @@
-import { CreateCourseDto } from "../dtos/course/create-course.dto";
-import { UpdateCourseDto } from "../dtos/course/update-course.dto";
 import { CourseEntity } from "../entities/course.entity";
 
-// Encargado de llamar al DataSource
+import { CreateCourseDto } from "../dtos/course/create-course.dto";
+import { UpdateCourseDto } from "../dtos/course/update-course.dto";
+
 export abstract class CourseRepository {
 
     abstract getAllCourses( ) : Promise<CourseEntity[]>;

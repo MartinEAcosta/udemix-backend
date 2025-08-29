@@ -54,4 +54,17 @@ export class CloudinaryAdapter implements FileStorage {
         });
     }
 
+    deleteFile = ( public_id : string ) : Promise<boolean> => {
+        return new Promise( ( resolve , reject ) => {
+            cloudinary.uploader.destroy( public_id , {} , ( error , result ) => {
+
+                if( error ) return reject( error );
+
+                if( result.result === 'not found' ) resolve(false);
+                
+                return resolve(true);
+            })
+        })
+    }
+
 }

@@ -14,19 +14,6 @@ export class CourseController {
         private readonly courseRepository : CourseRepository,
     ){ }
 
-    // * EXPRESS RECOMIENDA NO UTILIZAR TAREAS ASINCRONAS EN EL CONTROLADOR
-
-    // * Ejemplo
-    
-    //   public getTodos = ( req: Request, res: Response ) => {
-
-    //     new GetTodos( this.todoRepository )
-    //       .execute()
-    //       .then( todos => res.json( todos ) )
-    //       .catch( error => res.status( 400 ).json( { error } ) );
-
-    //   };
-
     public getAllCourses = ( req : Request , res : Response ) => {
 
         new GetAllCourses( this.courseRepository )

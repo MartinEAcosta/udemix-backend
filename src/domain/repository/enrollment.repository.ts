@@ -1,5 +1,6 @@
-import { CreateEnrollmentDto } from "../dtos/enrollment/create-enrollment.dto";
 import { EnrollmentEntity } from "../entities/enrollment.entity";
+
+import { CreateEnrollmentDto } from "../dtos/enrollment/create-enrollment.dto";
 
 export abstract class EnrollmentRepository {
 

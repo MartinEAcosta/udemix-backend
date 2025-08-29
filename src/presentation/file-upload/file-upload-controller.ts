@@ -5,6 +5,7 @@ import { CustomError } from "../../domain/errors/custom-error";
 import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
 import { UploadSingle } from "../../domain/use-cases/file-upload/upload-single";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
+import { DeleteFile } from "../../domain/use-cases/file-upload/delete-file";
 // toLowerCase aplicado a la hora de comparar.
 export const validFolders = [ 'user' , 'courses' ];
 
@@ -51,4 +52,15 @@ export class FileUploadController {
         
     }
 
+    deleteFile = ( req : Request , res : Response )  => {
+        const { public_id } = req.query;
+        
+        if (!public_id || Array.isArray(public_id) || typeof public_id !== 'string') {
+            return res.status(400).json({ error: 'Debe proporcionar un public_id válido' });
+        }
+        new DeleteFile( this.fileUploadRepository )
+            .execute( public_id )
+            .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
+            .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+    }
 }

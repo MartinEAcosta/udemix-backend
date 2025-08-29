@@ -21,5 +21,16 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
         }
     }
 
+    deleteFile = async( public_id : string ) : Promise<boolean> => {
+        try{
+            const res = await this.fileUploadDatasource.deleteFile( public_id );
+            return res;
+        }
+        catch( error ){
+            console.log(error);
+            return false;
+        }
+    }
+
 
 }

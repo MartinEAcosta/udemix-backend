@@ -13,7 +13,7 @@ export class AppRoutes {
         router.use( '/api/courses' , CourseRouter.routes );
         router.use( '/api/auth' , AuthRouter.routes  ) ;
         router.use( '/api/enrollment' , EnrollmentRouter.routes );
-        router.use( '/api/upload' , FileUploadRouter.routes );
+        router.use( '/api/file' , FileUploadRouter.routes );
 
         return router;
     }

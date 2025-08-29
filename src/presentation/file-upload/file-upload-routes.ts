@@ -21,7 +21,7 @@ export class FileUploadRouter {
         const fileUploadMiddleware = new FileUploadMiddleware();
 
         router.post( 
-            '/single/:folder/:id_course',
+            '/upload/single/:folder/:id_course',
             fileUploadMiddleware.containFiles,
             fileUploadController.uploadFile
         );
@@ -30,6 +30,11 @@ export class FileUploadRouter {
             '/multiple/:folder',
             fileUploadMiddleware.containFiles,
             fileUploadController.uploadMultipleFiles
+        );
+
+        router.delete(
+            '/delete',
+            fileUploadController.deleteFile
         );
 
 
