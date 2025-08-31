@@ -18,7 +18,12 @@ const fileSchema = new mongoose.Schema({
         type     : String,
         required : true,
     },
-    
+
+    folder: {
+        type     : String,
+        required : ["users" , "courses"],
+    },
+
     size: {
         type     : Number,
         required : true,

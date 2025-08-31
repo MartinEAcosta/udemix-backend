@@ -58,6 +58,7 @@ export class FileUploadController {
         console.log('entre');
         const { public_id } = req.params;
         const folder = this.obtainFolder(req , res);
+        
         if( !folder ) return;
         if( !public_id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
 

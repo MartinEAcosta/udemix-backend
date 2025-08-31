@@ -27,9 +27,9 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
 
     saveFileOnDB = async ( file : FileStorageAdapterResponseDto ) : Promise<FileResponseDto> => {
         try{
-            
             const fileSaved = await FileModel.create( {
                 public_id     : file.public_id,
+                folder        : file.folder,
                 size          : file.size,
                 extension     : file.extension,
                 resource_type : file?.resource_type,

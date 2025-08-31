@@ -3,6 +3,7 @@ import { ResourceValidTypes } from "./file-upload.dto";
 export interface FileStorageAdapterResponseDto {
     id              ?: string;
     public_id        : string;
+    folder           : string;
     url             ?: string,
     size             : number;
     extension        : string;
@@ -11,10 +12,11 @@ export interface FileStorageAdapterResponseDto {
 
 export interface FileResponseDto {
     id           : string;
-    size         : number;
+    public_id    : string;
+    folder       : string;
     url         ?: string | null;    
-    extension:     string;
+    size         : number;
+    extension    : string;
     resource_type: ResourceValidTypes;
-    public_id:     string;
 }
 

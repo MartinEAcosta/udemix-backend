@@ -6,6 +6,7 @@ export class FileMapper {
         return {
             id: fileDoc.id,
             public_id: fileDoc.public_id,
+            folder: fileDoc.folder,
             url: fileDoc.url,
             size: fileDoc.size,
             extension: fileDoc.extension,

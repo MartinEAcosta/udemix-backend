@@ -10,13 +10,13 @@ export class UpdateCourseDto {
         public readonly id_owner : string,
         public readonly price : number,
         public readonly thumbnail_url ?: string | null,
-        public readonly thumbnail_id ?: string | null,
+        public readonly file_id ?: string | null,
         public readonly capacity? : number,
     ){}
         
 
     static create = ( id : string, props: { [ key:string ] : any } ) : [ string? , UpdateCourseDto? ] => {
-        const { title, description, category, thumbnail_url, thumbnail_id , id_owner, price, capacity } = props;
+        const { title, description, category, thumbnail_url, file_id , id_owner, price, capacity } = props;
         return [ undefined, new UpdateCourseDto( 
                                                 id, 
                                                 title, 
@@ -25,7 +25,7 @@ export class UpdateCourseDto {
                                                 id_owner, 
                                                 price, 
                                                 thumbnail_url, 
-                                                thumbnail_id , 
+                                                file_id , 
                                                 capacity
                                             ) 
                 ];

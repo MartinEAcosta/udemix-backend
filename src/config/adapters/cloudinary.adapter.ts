@@ -40,9 +40,12 @@ export class CloudinaryAdapter implements FileStorage {
                 else{
                     //TODO Arreglar nombrado:
                     console.log(result);
+                    const [ folderFromResult , public_id ] = result.public_id.split('/');
+                    console.log(folderFromResult , public_id);
                     const fileResponse : FileStorageAdapterResponseDto = {
-                        public_id     : result.public_id,
                         url           : result.secure_url,
+                        public_id     : public_id,
+                        folder        : folderFromResult,
                         size          : result.bytes,
                         extension     : result.format,
                         resource_type : result.resource_type,

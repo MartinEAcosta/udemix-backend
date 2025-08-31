@@ -8,7 +8,7 @@ export interface ICourseModel {
     //* category : Types.ObjectId;
     category      : string,
     thumbnail_url ?: string | null,
-    thumbnail_id  ?: string | null,
+    file_id       ?: Types.ObjectId | null,
     id_owner      : Types.ObjectId,
     price         : number,
     capacity     ?: number | null,
@@ -35,9 +35,9 @@ const courseSchema = new mongoose.Schema({
         type: String,
     },
 
-    // Es string debido a que va referir al public_id de cloudinary y no al ObjectId propio del file.
-    thumbnail_id : {
-        type : String,
+    file_id : {
+        type : Schema.Types.ObjectId,
+        ref: 'File',
     },
 
     id_owner : {
