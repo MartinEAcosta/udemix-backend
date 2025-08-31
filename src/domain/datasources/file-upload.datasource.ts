@@ -5,7 +5,7 @@ export abstract class FileUploadDatasource {
 
     abstract uploadFile( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponseDto>;
     abstract saveFileOnDB( file : FileStorageAdapterResponseDto ) : Promise<FileResponseDto>;
-    abstract deleteFile( public_id : string ) : Promise<boolean>;
+    abstract deleteFile( folder : string , public_id : string ) : Promise<boolean>;
     
 
 }

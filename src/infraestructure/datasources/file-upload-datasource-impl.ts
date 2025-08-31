@@ -46,8 +46,8 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
         }
     }
 
-    deleteFile = async(public_id: string) : Promise<boolean> => {
-        const fileDeleted = await this.fileStorage.deleteFile(public_id);
+    deleteFile = async( folder : string ,public_id: string) : Promise<boolean> => {
+        const fileDeleted = await this.fileStorage.deleteFile( folder, public_id );
         if( !fileDeleted ) return false;
                 
         return true;

@@ -31,6 +31,7 @@ export class FileUploadController {
             });
         }
         const folder = this.obtainFolder( req , res );
+        if( !folder ) return;
 
         new UploadSingle( this.fileUploadRepository )
             .execute( fileToUploadDto! , folder! )
@@ -38,11 +39,12 @@ export class FileUploadController {
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
 
-    obtainFolder = ( req : Request , res : Response ) : string => {
+    obtainFolder = ( req : Request , res : Response ) : string | undefined => {
         
         const { folder } = req.params;
         if( !validFolders.includes( folder.toLowerCase() ) ){
-            throw HandlerResponses.handleError( CustomError.badRequest(`La carpeta ${folder} no es valida`), res );
+            HandlerResponses.handleError( CustomError.notFound(`La carpeta ${folder} no es valida`), res );
+            return;
         }
 
         return folder;
@@ -53,13 +55,14 @@ export class FileUploadController {
     }
 
     deleteFile = ( req : Request , res : Response )  => {
-        const { public_id } = req.query;
-        
-        if (!public_id || Array.isArray(public_id) || typeof public_id !== 'string') {
-            return res.status(400).json({ error: 'Debe proporcionar un public_id válido' });
-        }
+        console.log('entre');
+        const { public_id } = req.params;
+        const folder = this.obtainFolder(req , res);
+        if( !folder ) return;
+        if( !public_id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+
         new DeleteFile( this.fileUploadRepository )
-            .execute( public_id )
+            .execute( folder, public_id )
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }

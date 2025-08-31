@@ -41,11 +41,11 @@ export class CloudinaryAdapter implements FileStorage {
                     //TODO Arreglar nombrado:
                     console.log(result);
                     const fileResponse : FileStorageAdapterResponseDto = {
-                        public_id : result.public_id,
-                        url       : result.secure_url,
-                        size: result.bytes,
-                        extension: result.format,
-                        resource_type: result.resource_type,
+                        public_id     : result.public_id,
+                        url           : result.secure_url,
+                        size          : result.bytes,
+                        extension     : result.format,
+                        resource_type : result.resource_type,
                     };
 
                     return resolve(fileResponse);
@@ -54,10 +54,11 @@ export class CloudinaryAdapter implements FileStorage {
         });
     }
 
-    deleteFile = ( public_id : string ) : Promise<boolean> => {
+    deleteFile = ( folder : string , public_id : string ) : Promise<boolean> => {
+        const pathFile = `${folder}/${public_id}`;
         return new Promise( ( resolve , reject ) => {
-            cloudinary.uploader.destroy( public_id , {} , ( error , result ) => {
-
+            cloudinary.uploader.destroy( pathFile , {} , ( error , result ) => {
+                console.log( error , result)
                 if( error ) return reject( error );
 
                 if( result.result === 'not found' ) resolve(false);

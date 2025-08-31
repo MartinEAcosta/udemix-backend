@@ -1,7 +1,7 @@
 import { FileUploadRepository } from '../../repository/file-upload-repository';
 
 interface DeleteFileUseCase {
-    execute ( public_id : string ) : Promise<boolean>
+    execute ( folder : string , public_id : string ) : Promise<boolean>
 }
 
 export class DeleteFile implements DeleteFileUseCase {
@@ -10,8 +10,8 @@ export class DeleteFile implements DeleteFileUseCase {
         private readonly fileUploadRepository : FileUploadRepository
     ) { }
 
-    async execute( public_id: string ): Promise<boolean> {
-        const res = this.fileUploadRepository.deleteFile( public_id );
+    async execute( folder : string , public_id: string ): Promise<boolean> {
+        const res = this.fileUploadRepository.deleteFile( folder , public_id );
         return res;
     }
     
