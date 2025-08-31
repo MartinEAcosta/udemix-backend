@@ -6,21 +6,21 @@ import { FileUploadRepository } from "../../domain/repository/file-upload-reposi
 export class FileUploadRepositoryImpl implements FileUploadRepository {
 
     constructor(private readonly fileUploadDatasource: FileUploadDatasource) {}
-
+    
     uploadFile = async( file: UploadFileDto , folder : string ) : Promise<FileResponseDto | false> => {
         try {
             const fileUploaded = await this.fileUploadDatasource.uploadFile( file , folder );
             if( !fileUploaded ) return false;
             const uploadedFileinDB = await this.fileUploadDatasource.saveFileOnDB( fileUploaded );
             if( !uploadedFileinDB) return false;
-
+            
             return uploadedFileinDB;
         } catch (error) {
             console.log(error);
-            return false;
+            throw error;
         }
     }
-
+    
     deleteFile = async( folder : string , public_id : string ) : Promise<boolean> => {
         try{
             const res = await this.fileUploadDatasource.deleteFile( folder , public_id );
@@ -31,6 +31,15 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
             return false;
         }
     }
-
+    
+    getFileById = async(id: string) : Promise<FileResponseDto> => {
+        try{
+            return this.fileUploadDatasource.getFileById( id );
+        }
+        catch( error ) {
+            console.log(error);
+            throw error;
+        }
+    }
 
 }

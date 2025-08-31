@@ -1,7 +1,7 @@
 import { FileUploadRepository } from '../../repository/file-upload-repository';
 
 interface DeleteFileUseCase {
-    execute ( folder : string , public_id : string ) : Promise<boolean>
+    execute ( folder : string , public_id : string ) : Promise<boolean>;
 }
 
 export class DeleteFile implements DeleteFileUseCase {

@@ -6,6 +6,7 @@ import { FileUploadRepository } from "../../domain/repository/file-upload-reposi
 import { UploadSingle } from "../../domain/use-cases/file-upload/upload-single";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { DeleteFile } from "../../domain/use-cases/file-upload/delete-file";
+import { GetFileById } from "../../domain/use-cases/file-upload/get-file-by-id";
 // toLowerCase aplicado a la hora de comparar.
 export const validFolders = [ 'user' , 'courses' ];
 
@@ -32,15 +33,19 @@ export class FileUploadController {
         }
         const folder = this.obtainFolder( req , res );
         if( !folder ) return;
-
+        
         new UploadSingle( this.fileUploadRepository )
-            .execute( fileToUploadDto! , folder! )
-            .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
-            .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+        .execute( fileToUploadDto! , folder! )
+        .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
+        .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+    }
+    
+    uploadMultipleFiles = ( req : Request , res : Response ) => {
+        //TODO : devtalles    
     }
 
     obtainFolder = ( req : Request , res : Response ) : string | undefined => {
-        
+        // TODO : ¿podria llegar a ser delegado a un middleware?
         const { folder } = req.params;
         if( !validFolders.includes( folder.toLowerCase() ) ){
             HandlerResponses.handleError( CustomError.notFound(`La carpeta ${folder} no es valida`), res );
@@ -48,10 +53,6 @@ export class FileUploadController {
         }
 
         return folder;
-    }
-
-    uploadMultipleFiles = ( req : Request , res : Response ) => {
-        
     }
 
     deleteFile = ( req : Request , res : Response )  => {
@@ -64,6 +65,16 @@ export class FileUploadController {
 
         new DeleteFile( this.fileUploadRepository )
             .execute( folder, public_id )
+            .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
+            .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+    }
+
+    getFileById = ( req : Request , res : Response ) => {
+        const { id } = req.params;
+        if( !id ) return;
+
+        new GetFileById( this.fileUploadRepository )
+            .execute( id )
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }

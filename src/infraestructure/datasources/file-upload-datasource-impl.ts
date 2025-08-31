@@ -53,4 +53,10 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
         return true;
     }
 
+    getFileById = async(id: string): Promise<FileResponseDto> =>{
+        const file = await FileModel.findById( id );
+        if( file ) throw CustomError.notFound(`El archivo con el id: ${id}, no se ha encontrado.`)
+
+        return FileMapper.fromFileResponse( file );
+    }
 }
