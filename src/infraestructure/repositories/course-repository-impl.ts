@@ -1,9 +1,9 @@
+import { CourseRepository } from '../../domain/repository/course-repository';
 import { CourseDatasource } from '../../domain/datasources/course.datasource';
+
+import { CourseEntity } from '../../domain/entities/course.entity';
 import { CreateCourseDto } from '../../domain/dtos/course/create-course.dto';
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
-import { CourseEntity } from '../../domain/entities/course.entity';
-import { CustomError } from '../../domain/errors/custom-error';
-import { CourseRepository } from '../../domain/repository/course-repository';
 
 export class CourseRepositoryImpl implements CourseRepository{
 
@@ -17,7 +17,7 @@ export class CourseRepositoryImpl implements CourseRepository{
             return courses.map( course => CourseEntity.fromObject(course) );
         }
         catch( error ){
-            throw CustomError.internalServer('Hubo un error al obtener todos los cursos.')
+            throw error;
         }
     }
 
@@ -27,7 +27,7 @@ export class CourseRepositoryImpl implements CourseRepository{
             return course ? CourseEntity.fromObject( course ) : null;
         }
         catch( error ){
-            throw CustomError.internalServer('Hubo un error al obtener el curso.');
+            throw error;
         }
     }
 
@@ -38,7 +38,7 @@ export class CourseRepositoryImpl implements CourseRepository{
         }
         catch( error ){
             console.log(error);
-            throw CustomError.internalServer('Hubo un error al crear el curso.');
+            throw error;
         }
             
     }
@@ -50,7 +50,7 @@ export class CourseRepositoryImpl implements CourseRepository{
             return CourseEntity.fromObject(courseUpdated);
         }
         catch( error ){
-            throw CustomError.internalServer('Hubo un error al actualizar el curso.');
+            throw error;
         }
     }
 
@@ -61,7 +61,7 @@ export class CourseRepositoryImpl implements CourseRepository{
             return removed;
         }
         catch( error ){
-            throw CustomError.internalServer('Hubo un error al eliminar el curso.');
+            throw error;
         }
     }
     

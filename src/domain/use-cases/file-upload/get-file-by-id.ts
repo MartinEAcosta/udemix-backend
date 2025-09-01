@@ -1,5 +1,6 @@
-import { FileResponseDto } from '../../dtos/file-upload/file-upload.response.dto';
 import { FileUploadRepository } from "../../repository/file-upload-repository";
+
+import { FileResponseDto } from '../../dtos/file-upload/file-upload.response.dto';
 
 interface GetFileByIdUseCase {
     execute ( id : string ) : Promise<FileResponseDto>;

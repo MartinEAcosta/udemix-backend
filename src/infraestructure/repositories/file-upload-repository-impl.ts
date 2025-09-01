@@ -1,7 +1,8 @@
+import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
 import { FileUploadDatasource } from "../../domain/datasources/file-upload.datasource";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { FileResponseDto } from "../../domain/dtos/file-upload/file-upload.response.dto";
-import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
+import { FileMapper } from "../mappers/file.mapper";
 
 export class FileUploadRepositoryImpl implements FileUploadRepository {
 
@@ -14,7 +15,7 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
             const uploadedFileinDB = await this.fileUploadDatasource.saveFileOnDB( fileUploaded );
             if( !uploadedFileinDB) return false;
             
-            return uploadedFileinDB;
+            return FileMapper.fromFileResponse( uploadedFileinDB );
         } catch (error) {
             console.log(error);
             throw error;
@@ -27,16 +28,17 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
             if( !file ) return false;
 
             const { folder , public_id } = file;
-            const res = await this.fileUploadDatasource.deleteFile( folder , public_id );
-            if( !res ) return false;
+            const hasDeletedFromAdapter = await this.fileUploadDatasource.deleteFile( folder , public_id );
+            if( !hasDeletedFromAdapter ) return false;
             
-            await this.fileUploadDatasource.deleteFileFromDB( id );
+            const hasDeletedFromDB = await this.fileUploadDatasource.deleteFileFromDB( id );
 
-            return res;
+
+            return (hasDeletedFromAdapter && hasDeletedFromDB);
         }
         catch( error ){
             console.log(error);
-            return false;
+            throw error;
         }
     }
 

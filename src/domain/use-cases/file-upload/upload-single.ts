@@ -16,7 +16,7 @@ export class UploadSingle implements UploadFileUseCase {
         if( !res ){
             throw CustomError.badRequest('Hubo un error al subir el archivo: ' + file );
         }
-        
+        console.log(res);
         return {
             ...res,
         };        

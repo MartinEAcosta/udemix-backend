@@ -7,14 +7,19 @@ import { UploadSingle } from "../../domain/use-cases/file-upload/upload-single";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { DeleteFile } from "../../domain/use-cases/file-upload/delete-file";
 import { GetFileById } from "../../domain/use-cases/file-upload/get-file-by-id";
+import { DeleteCourseThumbnail } from "../../domain/use-cases/file-upload/delete-course-thumbnail";
+import { CourseRepository } from "../../domain/repository/course-repository";
 // toLowerCase aplicado a la hora de comparar.
 export const validFolders = [ 'user' , 'courses' ];
 
 export class FileUploadController {
 
-    constructor( private readonly fileUploadRepository : FileUploadRepository ) { }
+    constructor( 
+        private readonly fileUploadRepository : FileUploadRepository, 
+        private readonly courseRepository : CourseRepository 
+    ) { }
 
-    uploadFile = ( req : Request , res : Response ) => {
+    public uploadFile = ( req : Request , res : Response ) => {
         // Propiedad creada automaticamente por el middleware file-upload.
         // req.files;
         // El middleware ya se encargo de validar que haya un archivo existente.
@@ -40,11 +45,11 @@ export class FileUploadController {
         .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
     
-    uploadMultipleFiles = ( req : Request , res : Response ) => {
+    public uploadMultipleFiles = ( req : Request , res : Response ) => {
         //TODO : devtalles    
     }
 
-    obtainFolder = ( req : Request , res : Response ) : string | undefined => {
+    public obtainFolder = ( req : Request , res : Response ) : string | undefined => {
         // TODO : ¿podria llegar a ser delegado a un middleware?
         const { folder } = req.params;
         if( !validFolders.includes( folder.toLowerCase() ) ){
@@ -55,7 +60,7 @@ export class FileUploadController {
         return folder;
     }
 
-    deleteFile = ( req : Request , res : Response )  => {
+    public deleteFile = ( req : Request , res : Response )  => {
 
         const { id } = req.params;
         if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
@@ -66,7 +71,17 @@ export class FileUploadController {
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
 
-    getFileById = ( req : Request , res : Response ) => {
+    public deleteCourseThumbnail = ( req : Request , res : Response ) => {
+        const { course_id } = req.params;
+        if( !course_id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+
+        new DeleteCourseThumbnail( this.fileUploadRepository , this.courseRepository )
+            .execute( course_id )
+            .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
+            .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+    }
+
+    public getFileById = ( req : Request , res : Response ) => {
         const { id } = req.params;
         if( !id ) return;
 

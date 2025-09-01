@@ -13,7 +13,7 @@ export class CourseDatasourceImpl implements CourseDatasource {
         return courses.map( CourseMapper.fromCourseDto );
     }
 
-    async getCourseById( id: string ): Promise<CourseResponseDto | null> {      
+    async getCourseById( id: string ): Promise<CourseResponseDto | null> {   
             const course = await CourseModel.findById({ _id: id });
             if( !course ) return null;
 

@@ -16,7 +16,7 @@ export class AuthController {
         private readonly tokenManager : TokenManager,
     ){}
 
-    registerUser = ( req : Request , res : Response ) => {
+    public registerUser = ( req : Request , res : Response ) => {
         const [ error , registerUserDto ] = RegisterUserDto.create( req.body );
         if( error ) return res.status(400).json({
             error : error,
@@ -27,7 +27,7 @@ export class AuthController {
             .catch( error => HandlerResponses.handleError(error,res) );  
     }
 
-    loginUser = ( req : Request , res : Response ) => {
+    public loginUser = ( req : Request , res : Response ) => {
         const [ error , loginUserDto ] = LoginUserDto.create( req.body );
         if( error ) return res.status(400).json({
             error : error,
@@ -39,7 +39,7 @@ export class AuthController {
             .catch( error => HandlerResponses.handleError(error , res ) );
     }
 
-    reloadToken = async( req : Request , res : Response ) => {
+    public reloadToken = async( req : Request , res : Response ) => {
 
         const user = (req as Request & { user?: UserEntity }).user;
         if( !user ) return;

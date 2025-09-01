@@ -4,6 +4,8 @@ import { FileUploadDatasourceImpl } from "../../infraestructure/datasources/file
 import { FileUploadRepositoryImpl } from "../../infraestructure/repositories/file-upload-repository-impl";
 import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
 import { FileUploadMiddleware } from "../middlewares/file-upload.middleware";
+import { CourseRepositoryImpl } from "../../infraestructure/repositories/course-repository-impl";
+import { CourseDatasourceImpl } from "../../infraestructure/datasources/course-datasource-impl";
 
 
 export class FileUploadRouter {
@@ -14,9 +16,11 @@ export class FileUploadRouter {
         const router = Router();
 
         const fileStorage = new CloudinaryAdapter();
-        const datasource = new FileUploadDatasourceImpl( fileStorage );
-        const fileUploadRepository = new FileUploadRepositoryImpl( datasource );
-        const fileUploadController = new FileUploadController( fileUploadRepository );
+        const fileDatasource = new FileUploadDatasourceImpl( fileStorage );
+        const fileUploadRepository = new FileUploadRepositoryImpl( fileDatasource );
+        const courseDatasource = new CourseDatasourceImpl();
+        const courseRepository = new CourseRepositoryImpl( courseDatasource );
+        const fileUploadController = new FileUploadController( fileUploadRepository , courseRepository );
 
         const fileUploadMiddleware = new FileUploadMiddleware();
 
@@ -33,10 +37,15 @@ export class FileUploadRouter {
         );
 
         router.delete(
-            '/delete/:id',
+            '/:id',
             fileUploadController.deleteFile
         );
-
+        
+        router.delete(
+            '/course-thumbnail/:course_id',
+            fileUploadController.deleteCourseThumbnail
+        );
+        
         router.get( 
             '/:id',
             fileUploadController.getFileById,

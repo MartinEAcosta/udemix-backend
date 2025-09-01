@@ -1,8 +1,8 @@
-import { AuthDatasource } from "../../domain/datasources/auth.datasource";
 import { AuthRepository } from "../../domain/repository/auth-repository";
+import { AuthDatasource } from "../../domain/datasources/auth.datasource";
+
 import { UserEntity } from "../../domain/entities/user.entity";
 import { RegisterUserDto } from "../../domain/dtos/auth/register-user.dto";
-import { CustomError } from "../../domain/errors/custom-error";
 
 export class AuthRepositoryImpl implements AuthRepository {
 
@@ -17,7 +17,7 @@ export class AuthRepositoryImpl implements AuthRepository {
             return UserEntity.fromObject( savedUser );
         }
         catch( error ){
-            throw CustomError.internalServer('Hubo un error al regitrar el usuario.');
+            throw error;
         }
     }
 
@@ -27,7 +27,7 @@ export class AuthRepositoryImpl implements AuthRepository {
             return matchUser != null ? UserEntity.fromObject(matchUser) : null;
         }
         catch( error ){
-            throw CustomError.internalServer('Hubo un error al buscar el usuario por email.');
+            throw error;
         }
     }
     
@@ -37,7 +37,7 @@ export class AuthRepositoryImpl implements AuthRepository {
             return user != null ? UserEntity.fromObject(user) : null;
         }
         catch( error ){
-            throw CustomError.internalServer('Hubo un error al buscar el usuario por id.');
+            throw error;
         }
     }
 

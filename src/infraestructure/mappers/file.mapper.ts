@@ -4,7 +4,7 @@ export class FileMapper {
 
     static fromFileResponse ( fileDoc : any ) : FileResponseDto {
         return {
-            id: fileDoc._id,
+            id: fileDoc.id,
             public_id: fileDoc.public_id,
             folder: fileDoc.folder,
             url: fileDoc.url,
