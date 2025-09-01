@@ -33,9 +33,14 @@ export class FileUploadRouter {
         );
 
         router.delete(
-            '/delete/:folder/:public_id',
+            '/delete/:id',
             fileUploadController.deleteFile
         );
+
+        router.get( 
+            '/:id',
+            fileUploadController.getFileById,
+        )
 
 
         return router;

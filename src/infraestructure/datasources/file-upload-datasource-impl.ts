@@ -1,7 +1,6 @@
-import { Types } from 'mongoose';
 import { FileStorage } from "../../domain/services/FileStorage";
 import { CustomError } from "../../domain/errors/custom-error";
-import { FileModel, IFileModel } from "../../data/mongo/models/file.model";
+import { FileModel } from "../../data/mongo/models/file.model";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { FileMapper } from '../mappers/file.mapper';
 import { FileUploadDatasource } from '../../domain/datasources/file-upload.datasource';
@@ -53,9 +52,16 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
         return true;
     }
 
+    deleteFileFromDB = async( id : string ) : Promise<boolean> => {
+        const fileDeleted = await FileModel.deleteOne( { _id : id } );
+        if( fileDeleted.deletedCount === 0 ) return false;
+
+        return true;
+    }
+
     getFileById = async(id: string): Promise<FileResponseDto> =>{
-        const file = await FileModel.findById( id );
-        if( file ) throw CustomError.notFound(`El archivo con el id: ${id}, no se ha encontrado.`)
+        const file = await FileModel.findById( {_id: id} );
+        if( !file ) throw CustomError.notFound(`El archivo con el id: ${id}, no se ha encontrado.`)
 
         return FileMapper.fromFileResponse( file );
     }
