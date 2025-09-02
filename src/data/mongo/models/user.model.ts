@@ -36,6 +36,16 @@ const userSchema = new mongoose.Schema({
         default: 100,
     },
 
+    purchasedCourses : {
+        type: [ 
+            { 
+                type : Types.ObjectId,
+                ref : 'Course',
+            }
+        ],
+        default: [],
+    }
+
     
     // avatar : {
     //     type: String,

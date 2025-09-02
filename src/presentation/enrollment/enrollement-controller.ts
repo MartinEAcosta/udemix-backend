@@ -11,7 +11,7 @@ export class EnrollmentController{
     
     constructor( private readonly enrollmentRepository : EnrollmentRepository ){}
 
-    saveEnrollment = ( req : AuthenticathedRequest , res : Response ) => {
+    public saveEnrollment = ( req : AuthenticathedRequest , res : Response ) => {
         const { user } = req;
         if( !user ) res.status(401).json({ error: 'Debes iniciar sesión para inscribirte en un curso.'});
         

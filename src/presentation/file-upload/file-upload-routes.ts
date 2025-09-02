@@ -43,7 +43,7 @@ export class FileUploadRouter {
         
         router.delete(
             '/course-thumbnail/:course_id',
-            fileUploadController.deleteCourseThumbnail
+            fileUploadController.deleteCourseThumbnail,
         );
         
         router.get( 

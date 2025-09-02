@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import { HandlerResponses } from "../helpers/handler-responses";
 import { CustomError } from "../../domain/errors/custom-error";
-
 import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
+import { CourseRepository } from "../../domain/repository/course-repository";
+
 import { UploadSingle } from "../../domain/use-cases/file-upload/upload-single";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { DeleteFile } from "../../domain/use-cases/file-upload/delete-file";
 import { GetFileById } from "../../domain/use-cases/file-upload/get-file-by-id";
 import { DeleteCourseThumbnail } from "../../domain/use-cases/file-upload/delete-course-thumbnail";
-import { CourseRepository } from "../../domain/repository/course-repository";
+
 // toLowerCase aplicado a la hora de comparar.
 export const validFolders = [ 'user' , 'courses' ];
 
