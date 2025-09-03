@@ -8,6 +8,6 @@ export * from '../use-cases/course/delete-course';
 // AUTH
 export * from '../use-cases/auth/login-user';
 export * from '../use-cases/auth/register-user';
-export * from '../use-cases/auth/get-user-by-id';
+export * from './auth/find-user-by-id';
 
 // ENROLLMENT

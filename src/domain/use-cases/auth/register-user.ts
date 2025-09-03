@@ -21,7 +21,7 @@ export class RegisterUser implements RegisterUserUseCase {
     // TODO : CHEQuEAR RESPONSE JWT 
     async execute ( registerUserDto : RegisterUserDto ) : Promise<AuthSuccessResponseDto> {
         
-        const userExists = await this.authRepository.searchUserByEmail( registerUserDto.email );
+        const userExists = await this.authRepository.findUserByEmail( registerUserDto.email );
         if( userExists ) throw CustomError.badRequest( 'Ya existe una cuenta asociada a este email.' );
     
         const { password , ...rest } = registerUserDto;

@@ -1,10 +1,12 @@
 import { RegisterUserDto } from "../dtos/auth/register-user.dto";
-import { UserResponseDto } from "../dtos/auth/auth.responses.dto";
+import { UserRequestDto, UserResponseDto } from "../dtos/auth/auth.responses.dto";
 
 export abstract class AuthDatasource {
 
     abstract registerUser( registerUserDto : RegisterUserDto ) : Promise<UserResponseDto>;
-    abstract searchUserByEmail( email : string ): Promise<UserResponseDto | null>;
-    abstract searchUserById( id : string ) : Promise<UserResponseDto | null>;
-
+    abstract findUserByEmail( email : string ): Promise<UserResponseDto | null>;
+    abstract findUserById( id : string ) : Promise<UserResponseDto | null>;
+    abstract acquireCourse( user : UserRequestDto , uid : string ) : Promise<UserResponseDto>;
+    // abstract updateUser ( user : UserEntity ) : Promise<UserResponseDto>;
+ 
 }

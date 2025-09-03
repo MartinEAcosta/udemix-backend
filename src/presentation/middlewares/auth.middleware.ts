@@ -3,7 +3,7 @@ import { TokenManager } from "../../domain/services/TokenManager";
 import { AuthRepository } from "../../domain/repository/auth-repository";
 import { UserEntity } from "../../domain/entities/user.entity";
 
-export interface AuthenticathedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
     user?: UserEntity;
 }
 
@@ -13,7 +13,7 @@ export class AuthMiddleware {
                 private readonly authRepository : AuthRepository,
      ) {}
 
-    validateJWT = async( req : AuthenticathedRequest , res : Response , next : NextFunction ) : Promise<void> => {
+    validateJWT = async( req : AuthenticatedRequest , res : Response , next : NextFunction ) : Promise<void> => {
         const authorization = req.header('Authorization');
         if( !authorization ) {
             res.status(401).json({ error: 'No hay token en la petición.'});
@@ -34,7 +34,7 @@ export class AuthMiddleware {
                 return;
             }
 
-            const user = await this.authRepository.searchUserById( payload.id );
+            const user = await this.authRepository.findUserById( payload.id );
             if( !user ) {
                 res.status(400).json({ error: 'El usuario no existe.' });
                 return;
@@ -50,7 +50,7 @@ export class AuthMiddleware {
         }
     }
 
-    validateAndAssignOwner = ( req : AuthenticathedRequest , res : Response , next : NextFunction ) => {
+    validateAndAssignOwner = ( req : AuthenticatedRequest , res : Response , next : NextFunction ) => {
         const user = req.user;
 
         if(!user) {

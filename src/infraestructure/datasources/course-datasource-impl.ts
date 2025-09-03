@@ -14,21 +14,22 @@ export class CourseDatasourceImpl implements CourseDatasource {
     }
 
     async getCourseById( id: string ): Promise<CourseResponseDto | null> {   
-            const course = await CourseModel.findById({ _id: id });
-            if( !course ) return null;
+        const course = await CourseModel.findById({ _id: id });
+        if( !course ) return null;
 
-            return CourseMapper.fromCourseDto( course );
+        return CourseMapper.fromCourseDto( course );
     }
 
     async saveCourse( createCourseDto : CreateCourseDto): Promise<CourseResponseDto> {
-            // const userExists = await UserModel.findById( owner );
-    
-            // if( !userExists )
-                // throw `El Usuario asignado como creador del curso no existe.`
-            const newCourse = await CourseModel.create({
-                ...createCourseDto
-            });
-            return CourseMapper.fromCourseDto( newCourse );
+        // TODO: delegar al caso de uso.
+        // const userExists = await UserModel.findById( owner );
+
+        // if( !userExists )
+            // throw `El Usuario asignado como creador del curso no existe.`
+        const newCourse = await CourseModel.create({
+            ...createCourseDto
+        });
+        return CourseMapper.fromCourseDto( newCourse );
     }
 
     async updateCourse( updateCourseDTO : UpdateCourseDto ) : Promise<CourseResponseDto> {

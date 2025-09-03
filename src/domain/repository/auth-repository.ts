@@ -1,10 +1,12 @@
 import { UserEntity } from "../entities/user.entity";
 
 import { RegisterUserDto } from "../dtos/auth/register-user.dto";
+import { UserRequestDto } from "../dtos/auth/auth.responses.dto";
 
 export abstract class AuthRepository {
 
     abstract registerUser( registerUserDto : RegisterUserDto ) : Promise<UserEntity>;
-    abstract searchUserByEmail( email : string ) : Promise<UserEntity | null>;
-    abstract searchUserById( id : string ) : Promise<UserEntity | null>;
+    abstract findUserByEmail( email : string ) : Promise<UserEntity | null>;
+    abstract findUserById( id : string ) : Promise<UserEntity | null>;
+    abstract acquireCourse ( user : UserRequestDto , uid: string ) : Promise<UserEntity>;
 }

@@ -4,7 +4,7 @@ import { CourseRepository } from "../../domain/repository/course-repository";
 import { DeleteCourse, SaveCourse, UpdateCourse , GetAllCourses , GetCourseById} from '../../domain/use-cases';
 import { CreateCourseDto , UpdateCourseDto } from "../../domain/dtos";
 import { HandlerResponses } from '../helpers/handler-responses';
-import { AuthenticathedRequest } from "../middlewares/auth.middleware";
+import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 
 
 export class CourseController {
@@ -33,7 +33,7 @@ export class CourseController {
     }
 
 
-    public saveCourse = ( req : AuthenticathedRequest , res : Response ) => {
+    public saveCourse = ( req : AuthenticatedRequest , res : Response ) => {
         const [ errorMessage , createCourseDto ] = CreateCourseDto.create( req.body );
         if( errorMessage ) return res.status(400).json({ errorMessage });
         

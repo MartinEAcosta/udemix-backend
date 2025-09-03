@@ -1,27 +1,36 @@
 
 import { AuthDatasource } from "../../domain/datasources/auth.datasource";
 import { UserModel } from './../../data/mongo/models/user.model';
+import { UserMapper } from "../mappers/user.mapper";
 import { RegisterUserDto } from '../../domain/dtos/auth/register-user.dto';
-import { UserResponseDto } from "../../domain/dtos/auth/auth.responses.dto";
+import { UserRequestDto, UserResponseDto } from "../../domain/dtos/auth/auth.responses.dto";
 
 
 export class AuthDatasourceImpl implements AuthDatasource {
-
-    async registerUser( registerUserDto : RegisterUserDto ) : Promise<UserResponseDto>{
-            const savedUser = await UserModel.create( registerUserDto );
-            return savedUser;
-    }
-
-    async searchUserByEmail( email : string ): Promise<UserResponseDto | null> {
-            const userExists = await UserModel.findOne({ 'email': email });
-            if( !userExists ) return null;
-
-            return userExists;
-    }
-
-    async searchUserById( id : string ) : Promise<UserResponseDto | null> {
-            const user = await UserModel.findById({ _id : id});
-            return user;
-    }
         
+        
+        async registerUser( registerUserDto : RegisterUserDto ) : Promise<UserResponseDto>{
+                const savedUser = await UserModel.create( registerUserDto );
+                return UserMapper.fromUserResponseDto( savedUser );
+        }
+        
+        async findUserByEmail( email : string ): Promise<UserResponseDto | null> {
+                const userExists = await UserModel.findOne({ 'email': email });
+                if( !userExists ) return null;
+                
+                return UserMapper.fromUserResponseDto( userExists );
+        }
+
+        async findUserById( id : string ) : Promise<UserResponseDto | null> {
+                const user = await UserModel.findById({ _id : id});
+
+                return UserMapper.fromUserResponseDto( user );  
+        }
+        
+
+        async acquireCourse( user : UserRequestDto , uid : string ): Promise<UserResponseDto> {
+                const updatedUser = await UserModel.findByIdAndUpdate( uid , user , { new : true } );
+
+                return UserMapper.fromUserResponseDto( updatedUser );
+        }
 }

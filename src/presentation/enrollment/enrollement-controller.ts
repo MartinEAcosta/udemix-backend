@@ -3,7 +3,7 @@ import { EnrollmentRepository } from "../../domain/repository/enrollment.reposit
 import { CreateEnrollmentDto } from "../../domain/dtos/enrollment/create-enrollment.dto";
 import { HandlerResponses } from "../helpers/handler-responses";
 import { SaveEnrollment } from "../../domain/use-cases/enrollment/save-enrollment";
-import { AuthenticathedRequest } from "../middlewares/auth.middleware";
+import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 
 
 
@@ -11,7 +11,7 @@ export class EnrollmentController{
     
     constructor( private readonly enrollmentRepository : EnrollmentRepository ){}
 
-    public saveEnrollment = ( req : AuthenticathedRequest , res : Response ) => {
+    public saveEnrollment = ( req : AuthenticatedRequest , res : Response ) => {
         const { user } = req;
         if( !user ) res.status(401).json({ error: 'Debes iniciar sesión para inscribirte en un curso.'});
         

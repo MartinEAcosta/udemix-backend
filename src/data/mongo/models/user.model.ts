@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
         default: 100,
     },
 
-    purchasedCourses : {
+    enrolledCourses : {
         type: [ 
             { 
                 type : Types.ObjectId,

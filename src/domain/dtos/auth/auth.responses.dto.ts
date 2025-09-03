@@ -1,11 +1,25 @@
 
 export interface UserResponseDto {
-    // id       :   string,
+    id       ?:   string,
     username : string,
     email    : string,
+    balance   : number,
+    enrolledCourses : string[];
+}
+
+export interface UserRequestDto {
+    username : string,
+    email    : string,
+    balance   : number,
+    enrolledCourses : string[],
 }
 
 export interface AuthSuccessResponseDto {
-    user  : UserResponseDto,
+    user  : AuthResponseDto,
     token : string,
+}
+export interface AuthResponseDto {
+    id       ?:   string,
+    username : string,
+    email    : string,
 }
