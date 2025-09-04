@@ -8,5 +8,6 @@ export abstract class AuthRepository {
     abstract registerUser( registerUserDto : RegisterUserDto ) : Promise<UserEntity>;
     abstract findUserByEmail( email : string ) : Promise<UserEntity | null>;
     abstract findUserById( id : string ) : Promise<UserEntity | null>;
+    abstract findUserByIdWithCourses( id : string ) : Promise<UserEntity>;
     abstract acquireCourse ( user : UserRequestDto , uid: string ) : Promise<UserEntity>;
 }

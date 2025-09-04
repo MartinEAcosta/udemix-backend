@@ -36,8 +36,9 @@ export class AuthController {
         const [ error , loginUserDto ] = LoginUserDto.create( req.body );
         if( error ) return res.status(400).json({
             error : error,
-        })
-
+        });
+        console.log(loginUserDto);
+        
         new LoginUser( this.authRepository , this.encrypter , this.tokenManager )
             .execute( loginUserDto! )
             .then( authResponse => HandlerResponses.handleAuthSuccess( res , authResponse , 200 ) )

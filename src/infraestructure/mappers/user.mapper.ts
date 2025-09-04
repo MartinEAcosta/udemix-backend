@@ -7,8 +7,9 @@ export class UserMapper {
             id: userDoc._id,
             username: userDoc.username,
             email: userDoc.email,
+            password: userDoc.password,
             balance: userDoc.balance,
-            enrolledCourses: userDoc.enrolledCourse,
+            enrolledCourses: userDoc.enrolledCourses.map( ( course : any ) => course._id ) || [],
         }
     }
 

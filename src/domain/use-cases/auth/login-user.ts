@@ -19,7 +19,7 @@ export class LoginUser implements LoginUserUseCase{
     ) {}
 
     async execute(loginUserDto: LoginUserDto) : Promise<AuthSuccessResponseDto> {
-        
+        console.log('e')
         const userExists = await this.authRepository.findUserByEmail( loginUserDto.email );
         if( !userExists ) throw CustomError.badRequest('El email ingresado no se encuentra vinculado a una cuenta.');
 
@@ -35,7 +35,7 @@ export class LoginUser implements LoginUserUseCase{
         const token = await this.tokenManager.generateToken( payload );
         if( !token ) throw CustomError.internalServer('Error mientras se generaba el token.');
         
-        const { password:hashedOfDB , ...userWithoutPass } = userExists;  
+        const { password: hashedOfDB , ...userWithoutPass } = userExists;  
 
         return {
             user : userWithoutPass,

@@ -27,6 +27,11 @@ export class AuthDatasourceImpl implements AuthDatasource {
                 return UserMapper.fromUserResponseDto( user );  
         }
         
+        async findUserByIdWithCourses( id : string ) : Promise<UserResponseDto> {
+                const user = await UserModel.findById( { _id : id } ).populate('enrolledCourses');
+
+                return UserMapper.fromUserResponseDto( user );
+        }
 
         async acquireCourse( user : UserRequestDto , uid : string ): Promise<UserResponseDto> {
                 const updatedUser = await UserModel.findByIdAndUpdate( uid , user , { new : true } );

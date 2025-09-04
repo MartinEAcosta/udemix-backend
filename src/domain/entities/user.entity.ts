@@ -25,8 +25,8 @@ export class UserEntity implements UserEntityOptions {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.balance = balance || 0;
-        this.enrolledCourses = enrolledCourses || [];
+        this.balance = balance ?? 0;
+        this.enrolledCourses = enrolledCourses ?? [];
     }
 
     static fromObject( object : { [ key : string ] : any } ) {

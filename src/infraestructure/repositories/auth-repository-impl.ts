@@ -43,6 +43,17 @@ export class AuthRepositoryImpl implements AuthRepository {
         }
     }
     
+    async findUserByIdWithCourses( id : string ) : Promise<UserEntity> {
+        try{
+            const user = await this.authDatasource.findUserByIdWithCourses( id );
+
+            return UserEntity.fromObject( user! );
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
     async acquireCourse( user : UserRequestDto , uid : string ) : Promise<UserEntity> {
         try{
             const userWithAcquiredCourse = await this.authDatasource.acquireCourse( user , uid );

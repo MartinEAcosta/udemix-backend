@@ -22,8 +22,7 @@ export class AcquireCourse implements AcquireCourseUseCase {
         const course = await this.courseRepository.getCourseById( course_id ); 
         if( !course ) throw CustomError.notFound("El curso que estas intentando buscar no existe.");
 
-        const alreadyAcquired = user.enrolledCourses?.find( enrolledCourseId => 
-                                                                                enrolledCourseId === course_id );
+        const alreadyAcquired = user.enrolledCourses.some( enrolledCourseId => enrolledCourseId.toString() === course_id );
         if( alreadyAcquired ) throw CustomError.badRequest("El usuario ya se encuentra inscripto en este curso.");
 
         if( user.balance <= course.price ) throw CustomError.badRequest("El usuario no tiene el saldo suficiente para adquirir el curso");

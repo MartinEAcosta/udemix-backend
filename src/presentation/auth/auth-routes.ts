@@ -42,6 +42,12 @@ export class AuthRouter {
                 [authMiddleware.validateJWT],
                 authController.reloadToken
             );
+
+            router.post(
+                '/course',
+                [authMiddleware.validateJWT],
+                authController.acquireCourse
+            );
         
             return router;
         }
