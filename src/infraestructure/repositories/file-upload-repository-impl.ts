@@ -8,7 +8,7 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
 
     constructor(private readonly fileUploadDatasource: FileUploadDatasource) {}
     
-    uploadFile = async( file: UploadFileDto , folder : string ) : Promise<FileResponseDto | false> => {
+    async uploadFile( file : UploadFileDto , folder : string ) : Promise<FileResponseDto | false>  {
         try {
             const fileUploaded = await this.fileUploadDatasource.uploadFile( file , folder );
             if( !fileUploaded ) return false;
@@ -22,7 +22,7 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
         }
     }
     
-    deleteFile = async( id : string ) : Promise<boolean> => {
+    async deleteFile( id : string ) : Promise<boolean> {
         try{
             const file = await this.fileUploadDatasource.getFileById( id );
             if( !file ) return false;
@@ -42,7 +42,7 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
         }
     }
 
-    getFileById = async(id: string) : Promise<FileResponseDto> => {
+    async getFileById( id : string ) : Promise<FileResponseDto> {
         try{
             return this.fileUploadDatasource.getFileById( id );
         }

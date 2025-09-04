@@ -45,7 +45,7 @@ export class AuthController {
             .catch( error => HandlerResponses.handleError(error , res ) );
     }
 
-    public reloadToken = async( req : AuthenticatedRequest , res : Response ) => {
+    public reloadToken = ( req : AuthenticatedRequest , res : Response ) => {
 
         const user = req.user;
         if( !user ) return;

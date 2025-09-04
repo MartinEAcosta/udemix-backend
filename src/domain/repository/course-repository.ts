@@ -5,8 +5,8 @@ import { UpdateCourseDto } from "../dtos/course/update-course.dto";
 
 export abstract class CourseRepository {
 
-    abstract getAllCourses( ) : Promise<CourseEntity[]>;
-    abstract getCourseById( id : string ) : Promise<CourseEntity | null>;
+    abstract findAllCourses( ) : Promise<CourseEntity[]>;
+    abstract findCourseById( id : string ) : Promise<CourseEntity | null>;
     abstract saveCourse( createCourseDto : CreateCourseDto ) : Promise<CourseEntity>;
     abstract updateCourse( updateCourseDto : UpdateCourseDto ) : Promise<CourseEntity>;
     abstract deleteCourse( id : string ) : Promise<boolean>;

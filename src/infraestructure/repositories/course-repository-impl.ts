@@ -11,9 +11,9 @@ export class CourseRepositoryImpl implements CourseRepository{
         private readonly courseDatasource : CourseDatasource, 
     ){ }
 
-    async getAllCourses() : Promise<CourseEntity[]> {
+    async findAllCourses() : Promise<CourseEntity[]> {
         try{
-            const courses = await this.courseDatasource.getAllCourses();
+            const courses = await this.courseDatasource.findAllCourses();
             return courses.map( course => CourseEntity.fromObject(course) );
         }
         catch( error ){
@@ -21,9 +21,9 @@ export class CourseRepositoryImpl implements CourseRepository{
         }
     }
 
-    async getCourseById( id: string ) : Promise<CourseEntity | null> {
+    async findCourseById( id: string ) : Promise<CourseEntity | null> {
         try{
-            const course = await this.courseDatasource.getCourseById(id);
+            const course = await this.courseDatasource.findCourseById(id);
             return course ? CourseEntity.fromObject( course ) : null;
         }
         catch( error ){

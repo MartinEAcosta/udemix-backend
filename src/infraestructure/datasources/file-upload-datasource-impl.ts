@@ -11,38 +11,26 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
 
     constructor( private readonly fileStorage : FileStorage ) {}
 
-    uploadFile = async( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponseDto> => {
-        try{
-            const fileUploaded : FileStorageAdapterResponseDto = await this.fileStorage.uploadFile( file , folder );
-            if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al subir el archivo.');
+uploadFile = async( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponseDto> => {
+        const fileUploaded : FileStorageAdapterResponseDto = await this.fileStorage.uploadFile( file , folder );
+        if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al subir el archivo.');
 
-            return fileUploaded;
-        }
-        catch(error){
-            console.error(error);
-            throw CustomError.internalServer(`${error}`);
-        }
+        return fileUploaded;
     }
 
     saveFileOnDB = async ( file : FileStorageAdapterResponseDto ) : Promise<FileResponseDto> => {
-        try{
-            const fileSaved = await FileModel.create( {
-                public_id     : file.public_id,
-                folder        : file.folder,
-                size          : file.size,
-                extension     : file.extension,
-                resource_type : file?.resource_type,
-            });
-            if( !fileSaved ) throw CustomError.internalServer('Hubo un error al grabar el archivo en la base de datos.')
-            
-            file.id = fileSaved._id.toString();
+        const fileSaved = await FileModel.create( {
+            public_id     : file.public_id,
+            folder        : file.folder,
+            size          : file.size,
+            extension     : file.extension,
+            resource_type : file?.resource_type,
+        });
+        if( !fileSaved ) throw CustomError.internalServer('Hubo un error al grabar el archivo en la base de datos.')
+        
+        file.id = fileSaved._id.toString();
 
-            return FileMapper.fromFileResponse( file );
-        }
-        catch(error){
-            console.error(error);
-            throw CustomError.internalServer(`${error}`);
-        }
+        return FileMapper.fromFileResponse( file );
     }
 
     deleteFile = async( folder : string ,public_id: string) : Promise<boolean> => {

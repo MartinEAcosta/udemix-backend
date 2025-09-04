@@ -30,12 +30,12 @@ export class AcquireCourse implements AcquireCourseUseCase {
         user.balance -= course.price;
         user.enrolledCourses?.push( course_id );
 
-        const { password , id , ...rest } = user;
-        const updatedUser = await this.authRepository.acquireCourse( rest , id! );
+        const updatedUser = await this.authRepository.acquireCourse( user , user.id! );
         if( !updatedUser ) throw CustomError.internalServer('Hubo un error al actualizar el usuario con el curso adquirido.');
-
+        const { password , ...userWithoutPass } = updatedUser;
+        
         return {
-            ...updatedUser,
+            ...userWithoutPass,
         };
     }
 

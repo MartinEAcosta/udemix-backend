@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { CourseRepository } from "../../domain/repository/course-repository";
-import { DeleteCourse, SaveCourse, UpdateCourse , GetAllCourses , GetCourseById} from '../../domain/use-cases';
+import { DeleteCourse, FindAllCourses, FindCourseById, SaveCourse, UpdateCourse } from '../../domain/use-cases';
 import { CreateCourseDto , UpdateCourseDto } from "../../domain/dtos";
 import { HandlerResponses } from '../helpers/handler-responses';
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
@@ -14,19 +14,19 @@ export class CourseController {
         private readonly courseRepository : CourseRepository,
     ){ }
 
-    public getAllCourses = ( req : Request , res : Response ) => {
+    public findAllCourses = ( req : Request , res : Response ) => {
 
-        new GetAllCourses( this.courseRepository )
+        new FindAllCourses( this.courseRepository )
             .execute()
             .then( courses => HandlerResponses.handleSuccess( res , courses ) )
             .catch( error => HandlerResponses.handleError( error , res ));
     }
 
-    public getCourseById = ( req : Request , res : Response ) => {
+    public findCourseById = ( req : Request , res : Response ) => {
 
         const { id }  = req.params;
 
-        new GetCourseById( this.courseRepository )
+        new FindCourseById( this.courseRepository )
             .execute( id )
             .then( course => HandlerResponses.handleSuccess( res, course ) )
             .catch( error => HandlerResponses.handleError( error , res ));
@@ -43,7 +43,7 @@ export class CourseController {
             .catch( error => HandlerResponses.handleError( error , res ));
     }
 
-    public updateCourse = async( req : Request , res : Response ) => {
+    public updateCourse = ( req : Request , res : Response ) => {
         const { id } = req.params;
 
         const [ errorMessage , updateCourseDto ] = UpdateCourseDto.create( id , req.body );
@@ -56,7 +56,7 @@ export class CourseController {
     }
 
 
-    public deleteCourse = async( req : Request , res : Response ) => {
+    public deleteCourse = ( req : Request , res : Response ) => {
 
         const { id } = req.params;
 

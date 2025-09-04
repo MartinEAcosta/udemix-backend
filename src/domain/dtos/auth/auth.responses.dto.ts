@@ -15,12 +15,12 @@ export interface UserRequestDto {
     enrolledCourses : string[],
 }
 
-export interface AuthSuccessResponseDto {
-    user  : AuthResponseDto,
-    token : string,
-}
 export interface AuthResponseDto {
     id       ?:   string,
     username : string,
     email    : string,
+}
+export interface AuthSuccessResponseDto {
+    user  : AuthResponseDto,
+    token : string,
 }

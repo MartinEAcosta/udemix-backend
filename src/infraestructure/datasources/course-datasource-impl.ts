@@ -7,13 +7,13 @@ import { CourseMapper } from '../mappers/course.mapper';
 
 export class CourseDatasourceImpl implements CourseDatasource {
 
-    async getAllCourses(): Promise<CourseResponseDto[]> {
+    async findAllCourses(): Promise<CourseResponseDto[]> {
         const courses = await CourseModel.find({});
         if( !courses ) return [];
         return courses.map( CourseMapper.fromCourseDto );
     }
 
-    async getCourseById( id: string ): Promise<CourseResponseDto | null> {   
+    async findCourseById( id: string ): Promise<CourseResponseDto | null> {   
         const course = await CourseModel.findById({ _id: id });
         if( !course ) return null;
 

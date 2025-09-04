@@ -2,16 +2,16 @@ import { CourseRepository } from "../../repository/course-repository";
 
 import { CourseEntity } from "../../entities/course.entity";
 
-export interface GetAllCourseUseCase {
+export interface FindAllCourseUseCase {
     execute ( ) : Promise<CourseEntity[]>
 }
 
-export class GetAllCourses implements GetAllCourseUseCase {
+export class FindAllCourses implements FindAllCourseUseCase {
 
     constructor( private readonly courseRepository : CourseRepository) { }
 
     execute( ): Promise<CourseEntity[]> {
-        return this.courseRepository.getAllCourses();
+        return this.courseRepository.findAllCourses();
     }
 
 }

@@ -28,7 +28,7 @@ export class CourseRouter {
         // GetAll Courses
         router.get(
           '/',
-          courseController.getAllCourses
+          courseController.findAllCourses
         );
         
         router.get(
@@ -36,7 +36,7 @@ export class CourseRouter {
           // [
           //   check( 'id' , 'El id no puede estar vació.' ).notEmpty(),
           // ],
-          courseController.getCourseById
+          courseController.findCourseById
         );
         
         // Create Course
