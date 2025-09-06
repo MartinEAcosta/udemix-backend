@@ -19,7 +19,7 @@ export class AcquireCourse implements AcquireCourseUseCase {
         const user = await this.authRepository.findUserById( user_id ); 
         if( !user ) throw CustomError.notFound("El usuario que estas intentando buscar no existe.");
         
-        const course = await this.courseRepository.getCourseById( course_id ); 
+        const course = await this.courseRepository.findCourseById( course_id ); 
         if( !course ) throw CustomError.notFound("El curso que estas intentando buscar no existe.");
 
         const alreadyAcquired = user.enrolledCourses.some( enrolledCourseId => enrolledCourseId.toString() === course_id );

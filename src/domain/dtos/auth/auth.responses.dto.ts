@@ -5,14 +5,13 @@ export interface UserResponseDto {
     email           : string,
     password       ?: string,
     balance         : number,
-    enrolledCourses : string[];
 }
 
 export interface UserRequestDto {
+    id             ?: string,
     username        : string,
     email           : string,
     balance         : number,
-    enrolledCourses : string[],
 }
 
 export interface AuthResponseDto {

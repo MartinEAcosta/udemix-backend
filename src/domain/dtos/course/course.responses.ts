@@ -9,5 +9,6 @@ export interface CourseResponseDto {
     id_owner : string,
     price : number,
     capacity ?: number | null,
+    current_enrolled : number,
 }
 

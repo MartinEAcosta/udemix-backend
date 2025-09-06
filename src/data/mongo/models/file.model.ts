@@ -14,30 +14,33 @@ export interface IFileModel {
 
 const fileSchema = new mongoose.Schema({
     
+    // En caso de que no tenga un public_id es porque falló el upload de Cloudinary.
     public_id: {
         type     : String,
-        required : true,
+        required : [true, 'El public_id es requerido.'],
     },
 
     folder: {
         type     : String,
-        required : ["users" , "courses"],
+        enum     : ["users" , "courses"],
+        required : true,
     },
 
+    // En caso de no haber un size definido es porque falló el upload.
     size: {
         type     : Number,
-        required : true,
+        required : [true , 'El tamaño del archivo es requerido.'],
     },
 
     extension: {
         type     : String,
-        required : true,
+        required : [true, 'La extensión del archivo es requerida.'],
     },
     
     resource_type: {
         type     : String,
         enum     : ["image", "video", "raw", "auto"],
-        required : true,
+        required : [true , 'El tipo de recurso es requerido.'],
     },
 
 });

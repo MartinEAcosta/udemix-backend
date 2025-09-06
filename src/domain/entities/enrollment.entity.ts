@@ -16,11 +16,12 @@ export class EnrollmentEntity {
     public completionDate : number;
 
     private constructor( options : EnrollmentEntity ){
-        this.id_user = options.id_user;
-        this.id_course = options.id_course;
-        this.purchaseDate = options.purchaseDate;
-        this.progress = options.progress;
-        this.completionDate = options.completionDate;
+        const { id_user , id_course , purchaseDate , progress , completionDate } = options;
+        this.id_user = id_user;
+        this.id_course = id_course;
+        this.purchaseDate = purchaseDate;
+        this.progress = progress;
+        this.completionDate = completionDate;
      }
 
     static fromObject = ( object: { [ key: string ] : any } ): EnrollmentEntity => {

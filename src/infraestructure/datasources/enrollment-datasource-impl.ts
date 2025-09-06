@@ -21,7 +21,7 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
         }
     }
 
-    getAllEnrollmentsByUserId = async( uid: string ) : Promise<EnrollmentResponseDto[] | undefined>  =>{
+    findAllEnrollmentsByUserId = async( uid: string ) : Promise<EnrollmentResponseDto[] | undefined>  =>{
         try{
             const listOfEnrollments = await EnrollmentModel.find({ id_user: uid }); 
             if( !listOfEnrollments ) return;
@@ -33,7 +33,7 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
         }
     }
 
-    getEnrollmentByUserIdAndCourseId = async(uid: string, courseId: string): Promise<EnrollmentResponseDto | null> => {
+    findEnrollmentByUserIdAndCourseId = async(uid: string, courseId: string): Promise<EnrollmentResponseDto | null> => {
         try{
             
             const enrollment = await EnrollmentModel.findOne({ id_user: uid, id_course: courseId });

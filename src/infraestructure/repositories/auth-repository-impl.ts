@@ -10,7 +10,17 @@ export class AuthRepositoryImpl implements AuthRepository {
     constructor(
         private readonly authDatasource : AuthDatasource,
     ) {}
-
+    
+    async updateUser( userRequestDto : UserRequestDto ) : Promise<UserEntity> {
+        try{
+            const updatedUser = await this.authDatasource.updateUser( userRequestDto );
+            
+            return UserEntity.fromObject( updatedUser );
+        }
+        catch( error ){
+            throw error;
+        }
+    }
     
     async registerUser( registerUserDto: RegisterUserDto ) : Promise<UserEntity> {
         try{

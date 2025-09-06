@@ -19,7 +19,7 @@ export class DeleteCourseThumbnail implements DeleteCourseThumbnailUseCase {
             // El problema al llamar el Delete file es que espera el file_id y no el course_id.
             // Por lo tanto necesitaria una request al repo de cursos donde obtenga el curso, desestructurar el thumbnail
             // y obtener el file_id.
-            const course = await this.courseRepository.getCourseById( id );
+            const course = await this.courseRepository.findCourseById( id );
 
             if( !course ) return false;
             const { file_id , thumbnail_url, ...rest } = course;

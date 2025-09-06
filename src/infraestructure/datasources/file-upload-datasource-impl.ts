@@ -11,7 +11,7 @@ export class FileUploadDatasourceImpl implements FileUploadDatasource {
 
     constructor( private readonly fileStorage : FileStorage ) {}
 
-uploadFile = async( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponseDto> => {
+    uploadFile = async( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponseDto> => {
         const fileUploaded : FileStorageAdapterResponseDto = await this.fileStorage.uploadFile( file , folder );
         if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al subir el archivo.');
 
@@ -30,7 +30,7 @@ uploadFile = async( file : UploadFileDto , folder : string ) : Promise<FileStora
         
         file.id = fileSaved._id.toString();
 
-        return FileMapper.fromFileResponse( file );
+        return FileMapper.fromFileResponseDto( file );
     }
 
     deleteFile = async( folder : string ,public_id: string) : Promise<boolean> => {
@@ -47,10 +47,10 @@ uploadFile = async( file : UploadFileDto , folder : string ) : Promise<FileStora
         return true;
     }
 
-    getFileById = async(id: string): Promise<FileResponseDto> =>{
+    findFileById = async( id : string ) : Promise<FileResponseDto | null> =>{
         const file = await FileModel.findById( {_id: id} );
-        if( !file ) throw CustomError.notFound(`El archivo con el id: ${id}, no se ha encontrado.`)
-
-        return FileMapper.fromFileResponse( file );
+        if(!file ) return null;
+        
+        return FileMapper.fromFileResponseDto( file );
     }
 }

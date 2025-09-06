@@ -1,24 +1,24 @@
-import mongoose, { Types } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 
 export interface IUserModel {
-  _id     : Types.ObjectId; // Podría venir de la DB
-  username : string;
-  email    : string;
-  password : string;
-  balance  : number;
+  _id             : Types.ObjectId; // Podría venir de la DB
+  username        : string;
+  email           : string;
+  password        : string;
+  balance         : number;
 }
 
 const userSchema = new mongoose.Schema({
 
     username : {
-        type: String,
-        required: [ true , 'El nombre de usuario es requerido.'],
+        type     : String,
+        required : [ true , 'El nombre de usuario es requerido.'],
     },
 
     email : {
-        type: String,
-        required: [ true , 'El email es requerido.'],
-        unique: true,
+        type     : String,
+        required : [ true , 'El email es requerido.'],
+        unique   : true,
     },
 
     // emailValidated : {
@@ -27,25 +27,14 @@ const userSchema = new mongoose.Schema({
     // },
 
     password : {
-        type: String,
-        required: [ true , 'La contraseña es requerida.'],
+        type     : String,
+        required : [ true , 'La contraseña es requerida.'],
     },
     
     balance : {
-        type: Number,
-        default: 100,
+        type    : Number,
+        default : 100,
     },
-
-    enrolledCourses : {
-        type: [ 
-            { 
-                type : Types.ObjectId,
-                ref : 'Course',
-            }
-        ],
-        default: [],
-    }
-
     
     // avatar : {
     //     type: String,

@@ -1,59 +1,65 @@
 import mongoose, { Schema, Types } from "mongoose";
 
 export interface ICourseModel {
-    _id           : Types.ObjectId,
-    title         : string,
-    description   : string,
+    _id              : Types.ObjectId,
+    title            : string,
+    description      : string,
     // TODO: Reemplazar por entidad Category
     //* category : Types.ObjectId;
-    category      : string,
-    thumbnail_url ?: string | null,
-    file_id       ?: Types.ObjectId | null,
-    id_owner      : Types.ObjectId,
-    price         : number,
-    capacity     ?: number | null,
+    category         : string,
+    thumbnail_url    ?: string | null,
+    file_id          ?: Types.ObjectId | null,
+    id_owner         : Types.ObjectId,
+    price            : number,
+    capacity        ?: number | null,
+    current_enrolled : number,
 }
 
 const courseSchema = new mongoose.Schema({
 
     title : {
-        type: String,
-        required: true,
+        type     : String,
+        required : [true , 'El título es requerido.'],
     },
 
     description : { 
-        type: String,
-        required: true,
+        type     : String,
+        required : [true , 'La descripción es requerida.'],
     },
 
     category : {
-        type: String,
-        required: true,
+        type     : String,
+        required : [true , 'La categoría es requerida.'],
     },
 
     thumbnail_url : {
-        type: String,
+        type     : String,
     },
 
     file_id : {
-        type : Schema.Types.ObjectId,
-        ref: 'File',
+        type     : Schema.Types.ObjectId,
+        ref      : 'File',
     },
 
     id_owner : {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
+        type     : Schema.Types.ObjectId,
+        ref      : 'User',
+        required : [true, 'El id del propietario es requerido.'],
     },
 
     price : {
-        type: Number,
-        default: 0,
+        type    : Number,
+        default : 0,
     },
 
     capacity : {
-        type: Number,
-        default: undefined,
+        type    : Number,
+        default : undefined,
+    },
+
+    current_enrolled : {
+        type    : Number,
+        default : 0,
     },
 
 });

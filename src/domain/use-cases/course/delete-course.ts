@@ -13,7 +13,7 @@ export class DeleteCourse implements DeleteCourseUseCase {
     ) {}
 
     async execute(id: string): Promise<boolean> {
-        const courseToRemove = await this.courseRepository.getCourseById( id );
+        const courseToRemove = await this.courseRepository.findCourseById( id );
         if(courseToRemove === null) throw CustomError.notFound(`El curso con el id: ${id}, no fue encontrado`);
 
         const hasRemoved = await this.courseRepository.deleteCourse( id );

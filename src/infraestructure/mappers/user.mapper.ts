@@ -1,15 +1,15 @@
+import { IUserModel } from "../../data";
 import { UserResponseDto } from "../../domain/dtos/auth/auth.responses.dto";
 
 export class UserMapper {
 
-    static fromUserResponseDto ( userDoc : any ) : UserResponseDto{
+    static fromUserResponseDto ( userDoc : IUserModel ) : UserResponseDto{
         return {
-            id: userDoc._id,
+            id: userDoc._id.toString(),
             username: userDoc.username,
             email: userDoc.email,
             password: userDoc.password,
             balance: userDoc.balance,
-            enrolledCourses: userDoc.enrolledCourses.map( ( course : any ) => course._id ) || [],
         }
     }
 

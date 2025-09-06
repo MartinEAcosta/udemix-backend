@@ -27,13 +27,22 @@ export class RegisterUser implements RegisterUserUseCase {
         const { password , ...rest } = registerUserDto;
         const hashedPassword = this.encrypter.hash( password );
 
-        const newUser = await this.authRepository.registerUser({password : hashedPassword , ...rest });
+        const newUser = await this.authRepository.registerUser( 
+                                                                { 
+                                                                    password : hashedPassword, 
+                                                                    ...rest 
+                                                                } 
+                                                            );
 
         const token = await this.tokenManager.generateToken({ id : newUser.id });
         if( !token ) throw CustomError.internalServer('Error en la creación del token.');
 
         return {
-            user: newUser,
+            user: {
+                id       : newUser.id,
+                username : newUser.username,
+                email    : newUser.email,                                
+            },
             token: token,
         }
     }

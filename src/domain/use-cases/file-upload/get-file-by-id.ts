@@ -1,17 +1,21 @@
 import { FileUploadRepository } from "../../repository/file-upload-repository";
 
-import { FileResponseDto } from '../../dtos/file-upload/file-upload.response.dto';
+import { CustomError } from "../../errors/custom-error";
+import { FileEntity } from "../../entities/file.entity";
 
-interface GetFileByIdUseCase {
-    execute ( id : string ) : Promise<FileResponseDto>;
+interface FindFileByIdUseCase {
+    execute ( id : string ) : Promise<FileEntity | null>;
 }
 
-export class GetFileById implements GetFileByIdUseCase{
+export class FindFileById implements FindFileByIdUseCase{
 
-    constructor ( private readonly fileUploadRepository : FileUploadRepository ) {}
+    constructor ( 
+        private readonly fileUploadRepository : FileUploadRepository 
+    ) { }
 
-    execute = async(id: string): Promise<FileResponseDto> => {
-        const fileResponse = this.fileUploadRepository.getFileById( id ); 
+    async execute ( id : string ) : Promise<FileEntity | null> {
+        const fileResponse = await this.fileUploadRepository.findFileById( id ); 
+        if( !fileResponse ) throw CustomError.notFound('No se encontró el archivo.');
 
         return fileResponse;
     }

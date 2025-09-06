@@ -7,7 +7,7 @@ import { CourseRepository } from "../../domain/repository/course-repository";
 import { UploadSingle } from "../../domain/use-cases/file-upload/upload-single";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { DeleteFile } from "../../domain/use-cases/file-upload/delete-file";
-import { GetFileById } from "../../domain/use-cases/file-upload/get-file-by-id";
+import { FindFileById } from "../../domain/use-cases/file-upload/get-file-by-id";
 import { DeleteCourseThumbnail } from "../../domain/use-cases/file-upload/delete-course-thumbnail";
 
 // toLowerCase aplicado a la hora de comparar.
@@ -31,12 +31,8 @@ export class FileUploadController {
             data      : file.data,
             mimetype  : file.mimetype,
         });
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ), res );
         
-        if( error ) {
-            return res.status(400).json({
-                error : error,
-            });
-        }
         const folder = this.obtainFolder( req , res );
         if( !folder ) return;
         
@@ -82,11 +78,11 @@ export class FileUploadController {
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
 
-    public getFileById = ( req : Request , res : Response ) => {
+    public findFileById = ( req : Request , res : Response ) => {
         const { id } = req.params;
-        if( !id ) return;
+        if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
 
-        new GetFileById( this.fileUploadRepository )
+        new FindFileById( this.fileUploadRepository )
             .execute( id )
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});

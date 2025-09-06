@@ -13,7 +13,7 @@ export class LoginUserDto {
         if( !email ) return ['El email es requerido.', undefined];
         if( !regularExps.email.test( email ) ) return ['El email no es valido.', undefined];
         if( !password ) return ['La contraseña es requerida.', undefined];
-        if( password.length < 6 ) return ['La longitud de la contraseña debe ser mayor a 6.'];
+        if( password.length < 6 ) return ['La longitud de la contraseña debe ser mayor a 6.', undefined];
         
         return [undefined, new LoginUserDto( email, password)];
     }

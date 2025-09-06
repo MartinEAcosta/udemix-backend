@@ -1,31 +1,27 @@
 import { Request, Response } from "express";
 
 import { AuthRepository } from "../../domain/repository/auth-repository";
-import { CourseRepository } from "../../domain/repository/course-repository";
 import { Encrypter } from "../../domain/services/Encrypter";
 import { TokenManager } from "../../domain/services/TokenManager";
 import { CustomError } from "../../domain/errors/custom-error";
 import { HandlerResponses } from '../helpers/handler-responses';
 
 import { RegisterUserDto , LoginUserDto } from "../../domain/dtos";
-import { RegisterUser , LoginUser , FindUserById } from "../../domain/use-cases";
-import { AcquireCourse } from "../../domain/use-cases/auth/acquire-course";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
+import { RegisterUser , LoginUser , FindUserById } from "../../domain/use-cases";
 
 export class AuthController {
 
     constructor(
         private readonly authRepository : AuthRepository,
-        private readonly courseRepository : CourseRepository,
-        private readonly encrypter : Encrypter,
-        private readonly tokenManager : TokenManager,
+        private readonly encrypter      : Encrypter,
+        private readonly tokenManager   : TokenManager,
     ){}
 
     public registerUser = ( req : Request , res : Response ) => {
         const [ error , registerUserDto ] = RegisterUserDto.create( req.body );
-        if( error ) return res.status(400).json({
-            error : error,
-        });
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
+        
         new RegisterUser( this.authRepository , this.encrypter , this.tokenManager )      
             .execute( registerUserDto! )
             .then( authResponse => HandlerResponses.handleAuthSuccess( res , authResponse , 201 ) )
@@ -34,11 +30,8 @@ export class AuthController {
 
     public loginUser = ( req : Request , res : Response ) => {
         const [ error , loginUserDto ] = LoginUserDto.create( req.body );
-        if( error ) return res.status(400).json({
-            error : error,
-        });
-        console.log(loginUserDto);
-        
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
+
         new LoginUser( this.authRepository , this.encrypter , this.tokenManager )
             .execute( loginUserDto! )
             .then( authResponse => HandlerResponses.handleAuthSuccess( res , authResponse , 200 ) )
@@ -48,7 +41,7 @@ export class AuthController {
     public reloadToken = ( req : AuthenticatedRequest , res : Response ) => {
 
         const user = req.user;
-        if( !user ) return;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe esar autenticado para refrescar el token.') , res );
 
         new FindUserById( this.authRepository )
             .execute( user.id )
@@ -61,17 +54,4 @@ export class AuthController {
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
 
-    public acquireCourse = ( req : AuthenticatedRequest , res : Response ) => {
-
-        const user = req.user;
-        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe estar autenticado para adquirir un curso.') , res );
-
-        const { course_id } = req.body;
-        if( !course_id ) return HandlerResponses.handleError( CustomError.badRequest('El id del curso es requerido.') , res );
-
-        new AcquireCourse( this.authRepository , this.courseRepository )
-            .execute( user.id.toString() , course_id )
-            .then( authResponse => HandlerResponses.handleSuccess( res , authResponse , 200 ) )
-            .catch( error => HandlerResponses.handleError(error , res ) );
-    }
 }

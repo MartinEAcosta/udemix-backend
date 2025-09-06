@@ -15,7 +15,7 @@ export class UpdateCourse implements UpdateCourseUseCase {
     ) {}
 
     async execute(updateCourseDto: UpdateCourseDto): Promise<CourseEntity> {
-        const courseToUpdate = await this.courseRepository.getCourseById( updateCourseDto.id );
+        const courseToUpdate = await this.courseRepository.findCourseById( updateCourseDto.id );
         if( !courseToUpdate )  throw CustomError.notFound(`El curso con el id: ${updateCourseDto.id}, no fue encontrado`);
         const updatedCourse = await this.courseRepository.updateCourse( updateCourseDto );
 

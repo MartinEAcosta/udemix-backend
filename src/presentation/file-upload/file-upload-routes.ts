@@ -48,7 +48,7 @@ export class FileUploadRouter {
         
         router.get( 
             '/:id',
-            fileUploadController.getFileById,
+            fileUploadController.findFileById,
         )
 
 

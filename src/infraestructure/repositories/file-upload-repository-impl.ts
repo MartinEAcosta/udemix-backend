@@ -3,6 +3,7 @@ import { FileUploadDatasource } from "../../domain/datasources/file-upload.datas
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { FileResponseDto } from "../../domain/dtos/file-upload/file-upload.response.dto";
 import { FileMapper } from "../mappers/file.mapper";
+import { FileEntity } from "../../domain/entities/file.entity";
 
 export class FileUploadRepositoryImpl implements FileUploadRepository {
 
@@ -15,7 +16,7 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
             const uploadedFileinDB = await this.fileUploadDatasource.saveFileOnDB( fileUploaded );
             if( !uploadedFileinDB) return false;
             
-            return FileMapper.fromFileResponse( uploadedFileinDB );
+            return FileMapper.fromFileResponseDto( uploadedFileinDB );
         } catch (error) {
             console.log(error);
             throw error;
@@ -24,7 +25,7 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
     
     async deleteFile( id : string ) : Promise<boolean> {
         try{
-            const file = await this.fileUploadDatasource.getFileById( id );
+            const file = await this.fileUploadDatasource.findFileById( id );
             if( !file ) return false;
 
             const { folder , public_id } = file;
@@ -42,9 +43,12 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
         }
     }
 
-    async getFileById( id : string ) : Promise<FileResponseDto> {
+    async findFileById( id : string ) : Promise<FileEntity | null> {
         try{
-            return this.fileUploadDatasource.getFileById( id );
+            const file = await this.fileUploadDatasource.findFileById( id );
+            if( !file ) return null;
+
+            return FileEntity.fromObject( file );
         }
         catch( error ) {
             console.log(error);

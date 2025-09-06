@@ -1,10 +1,10 @@
+import { ICourseModel } from '../../data';
 import { CourseResponseDto } from './../../domain/dtos/course/course.responses';
-import { ICourseModel } from "../../data"
 
 
 export class CourseMapper {
 
-    static fromCourseDto = ( courseDoc : ICourseModel ) : CourseResponseDto => {
+    static fromCourseResponseDto = ( courseDoc : ICourseModel ) : CourseResponseDto => {
         return {
             id : courseDoc._id.toString(),
             title : courseDoc.title,
@@ -15,6 +15,7 @@ export class CourseMapper {
             id_owner : courseDoc.id_owner.toString(),
             price : courseDoc.price,
             capacity : courseDoc.capacity ?? undefined,
+            current_enrolled : courseDoc.current_enrolled,
         }
     } 
 }

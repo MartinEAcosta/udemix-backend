@@ -12,30 +12,30 @@ export interface IEnrollmentModel{
 const enrollmentSchema = new mongoose.Schema({
 
     id_user : {
-        type: Types.ObjectId,
-        ref: 'User',
-        required: true,
+        type     : Types.ObjectId,
+        ref      : 'User',
+        required : [true , 'El id del usuario es requerido.'],
     },
 
     id_course : {
-        type: Types.ObjectId, 
-        ref: 'Course',
-        required: true,
+        type     : Types.ObjectId, 
+        ref      : 'Course',
+        required : [true , 'El id del curso es requerido.'],
     },
 
     purchaseDate : {
-        type: Date,
-        default: Date.now,
+        type    : Date,
+        default : Date.now,
     },
 
-    progess : {
-        type: Number,
+    progress : {
+        type    : Number,
         default : 0,
     },
 
     completionDate : {
-        type: Date,
-        default: null,
+        type    : Date,
+        default : null,
     },
 
 });

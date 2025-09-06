@@ -2,7 +2,7 @@ import { FileResponseDto } from "../../domain/dtos/file-upload/file-upload.respo
 
 export class FileMapper {
 
-    static fromFileResponse ( fileDoc : any ) : FileResponseDto {
+    static fromFileResponseDto ( fileDoc : any ) : FileResponseDto {
         return {
             id: fileDoc.id,
             public_id: fileDoc.public_id,

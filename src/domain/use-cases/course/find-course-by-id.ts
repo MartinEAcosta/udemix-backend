@@ -13,7 +13,7 @@ export class FindCourseById implements FindCourseByIdUseCase {
         private readonly courseRepository : CourseRepository, 
     ) {}
 
-    async execute(id: string): Promise<CourseEntity | null> {
+    async execute( id : string ) : Promise<CourseEntity | null> {
         const course = await this.courseRepository.findCourseById( id );
         if( !course ) throw CustomError.notFound(`El curso con el id: ${id}, no fue encontrado`);
 

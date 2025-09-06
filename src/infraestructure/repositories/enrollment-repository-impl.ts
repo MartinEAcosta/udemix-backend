@@ -14,15 +14,15 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
         return EnrollmentEntity.fromObject( savedEnrollment );
     }
 
-    getEnrollmentByUserIdAndCourseId = async(uid: string, courseId: string): Promise<EnrollmentEntity | null> => {
-        const enrollment = await this.enrollmentDatasource.getEnrollmentByUserIdAndCourseId( uid , courseId );
+    findEnrollmentByUserIdAndCourseId = async(uid: string, courseId: string): Promise<EnrollmentEntity | null> => {
+        const enrollment = await this.enrollmentDatasource.findEnrollmentByUserIdAndCourseId( uid , courseId );
         if ( !enrollment ) return null;
 
         return EnrollmentEntity.fromObject( enrollment );
     }
     
-    getAllEnrollmentsByUserId = async(uid: string): Promise<EnrollmentEntity[]> => {
-        const enrollments = await this.enrollmentDatasource.getAllEnrollmentsByUserId( uid );
+    findAllEnrollmentsByUserId = async(uid: string): Promise<EnrollmentEntity[]> => {
+        const enrollments = await this.enrollmentDatasource.findAllEnrollmentsByUserId( uid );
         if( !enrollments ) return [];
         return enrollments.map( enrollment => EnrollmentEntity.fromObject( enrollment ));
     }
