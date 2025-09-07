@@ -1,4 +1,4 @@
-import { EnrollmentRepository } from "../../repository/enrollment.repository";
+import { EnrollmentRepository } from "../../repository/enrollment-repository";
 import { EnrollmentEntity } from "../../entities/enrollment.entity";
 
 import { CreateEnrollmentDto } from "../../dtos/enrollment/create-enrollment.dto";

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { EnrollmentRepository } from "../../domain/repository/enrollment.repository";
+import { EnrollmentRepository } from "../../domain/repository/enrollment-repository";
 import { CreateEnrollmentDto } from "../../domain/dtos/enrollment/create-enrollment.dto";
 import { HandlerResponses } from "../helpers/handler-responses";
 import { EnrollUserInCourse } from "../../domain/use-cases/enrollment/enroll-user-in-course";

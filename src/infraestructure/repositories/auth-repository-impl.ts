@@ -9,7 +9,7 @@ export class AuthRepositoryImpl implements AuthRepository {
 
     constructor(
         private readonly authDatasource : AuthDatasource,
-    ) {}
+    ) { }
     
     async updateUser( userRequestDto : UserRequestDto ) : Promise<UserEntity> {
         try{
@@ -53,26 +53,4 @@ export class AuthRepositoryImpl implements AuthRepository {
         }
     }
     
-    async findUserByIdWithCourses( id : string ) : Promise<UserEntity> {
-        try{
-            const user = await this.authDatasource.findUserByIdWithCourses( id );
-
-            return UserEntity.fromObject( user! );
-        }
-        catch( error ){
-            throw error;
-        }
-    }
-
-    async acquireCourse( user : UserRequestDto , uid : string ) : Promise<UserEntity> {
-        try{
-            const userWithAcquiredCourse = await this.authDatasource.acquireCourse( user , uid );
-            return UserEntity.fromObject( userWithAcquiredCourse );
-        }
-        catch( error ){
-            throw error;
-        }
-    }
-
-  
 }

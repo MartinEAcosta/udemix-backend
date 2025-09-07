@@ -7,7 +7,5 @@ export abstract class AuthDatasource {
     abstract updateUser ( user : UserRequestDto ) : Promise<UserResponseDto>;
     abstract findUserByEmail( email : string ): Promise<UserResponseDto | null>;
     abstract findUserById( id : string ) : Promise<UserResponseDto | null>;
-    abstract findUserByIdWithCourses( id : string ) : Promise<UserResponseDto | null>;
-    abstract acquireCourse( user : UserRequestDto , uid : string ) : Promise<UserResponseDto>;
  
 }

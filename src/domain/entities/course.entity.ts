@@ -1,5 +1,5 @@
 
-export interface CourseEntityOptions {
+interface CourseEntityOptions {
     id : string;
     title : string ;
     description : string; 
