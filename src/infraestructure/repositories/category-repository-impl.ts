@@ -41,11 +41,6 @@ export class CategoryRepositoryImpl implements CategoryRepository {
         }
         catch( error ){
             // Seria mongooseError en realidad
-            const mongoError = error as any;
-
-            if ( mongoError?.cause?.code === 11000 ) {
-                throw CustomError.badRequest("Ya existe una categoria con los atributos indicados.");
-            }
 
             throw error;
         }

@@ -14,7 +14,20 @@ export class CreateLesson implements CreateLessonUseCase {
     ) { }
 
     async execute( lessonRequestDto : CreateLessonDto ) : Promise<LessonEntity> {
-        const createdLesson = await this.lessonRepository.createLesson( lessonRequestDto );
+
+        let lessonToCreate = lessonRequestDto;
+        
+        const { id_course } = lessonRequestDto;
+        const lessonsFromCourse = await this.lessonRepository.findAllLessonsByCourseId( id_course );
+        if( lessonsFromCourse ){
+            const lastLesson = lessonsFromCourse.pop();
+            lessonToCreate = {
+                ...lessonRequestDto,
+                lesson_number: lastLesson!.lesson_number + 1,
+            };
+        }
+        
+        const createdLesson = await this.lessonRepository.createLesson( lessonToCreate );
         if( !createdLesson ) throw CustomError.internalServer('Hubo un error a la hora de intentar crear el curso.');
 
         return createdLesson;

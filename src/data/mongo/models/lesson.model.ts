@@ -46,6 +46,7 @@ const lessonSchema = new mongoose.Schema({
     lesson_number : {
         type     : Number,
         required : [true, 'El número de la lección es requerido.'],
+        default  : 0,
         unique   : true,
     },
 

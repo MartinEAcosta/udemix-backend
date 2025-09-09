@@ -21,7 +21,7 @@ export class LessonDatasourceImpl implements LessonDatasource {
     }
 
     async findAllLessonByCourseId( course_id : string ) : Promise<LessonResponseDto[]> {
-        const lessons = await LessonModel.find({ id_course : course_id });
+        const lessons = await LessonModel.find({ id_course : course_id }).sort({ lesson_number: 'asc'});
 
         return lessons.map( lesson => LessonMapper.fromLessonResponseDto( lesson ) );
     }
