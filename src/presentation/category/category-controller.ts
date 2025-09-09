@@ -18,7 +18,7 @@ export class CategoryController {
 
         new FindAllCategories( this.categoryRepository )
             .execute()
-                .then( course => HandlerResponses.handleSuccess( res, course ) )
+                .then( course => HandlerResponses.handleSuccess( res, course, 200 ) )
                 .catch( error => HandlerResponses.handleError( error , res ) );
     }
 
@@ -31,7 +31,7 @@ export class CategoryController {
 
         new CreateCategory( this.categoryRepository )
             .execute( categoryRequestDto! )
-                .then( course => HandlerResponses.handleSuccess( res, course ) )
+                .then( course => HandlerResponses.handleSuccess( res, course, 201 ) )
                 .catch( error => HandlerResponses.handleError( error , res ) );
     }
 }

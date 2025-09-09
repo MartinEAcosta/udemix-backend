@@ -7,7 +7,9 @@ import { FileEntity } from "../../domain/entities/file.entity";
 
 export class FileUploadRepositoryImpl implements FileUploadRepository {
 
-    constructor(private readonly fileUploadDatasource: FileUploadDatasource) {}
+    constructor(
+        private readonly fileUploadDatasource: FileUploadDatasource
+    ) { }
     
     async uploadFile( file : UploadFileDto , folder : string ) : Promise<FileResponseDto | false>  {
         try {

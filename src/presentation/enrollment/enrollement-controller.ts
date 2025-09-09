@@ -35,7 +35,7 @@ export class EnrollmentController{
 
         new EnrollUserInCourse( this.enrollmentRepository, this.authRepository , this.courseRepository )
             .execute( createEnrollmentDto! )
-            .then( enrollmentCreated => HandlerResponses.handleSuccess( res , enrollmentCreated ) )
+            .then( enrollmentCreated => HandlerResponses.handleSuccess( res , enrollmentCreated, 201 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
 
     }

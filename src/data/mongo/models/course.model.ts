@@ -5,10 +5,10 @@ export interface ICourseModel {
     title            : string,
     description      : string,
     // TODO: Reemplazar por entidad Category
-    //* category : Types.ObjectId;
-    category         : string,
-    thumbnail_url    ?: string | null,
-    file_id          ?: Types.ObjectId | null,
+    category        ?: Types.ObjectId | null;
+    // category      : string,
+    thumbnail_url   ?: string | null,
+    file_id         ?: Types.ObjectId | null,
     id_owner         : Types.ObjectId,
     price            : number,
     capacity        ?: number | null,
@@ -28,8 +28,8 @@ const courseSchema = new mongoose.Schema({
     },
 
     category : {
-        type     : String,
-        required : [true , 'La categoría es requerida.'],
+        type     : Schema.Types.ObjectId,
+        // required : [true , 'La categoría es requerida.'],
     },
 
     thumbnail_url : {

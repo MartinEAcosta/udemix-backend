@@ -18,7 +18,7 @@ export class CourseController {
 
         new FindAllCourses( this.courseRepository )
             .execute()
-            .then( courses => HandlerResponses.handleSuccess( res , courses ) )
+            .then( courses => HandlerResponses.handleSuccess( res , courses, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ));
     }
 
@@ -28,7 +28,7 @@ export class CourseController {
 
         new FindCourseById( this.courseRepository )
             .execute( id )
-            .then( course => HandlerResponses.handleSuccess( res, course ) )
+            .then( course => HandlerResponses.handleSuccess( res, course, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ));
     }
 
@@ -51,7 +51,7 @@ export class CourseController {
 
         new UpdateCourse( this.courseRepository )
             .execute( updateCourseDto! )
-            .then( courseUpdated => HandlerResponses.handleSuccess( res , courseUpdated ) )
+            .then( courseUpdated => HandlerResponses.handleSuccess( res , courseUpdated, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
 
