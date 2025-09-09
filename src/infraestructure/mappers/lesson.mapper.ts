@@ -1,4 +1,5 @@
 import { ILessonModel } from "../../data/mongo/models/lesson.model";
+import { LessonResponseDto } from "../../domain/dtos/lesson/lesson.response.dto";
 
 export class LessonMapper {
 
@@ -8,9 +9,9 @@ export class LessonMapper {
             id_course     : lessonDoc.id_course.toString(),
             title         : lessonDoc.title,
             description   : lessonDoc.description,
-         id_file: lessonDoc.id_file ? lessonDoc.id_file.toString() : undefined,
-      unit: lessonDoc.unit ?? undefined,
-      chapter: lessonDoc.chapter ?? undefined,
+            id_file: lessonDoc.id_file ? lessonDoc.id_file.toString() : undefined,
+            unit: lessonDoc.unit ?? undefined,
+            chapter: lessonDoc.chapter ?? undefined,
             lesson_number : lessonDoc.lesson_number,
             uploaded_at   : lessonDoc.uploaded_at,
         }

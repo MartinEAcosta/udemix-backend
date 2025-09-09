@@ -13,10 +13,25 @@ export class LessonRouter {
         const lessonRepository =  new LessonRepositoryImpl( datasource );
         const lessonController = new LessonController( lessonRepository );
 
-        router.get(
-            '/:course_id',
+        router.post(
+            '/new',
             lessonController.createLesson
         );
+
+        router.delete(
+            '/:id',
+            lessonController.deleteLesson
+        )
+
+        router.get(
+            '/:course_id',
+            lessonController.findAllLessonsFromCourse
+        );
+
+        router.get(
+            '/:id',
+            lessonController.findLessonById
+        )
     
         return router;
     }

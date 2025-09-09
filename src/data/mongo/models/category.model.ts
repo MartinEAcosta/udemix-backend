@@ -11,14 +11,14 @@ const categorySchema = new mongoose.Schema({
     name : {
         type     : String,
         required : [true , 'Es necesario indicar el nombre de la categoria.'],
-        unique   : true,
+        unique   : [true , 'Ya existe una categoria con ese nombre.'],
     },
 
     // Utilizado para el filtrado en urls y semantica.
     slug : {
         type     : String,
         required : [true , 'Es necesario indicar un slug.'],
-        unique   : true,
+        unique   : [true , 'Ya existe una categoria con ese slug.'],
     },
 
 });

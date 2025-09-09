@@ -1,5 +1,5 @@
 
-interface LessonResponseDto {
+export interface LessonResponseDto {
     id            : string,
     id_course     : string,
     title         : string,

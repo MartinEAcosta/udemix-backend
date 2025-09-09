@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { CategoryDataSourceImpl } from "../../infraestructure/datasources/category-datasource-impl";
-import { CategoryRepositoryImpl } from "../../infraestructure/repositories/category-repository";
+import { CategoryRepositoryImpl } from "../../infraestructure/repositories/category-repository-impl";
 import { CategoryController } from "./category-controller";
 
 
@@ -19,6 +19,11 @@ export class CategoryRouter {
             '/',
             categoryController.findAllCategories,
         );
+
+        router.delete(
+            '/:id',
+            categoryController.deleteCategory
+        )
 
         router.post(
             '/new',

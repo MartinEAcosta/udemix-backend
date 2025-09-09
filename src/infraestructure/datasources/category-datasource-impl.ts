@@ -11,6 +11,12 @@ export class CategoryDataSourceImpl implements CategoryDatasource {
         return categories;
     }
 
+    async deleteCategory( id : string ) : Promise<boolean>{
+        const deletedCategory = await CategoryModel.findByIdAndDelete( id );
+
+        return deletedCategory ? true : false;
+    }
+
     async createCategory( categoryRequestDto : CreateCategoryDto ) : Promise<CategoryEntity> {
         const createdCategory = await CategoryModel.create( categoryRequestDto );
 

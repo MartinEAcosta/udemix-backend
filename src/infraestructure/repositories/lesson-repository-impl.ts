@@ -9,18 +9,29 @@ export class LessonRepositoryImpl implements LessonRepository {
     constructor( 
         private readonly lessonDatasource : LessonDatasource,
     ) { }
-
+    
     async createLesson( lessonRequestDto : CreateLessonDto ) : Promise<LessonEntity> {
         try{
             const createdLesson = await this.lessonDatasource.createLesson( lessonRequestDto );
-
+            
             return LessonEntity.fromObject( createdLesson );
         } 
         catch( error ){
             throw error;
         }
     }
-
+    
+    async deleteLesson(id: string): Promise<boolean> {
+        try{
+            const hasDeleted = await this.lessonDatasource.deleteLesson( id );
+            
+            return hasDeleted;
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+    
     async findAllLessonsByCourseId( course_id : string ) : Promise<LessonEntity[]> {
         try{
             const lessons = await this.lessonDatasource.findAllLessonByCourseId( course_id );
@@ -31,6 +42,17 @@ export class LessonRepositoryImpl implements LessonRepository {
             throw error;
         }
     }
-
     
+    async findLessonById( id : string ) : Promise<LessonEntity | null> {
+        try{
+            const lesson = await this.lessonDatasource.findLessonById( id );
+            if( !lesson ) return null;
+
+            return LessonEntity.fromObject( lesson );
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
 }

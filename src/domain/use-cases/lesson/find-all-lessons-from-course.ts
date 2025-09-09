@@ -2,11 +2,11 @@ import { LessonEntity } from "../../entities/lesson.entity";
 import { CustomError } from "../../errors/custom-error";
 import { LessonRepository } from "../../repository/lesson-repository";
 
-interface FindAllLessonFromCourseUseCase {
+interface FindAllLessonsFromCourseUseCase {
     execute( course_id : string ) : Promise<LessonEntity[]>;
 }
 
-export class FindAllLessonFromCourse implements FindAllLessonFromCourseUseCase {
+export class FindAllLessonsFromCourse implements FindAllLessonsFromCourseUseCase {
 
     constructor(
         private readonly lessonRepository : LessonRepository,
