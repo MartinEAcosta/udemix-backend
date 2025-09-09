@@ -7,6 +7,9 @@ import { AuthDatasourceImpl } from '../../infraestructure/datasources/auth-datas
 import { AuthRepositoryImpl } from './../../infraestructure/repositories/auth-repository-impl';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 import { JwtAdapter } from '../../config/';
+import { CategoryDatasource } from '../../domain/datasources/category.datasource';
+import { CategoryDataSourceImpl } from "../../infraestructure/datasources/category-datasource-impl";
+import { CategoryRepositoryImpl } from '../../infraestructure/repositories/category-repository-impl';
 
 
 export class CourseRouter {
@@ -16,8 +19,10 @@ export class CourseRouter {
         const router = Router();
 
         const dataSource = new CourseDatasourceImpl();
+        const categoryDatasource = new CategoryDataSourceImpl();
+        const categoryRepository = new CategoryRepositoryImpl( categoryDatasource );
         const courseRepository = new CourseRepositoryImpl( dataSource );
-        const courseController = new CourseController( courseRepository );
+        const courseController = new CourseController( courseRepository , categoryRepository );
 
         // ¿Necesario para el middleware?
         const jwtAdapter = new JwtAdapter();
@@ -37,6 +42,11 @@ export class CourseRouter {
           //   check( 'id' , 'El id no puede estar vació.' ).notEmpty(),
           // ],
           courseController.findCourseById
+        );
+
+        router.get(
+          '/category/:slug',
+          courseController.findCoursesByCategory
         );
         
         // Create Course

@@ -5,6 +5,8 @@ import { DeleteCourse, FindAllCourses, FindCourseById, SaveCourse, UpdateCourse 
 import { CreateCourseDto , UpdateCourseDto } from "../../domain/dtos";
 import { HandlerResponses } from '../helpers/handler-responses';
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
+import { FindCoursesByCategory } from "../../domain/use-cases/course/find-courses-by-category";
+import { CategoryRepository } from "../../domain/repository/category-repository";
 
 
 export class CourseController {
@@ -12,6 +14,7 @@ export class CourseController {
     // Inyección de dependencias
     constructor (
         private readonly courseRepository : CourseRepository,
+        private readonly categoryRepository : CategoryRepository,
     ){ }
 
     public findAllCourses = ( req : Request , res : Response ) => {
@@ -32,6 +35,15 @@ export class CourseController {
             .catch( error => HandlerResponses.handleError( error , res ));
     }
 
+    public findCoursesByCategory = ( req : Request , res : Response ) => {
+        const { slug } = req.params;
+        
+        new FindCoursesByCategory( this.courseRepository , this.categoryRepository )
+            .execute( slug )
+            .then( course => HandlerResponses.handleSuccess( res, course, 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ));
+
+    }
 
     public saveCourse = ( req : AuthenticatedRequest , res : Response ) => {
         const [ errorMessage , createCourseDto ] = CreateCourseDto.create( req.body );

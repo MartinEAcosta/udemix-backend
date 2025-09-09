@@ -12,12 +12,6 @@ export class HandlerResponses {
                 error: error.message,
             });
         }
-        const mongoError = error as any;
-
-        if ( mongoError?.cause?.code === 11000 ) {
-            throw CustomError.badRequest("Ya existe una entidad con los atributos indicados.");
-        }
-
 
         console.log( error );
         return res.status(500).json({

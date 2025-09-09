@@ -18,7 +18,7 @@ export class CreateCategory implements CreateCategoryUseCase {
         const createdCategory = await this.categoryRepository.createCategory( createCategoryDto );
         if( !createdCategory ) throw CustomError.internalServer('Hubo un error al grabar la categoria.');
 
-        return createCategoryDto;
+        return createdCategory;
     }
 
     

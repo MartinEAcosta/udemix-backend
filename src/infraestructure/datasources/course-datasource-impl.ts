@@ -6,18 +6,24 @@ import { CourseResponseDto } from '../../domain/dtos/course/course.responses';
 import { CourseMapper } from '../mappers/course.mapper';
 
 export class CourseDatasourceImpl implements CourseDatasource {
-
+    
     async findAllCourses(): Promise<CourseResponseDto[]> {
         const courses = await CourseModel.find({});
         if( !courses ) return [];
         return courses.map( CourseMapper.fromCourseResponseDto );
     }
-
+    
     async findCourseById( id: string ): Promise<CourseResponseDto | null> {   
         const course = await CourseModel.findById({ _id: id });
         if( !course ) return null;
-
+        
         return CourseMapper.fromCourseResponseDto( course );
+    }
+    
+    async findCoursesByCategoryId( category_id : string ) : Promise<CourseResponseDto[]> {
+        const courses = await CourseModel.find({ id_category : category_id  });
+
+        return courses.map( course => CourseMapper.fromCourseResponseDto( course ));
     }
 
     async saveCourse( createCourseDto : CreateCourseDto): Promise<CourseResponseDto> {

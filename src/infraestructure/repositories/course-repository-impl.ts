@@ -11,6 +11,17 @@ export class CourseRepositoryImpl implements CourseRepository{
         private readonly courseDatasource : CourseDatasource, 
     ){ }
 
+    async findCoursesByCategory( category_id : string) : Promise<CourseEntity[]> {
+        try{
+            const courses = await this.courseDatasource.findCoursesByCategoryId( category_id );
+
+            return courses.map( course => CourseEntity.fromObject( course ) );
+        }  
+        catch( error ){
+            throw error;
+        }
+    }
+
     async findAllCourses() : Promise<CourseEntity[]> {
         try{
             const courses = await this.courseDatasource.findAllCourses();

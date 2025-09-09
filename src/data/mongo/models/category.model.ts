@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 export interface ICategoryModel {
-    _id     : mongoose.Types.ObjectId,
+    _id     : Types.ObjectId,
     name    : string, 
     slug    : string,
 }

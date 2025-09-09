@@ -5,7 +5,7 @@ export interface ICourseModel {
     title            : string,
     description      : string,
     // TODO: Reemplazar por entidad Category
-    category        ?: Types.ObjectId | null;
+    id_category        ?: Types.ObjectId | null;
     // category      : string,
     thumbnail_url   ?: string | null,
     file_id         ?: Types.ObjectId | null,
@@ -27,8 +27,9 @@ const courseSchema = new mongoose.Schema({
         required : [true , 'La descripción es requerida.'],
     },
 
-    category : {
+    id_category : {
         type     : Schema.Types.ObjectId,
+        ref      : 'Category'
         // required : [true , 'La categoría es requerida.'],
     },
 

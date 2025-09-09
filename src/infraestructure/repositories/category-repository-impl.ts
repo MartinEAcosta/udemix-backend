@@ -2,7 +2,6 @@ import { CategoryDatasource } from "../../domain/datasources/category.datasource
 import { CreateCategoryDto } from "../../domain/dtos/category/create-category-dto";
 import { CategoryEntity } from "../../domain/entities/category.entity";
 import { CategoryRepository } from "../../domain/repository/category-repository";
-import { CustomError } from "../../domain/errors/custom-error";
 
 
 export class CategoryRepositoryImpl implements CategoryRepository {
@@ -10,7 +9,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     constructor ( 
         private readonly categoryDatasource : CategoryDatasource,
     ) { }
-    
+
     async findAllCategories() : Promise<CategoryEntity[]> {
         try{
             const categories = await this.categoryDatasource.findAllCategories();
@@ -22,6 +21,19 @@ export class CategoryRepositoryImpl implements CategoryRepository {
         }
     }
     
+    async findCategoryBySlug( slug : string ) : Promise<CategoryEntity | null> {
+        try{
+            const category = await this.categoryDatasource.findCategoryBySlug( slug );
+            if( !category ) return null;
+            
+            return CategoryEntity.fromObject( category ); 
+        }
+        catch( error ) {
+            throw error;
+        }
+    
+    }   
+
     async deleteCategory( id : string ) : Promise<boolean>{
         try{
             const hasDeleted = await this.categoryDatasource.deleteCategory( id );
