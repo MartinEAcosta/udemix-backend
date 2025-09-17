@@ -10,7 +10,20 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
         private readonly enrollmentDatasource : EnrollmentDatasource 
     ){ }
     
-    saveEnrollment = async( enrollmentDto : CreateEnrollmentDto ) : Promise<EnrollmentEntity> => {
+    async findAllEnrollments( ) : Promise<EnrollmentEntity[]> {
+        
+        const enrollments = await this.enrollmentDatasource.findAllEnrollments();
+        
+        return enrollments.map( enrollment => EnrollmentEntity.fromObject( enrollment ));
+    }
+
+    async findEnrollmentsByUserId( uid : string ): Promise<EnrollmentEntity[]> {
+        const enrollments = await this.enrollmentDatasource.findEnrollmentsByUserId( uid );
+        if( !enrollments ) return [];
+        return enrollments.map( enrollment => EnrollmentEntity.fromObject( enrollment ));
+    }
+    
+    async saveEnrollment( enrollmentDto : CreateEnrollmentDto ) : Promise<EnrollmentEntity> {
         const savedEnrollment = await this.enrollmentDatasource.saveEnrollment( enrollmentDto );
 
         return EnrollmentEntity.fromObject( savedEnrollment );
@@ -21,12 +34,6 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
         if ( !enrollment ) return null;
 
         return EnrollmentEntity.fromObject( enrollment );
-    }
-    
-    async findAllEnrollmentsByUserId( uid : string ): Promise<EnrollmentEntity[]> {
-        const enrollments = await this.enrollmentDatasource.findAllEnrollmentsByUserId( uid );
-        if( !enrollments ) return [];
-        return enrollments.map( enrollment => EnrollmentEntity.fromObject( enrollment ));
     }
     
 }

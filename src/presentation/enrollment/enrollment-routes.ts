@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { EnrollmentDatasourceImpl } from './../../infraestructure/datasources/enrollment-datasource-impl';
 import { EnrollmentRepositoryImpl } from '../../infraestructure/repositories/enrollment-repository-impl';
-import { EnrollmentController } from './enrollement-controller';
+import { EnrollmentController } from './enrollment-controller';
 import { AuthDatasourceImpl } from '../../infraestructure/datasources/auth-datasource-impl';
 import { AuthRepositoryImpl } from './../../infraestructure/repositories/auth-repository-impl';
 import { CourseDatasourceImpl } from '../../infraestructure/datasources/course-datasource-impl';
@@ -31,6 +31,17 @@ export class EnrollmentRouter {
 
         const enrollmentController = new EnrollmentController( enrollmentRepository, authRepository, courseRepository );
         
+
+        router.get(
+            '/',
+            enrollmentController.findAllEnrollments
+        );
+
+        router.get(
+            '/:id_user',
+            enrollmentController.findEnrollmentsByUserId
+        );
+
 
         router.post(
             '/new',

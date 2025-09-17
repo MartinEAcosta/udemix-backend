@@ -14,7 +14,7 @@ export interface FileResponseDto {
     id           : string;
     public_id    : string;
     folder       : string;
-    url         ?: string | null;    
+    url         ?: string | null;
     size         : number;
     extension    : string;
     resource_type: ResourceValidTypes;

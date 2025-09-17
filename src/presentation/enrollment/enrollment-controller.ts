@@ -7,6 +7,8 @@ import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { CustomError } from "../../domain/errors/custom-error";
 import { AuthRepository } from "../../domain/repository/auth-repository";
 import { CourseRepository } from "../../domain/repository/course-repository";
+import { FindAllEnrollments } from "../../domain/use-cases/enrollment/find-all-enrollments";
+import { FindEnrollmentsByUserId } from "../../domain/use-cases/enrollment/find-enrollments-by-user-id";
 
 
 
@@ -17,6 +19,27 @@ export class EnrollmentController{
         private readonly authRepository       : AuthRepository,
         private readonly courseRepository     : CourseRepository,
     ) { }
+
+    // Solo permitido por administradores en teoria
+    public findAllEnrollments = ( req : AuthenticatedRequest , res : Response ) => {
+
+        new FindAllEnrollments( this.enrollmentRepository )
+            .execute()
+            .then( enrollments => HandlerResponses.handleSuccess( res , enrollments , 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
+    }
+
+    public findEnrollmentsByUserId = ( req : AuthenticatedRequest , res : Response ) => {
+
+        const { id_user } = req.params;
+        if( !id_user ) throw HandlerResponses.handleError(CustomError.badRequest('Debes indicar un id usuario válido.'), res);
+
+
+        new FindEnrollmentsByUserId( this.enrollmentRepository )
+            .execute( id_user )
+            .then( enrollments => HandlerResponses.handleSuccess( res , enrollments , 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
+    }
 
     // saveEnrollment
     public enrollUserInCourse = ( req : AuthenticatedRequest , res : Response ) => {

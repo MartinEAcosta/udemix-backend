@@ -15,7 +15,7 @@ export class AppRoutes {
         router.use( '/api/auth' , AuthRouter.routes  ) ;
         router.use( '/api/categories' , CategoryRouter.routes );
         router.use( '/api/courses' , CourseRouter.routes );
-        router.use( '/api/enrollment' , EnrollmentRouter.routes );
+        router.use( '/api/enrollments' , EnrollmentRouter.routes );
         router.use( '/api/file' , FileUploadRouter.routes );
         router.use( '/api/lessons' , LessonRouter.routes );
 

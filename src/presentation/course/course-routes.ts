@@ -7,7 +7,6 @@ import { AuthDatasourceImpl } from '../../infraestructure/datasources/auth-datas
 import { AuthRepositoryImpl } from './../../infraestructure/repositories/auth-repository-impl';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 import { JwtAdapter } from '../../config/';
-import { CategoryDatasource } from '../../domain/datasources/category.datasource';
 import { CategoryDataSourceImpl } from "../../infraestructure/datasources/category-datasource-impl";
 import { CategoryRepositoryImpl } from '../../infraestructure/repositories/category-repository-impl';
 
