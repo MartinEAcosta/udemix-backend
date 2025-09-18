@@ -1,4 +1,5 @@
-import mongoose, { Types } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
+import { CoursePopulatedDto } from "../../../domain/dtos/enrollment/enrollment.response.dto";
 
 export interface IEnrollmentModel{
     _id            :   Types.ObjectId;
@@ -6,19 +7,29 @@ export interface IEnrollmentModel{
     id_course      :   Types.ObjectId;
     purchaseDate   :   Date;
     progress       ?:  number;
-    completionDate ?:  Date;
+    completionDate ?:  Date | undefined;
+}
+
+
+export interface IEnrollmentDetailedModel {
+    _id            :   Types.ObjectId;
+    id_user        :   Types.ObjectId;
+    id_course         :   CoursePopulatedDto
+    purchaseDate   :   Date;
+    progress       ?:  number;
+    completionDate ?:  Date | undefined; 
 }
 
 const enrollmentSchema = new mongoose.Schema({
 
     id_user : {
-        type     : Types.ObjectId,
+        type     : Schema.Types.ObjectId,
         ref      : 'User',
         required : [true , 'El id del usuario es requerido.'],
     },
 
     id_course : {
-        type     : Types.ObjectId, 
+        type     : Schema.Types.ObjectId, 
         ref      : 'Course',
         required : [true , 'El id del curso es requerido.'],
     },

@@ -1,14 +1,14 @@
 import { Router } from "express";
 
 import { CourseController } from './course-controller';
+import { CategoryDataSourceImpl } from "../../infraestructure/datasources/category-datasource-impl";
+import { CategoryRepositoryImpl } from '../../infraestructure/repositories/category-repository-impl';
 import { CourseDatasourceImpl } from "../../infraestructure/datasources/course-datasource-impl";
 import { CourseRepositoryImpl } from '../../infraestructure/repositories/course-repository-impl';
 import { AuthDatasourceImpl } from '../../infraestructure/datasources/auth-datasource-impl';
 import { AuthRepositoryImpl } from './../../infraestructure/repositories/auth-repository-impl';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 import { JwtAdapter } from '../../config/';
-import { CategoryDataSourceImpl } from "../../infraestructure/datasources/category-datasource-impl";
-import { CategoryRepositoryImpl } from '../../infraestructure/repositories/category-repository-impl';
 
 
 export class CourseRouter {

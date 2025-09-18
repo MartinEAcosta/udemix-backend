@@ -1,9 +1,10 @@
+import { EnrollmentDetailedResponseDto } from "../../dtos/enrollment/enrollment.response.dto";
 import { EnrollmentEntity } from "../../entities/enrollment.entity";
 import { CustomError } from "../../errors/custom-error";
 import { EnrollmentRepository } from "../../repository/enrollment-repository";
 
 interface FindEnrollmentsByUserIdUseCase {
-    execute ( id_user : string ) : Promise<EnrollmentEntity[]>;
+    execute ( id_user : string ) : Promise<EnrollmentDetailedResponseDto[]>;
 }
 
 export class FindEnrollmentsByUserId implements FindEnrollmentsByUserIdUseCase {
@@ -12,7 +13,7 @@ export class FindEnrollmentsByUserId implements FindEnrollmentsByUserIdUseCase {
 
     }
 
-    async execute( id_user: string ) : Promise<EnrollmentEntity[]> {
+    async execute( id_user: string ) : Promise<EnrollmentDetailedResponseDto[]> {
         
         const enrollmentsOfUser = await this.enrollmentRepository.findEnrollmentsByUserId( id_user );
         if( !enrollmentsOfUser ) throw CustomError.notFound( "No se han encontrado inscripciones asociadas al usuario.");

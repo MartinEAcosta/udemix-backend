@@ -1,9 +1,10 @@
 import { EnrollmentModel } from "../../data";
 import { EnrollmentDatasource } from "../../domain/datasources/enrollment.datasource";
 import { CreateEnrollmentDto } from "../../domain/dtos/enrollment/create-enrollment.dto";
-import { CustomError } from "../../domain/errors/custom-error";
 import { EnrollmentMapper } from "../mappers/enrollment.mapper";
-import { EnrollmentResponseDto } from '../../domain/dtos/enrollment/enrollment.response.dto';
+import { EnrollmentDetailedResponseDto, EnrollmentResponseDto } from '../../domain/dtos/enrollment/enrollment.response.dto';
+import { Types } from "mongoose";
+import { IEnrollmentDetailedModel } from '../../data/mongo/models/enrollment.model';
 
 export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
 
@@ -13,11 +14,12 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
         return listOfAllEnrollments.map( enrollment => EnrollmentMapper.fromEnrollmentDto( enrollment ) );
     }
     
-    findEnrollmentsByUserId = async( uid: string ) : Promise<EnrollmentResponseDto[] | undefined>  =>{
-        const listOfEnrollments = await EnrollmentModel.find({ id_user: uid }); 
+    findEnrollmentsByUserId = async( uid: string ) : Promise<EnrollmentDetailedResponseDto[] | undefined>  =>{
+        const listOfEnrollments = await EnrollmentModel.find({ id_user: uid })
+                                                        .populate<IEnrollmentDetailedModel>( 'id_course' ); 
         if( !listOfEnrollments ) return;
-
-        return listOfEnrollments.map( EnrollmentMapper.fromEnrollmentDto );
+        
+        return listOfEnrollments.map( enrollment => EnrollmentMapper.fromEnrollmentWithCourseDto( enrollment ) );
     }
 
     saveEnrollment = async(enrollmentDto: CreateEnrollmentDto) : Promise<EnrollmentResponseDto> => {

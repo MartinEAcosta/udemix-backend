@@ -5,7 +5,7 @@ export interface ICourseModel {
     title            : string,
     description      : string,
     // TODO: Reemplazar por entidad Category
-    id_category        ?: Types.ObjectId | null;
+    id_category     ?: Types.ObjectId | null;
     // category      : string,
     thumbnail_url   ?: string | null,
     file_id         ?: Types.ObjectId | null,
