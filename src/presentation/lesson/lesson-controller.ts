@@ -19,15 +19,8 @@ export class LessonController {
 
     public createLesson = ( req : Request , res : Response ) => {
 
-        const { id_course, title, description, id_file,
-                unit, chapter, lesson_number, uploaded_at
-                } = req.body;
-        const [ error, lessonRequestDto ] = CreateLessonDto.create({
-                                                                    id_course, title, description, id_file,
-                                                                    unit, chapter, lesson_number, uploaded_at
-                                                                });
+        const [ error, lessonRequestDto ] = CreateLessonDto.create(req.body);
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
-
         new CreateLesson( this.lessonRepository )
                 .execute( lessonRequestDto! )
                     .then( success => HandlerResponses.handleSuccess( res , success , 201 ))

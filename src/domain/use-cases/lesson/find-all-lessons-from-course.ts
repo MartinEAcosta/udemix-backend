@@ -13,9 +13,12 @@ export class FindAllLessonsFromCourse implements FindAllLessonsFromCourseUseCase
     ) { }
 
     async execute( course_id : string ) : Promise<LessonEntity[]> {
-        const lessons = this.lessonRepository.findAllLessonsByCourseId( course_id );
-        if( !lessons ) throw CustomError.internalServer('Hubo un error al recopilar los lecciones.');
+        const course = await this.lessonRepository.findLessonById( course_id );
+        if( !course ) throw CustomError.notFound("El curso en el que buscas lecciones no existe.");
 
+        const lessons = await this.lessonRepository.findAllLessonsByCourseId( course_id );
+        if( !lessons ) throw CustomError.internalServer('Hubo un error al recopilar los lecciones.');
+        
         return lessons;
     }
 
