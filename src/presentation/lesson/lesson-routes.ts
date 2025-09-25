@@ -2,6 +2,12 @@ import { Router } from "express";
 import { LessonDatasourceImpl } from "../../infraestructure/datasources/lesson-datasource-impl";
 import { LessonRepositoryImpl } from "../../infraestructure/repositories/lesson-repository-impl";
 import { LessonController } from "./lesson-controller";
+import { CourseDatasourceImpl } from "../../infraestructure/datasources/course-datasource-impl";
+import { CourseRepositoryImpl } from "../../infraestructure/repositories/course-repository-impl";
+import { JwtAdapter } from "../../config";
+import { AuthDatasourceImpl } from "../../infraestructure/datasources/auth-datasource-impl";
+import { AuthRepositoryImpl } from "../../infraestructure/repositories/auth-repository-impl";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
 
 export class LessonRouter {
 
@@ -11,15 +17,25 @@ export class LessonRouter {
 
         const datasource = new LessonDatasourceImpl();
         const lessonRepository =  new LessonRepositoryImpl( datasource );
-        const lessonController = new LessonController( lessonRepository );
+        const courseDatasource = new CourseDatasourceImpl();
+        const courseRepository = new CourseRepositoryImpl( courseDatasource);
+        const lessonController = new LessonController(  courseRepository , lessonRepository );
+
+
+        const jwtAdapter = new JwtAdapter();
+        const authDatasource = new AuthDatasourceImpl();
+        const authRepository = new AuthRepositoryImpl( authDatasource );
+        const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
 
         router.post(
             '/new',
+            [authMiddleware.validateJWT ],
             lessonController.createLesson
         );
 
         router.delete(
             '/:id',
+            [authMiddleware.validateJWT ],
             lessonController.deleteLesson
         )
 

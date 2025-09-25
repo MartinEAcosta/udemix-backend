@@ -9,20 +9,27 @@ import { CreateLessonDto } from "../../domain/dtos/lesson/create-lesson.dto";
 import { FindAllLessonsFromCourse } from "../../domain/use-cases/lesson/find-all-lessons-from-course";
 import { DeleteLesson } from "../../domain/use-cases/lesson/delete-lesson";
 import { FindLessonById } from "../../domain/use-cases/lesson/find-lesson-by-id";
+import { CourseRepository } from "../../domain/repository/course-repository";
+import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 
 
 export class LessonController {
 
     constructor( 
+        private readonly courseRepository : CourseRepository,
         private readonly lessonRepository : LessonRepository,
     ) { }
 
-    public createLesson = ( req : Request , res : Response ) => {
+    public createLesson = ( req : AuthenticatedRequest , res : Response ) => {
 
+        const { user } = req;
+        if( !user ) throw HandlerResponses.handleError( CustomError.unauthorized( 'Debes estar autenticado para crear una lección.' ), res );
         const [ error, lessonRequestDto ] = CreateLessonDto.create(req.body);
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
-        new CreateLesson( this.lessonRepository )
-                .execute( lessonRequestDto! )
+
+
+        new CreateLesson(  this.courseRepository , this.lessonRepository)
+                .execute( lessonRequestDto! , user.id )
                     .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
                     .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
