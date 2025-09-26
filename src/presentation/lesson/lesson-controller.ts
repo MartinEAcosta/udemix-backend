@@ -28,7 +28,7 @@ export class LessonController {
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
 
-        new CreateLesson(  this.courseRepository , this.lessonRepository)
+        new CreateLesson( this.courseRepository , this.lessonRepository )
                 .execute( lessonRequestDto! , user.id )
                     .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
                     .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
@@ -51,7 +51,7 @@ export class LessonController {
         const { course_id } = req.params;
         if( !course_id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id de curso valido.') , res );
 
-        new FindAllLessonsFromCourse( this.lessonRepository )
+        new FindAllLessonsFromCourse( this.courseRepository , this.lessonRepository )
             .execute( course_id )
                     .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
                     .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});

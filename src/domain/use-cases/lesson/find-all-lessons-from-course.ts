@@ -1,5 +1,6 @@
 import { LessonEntity } from "../../entities/lesson.entity";
 import { CustomError } from "../../errors/custom-error";
+import { CourseRepository } from "../../repository/course-repository";
 import { LessonRepository } from "../../repository/lesson-repository";
 
 interface FindAllLessonsFromCourseUseCase {
@@ -9,11 +10,13 @@ interface FindAllLessonsFromCourseUseCase {
 export class FindAllLessonsFromCourse implements FindAllLessonsFromCourseUseCase {
 
     constructor(
+        private readonly courseRepository : CourseRepository,
         private readonly lessonRepository : LessonRepository,
     ) { }
 
     async execute( course_id : string ) : Promise<LessonEntity[]> {
-        const course = await this.lessonRepository.findLessonById( course_id );
+        
+        const course = await this.courseRepository.findCourseById( course_id );
         if( !course ) throw CustomError.notFound("El curso en el que buscas lecciones no existe.");
 
         const lessons = await this.lessonRepository.findAllLessonsByCourseId( course_id );
