@@ -7,7 +7,7 @@ import { CourseRepository } from "../../domain/repository/course-repository";
 import { UploadSingle } from "../../domain/use-cases/file-upload/upload-single";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { DeleteFile } from "../../domain/use-cases/file-upload/delete-file";
-import { FindFileById } from "../../domain/use-cases/file-upload/get-file-by-id";
+import { FindFileById } from "../../domain/use-cases/file-upload/find-file-by-id";
 import { DeleteCourseThumbnail } from "../../domain/use-cases/file-upload/delete-course-thumbnail";
 
 // toLowerCase aplicado a la hora de comparar.

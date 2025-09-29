@@ -1,5 +1,5 @@
-import { ILessonModel } from "../../data/mongo/models/lesson.model";
-import { LessonResponseDto } from "../../domain/dtos/lesson/lesson.response.dto";
+import { ILessonModel, ILessonPopulateModel } from "../../data/mongo/models/lesson.model";
+import { LessonResponseDto, LessonResponsePopulateDto } from "../../domain/dtos/lesson/lesson.response.dto";
 
 export class LessonMapper {
 
@@ -10,6 +10,23 @@ export class LessonMapper {
             title         : lessonDoc.title,
             description   : lessonDoc.description,
             id_file       : lessonDoc.id_file ? lessonDoc.id_file.toString() : undefined,
+            unit          : lessonDoc.unit ?? undefined,
+            chapter       : lessonDoc.chapter ?? undefined,
+            lesson_number : lessonDoc.lesson_number,
+            uploaded_at   : lessonDoc.uploaded_at,
+        }
+    }
+
+    static fromLessonPopulateResponseDto( lessonDoc : ILessonPopulateModel ) : LessonResponsePopulateDto {
+        return {
+            id            : lessonDoc._id.toString(),
+            id_course     : lessonDoc.id_course.toString(),
+            title         : lessonDoc.title,
+            description   : lessonDoc.description,
+            file          : {
+                _id     : lessonDoc.id_file._id.toString(),
+                url     : lessonDoc.id_file.url,
+            },
             unit          : lessonDoc.unit ?? undefined,
             chapter       : lessonDoc.chapter ?? undefined,
             lesson_number : lessonDoc.lesson_number,

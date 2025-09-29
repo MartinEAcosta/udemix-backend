@@ -33,21 +33,34 @@ export class LessonRouter {
             lessonController.createLesson
         );
 
+        router.post(
+            '/update',
+            [authMiddleware.validateJWT ],
+            lessonController.updateLesson
+        );
+
         router.delete(
             '/:id',
             [authMiddleware.validateJWT ],
             lessonController.deleteLesson
         )
 
+        // * CHEQUEAR QUE ES EL MISMO QUE EL DETAILED
         router.get(
-            '/:course_id',
+            '/course/:course_id',
+            lessonController.findAllLessonsFromCourse
+        );
+
+        router.get(
+            '/detailed/course/:course_id',
             lessonController.findAllLessonsFromCourse
         );
 
         router.get(
             '/:id',
             lessonController.findLessonById
-        )
+        );
+        
     
         return router;
     }

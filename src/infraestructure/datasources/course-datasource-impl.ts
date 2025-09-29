@@ -39,12 +39,14 @@ export class CourseDatasourceImpl implements CourseDatasource {
     }
 
     async updateCourse( updateCourseDTO : UpdateCourseDto ) : Promise<CourseResponseDto> {
-        const updatedCourse = await CourseModel.findByIdAndUpdate(  {
-                _id: updateCourseDTO.id 
-            }, 
-            updateCourseDTO,
-            { new : true } 
-        ).exec();
+        const updatedCourse = await CourseModel
+                                        .findByIdAndUpdate(  
+                                            {
+                                                _id: updateCourseDTO.id 
+                                            }, 
+                                            updateCourseDTO,
+                                            { new : true } 
+                                        ).exec();
         
         return CourseMapper.fromCourseResponseDto(updatedCourse!);
     } 

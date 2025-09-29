@@ -11,6 +11,8 @@ import { DeleteLesson } from "../../domain/use-cases/lesson/delete-lesson";
 import { FindLessonById } from "../../domain/use-cases/lesson/find-lesson-by-id";
 import { CourseRepository } from "../../domain/repository/course-repository";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
+import { UpdateLessonDto } from "../../domain/dtos/lesson/update-lesson.dto";
+import { UpdateLesson } from "../../domain/use-cases/lesson/update-lesson";
 
 
 export class LessonController {
@@ -24,13 +26,34 @@ export class LessonController {
 
         const { user } = req;
         if( !user ) throw HandlerResponses.handleError( CustomError.unauthorized( 'Debes estar autenticado para crear una lección.' ), res );
-        const [ error, lessonRequestDto ] = CreateLessonDto.create(req.body);
+        const [ error, lessonRequestDto ] = CreateLessonDto.create(
+                                                                    {   
+                                                                        ...req.body,
+                                                                        id_user : user.id 
+                                                                    });
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
 
         new CreateLesson( this.courseRepository , this.lessonRepository )
-                .execute( lessonRequestDto! , user.id )
+                .execute( lessonRequestDto! )
                     .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
+                    .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+    }
+
+    public updateLesson = ( req : AuthenticatedRequest , res : Response ) =>{
+        const { user } = req;
+        if( !user ) throw HandlerResponses.handleError( CustomError.unauthorized( 'Debes estar autenticado para crear una lección.' ), res );
+        const [ error , lessonRequestDto ] = UpdateLessonDto.create(
+                                                                    { 
+                                                                        ...req.body,
+                                                                        id_user : user.id
+                                                                    });
+        if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
+
+        
+        new UpdateLesson( this.courseRepository , this.lessonRepository )
+                .execute( lessonRequestDto! )
+                .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
                     .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
 

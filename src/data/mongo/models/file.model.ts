@@ -20,6 +20,10 @@ const fileSchema = new mongoose.Schema({
         required : [true, 'El public_id es requerido.'],
     },
 
+    url: {
+        type     : String,
+    },
+
     folder: {
         type     : String,
         enum     : ["users" , "courses"],

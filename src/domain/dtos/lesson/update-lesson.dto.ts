@@ -1,17 +1,20 @@
 
-interface CreateLessonDtoOptions {
-    id_user       : string;
-    id_course     : string;
-    title         : string;
-    description   : string;
-    id_file       : string;
+interface UpdateLessonDtoOptions {
+    id          : string;
+    id_user     : string;
+    id_course   : string;
+    title       : string;
+    description : string;
+    id_file     : string;
     unit          : number;
     chapter       : number;
     lesson_number : number;
-    uploaded_at   : Date;
+    uploaded_at   : Date;     
 }
-export class CreateLessonDto {
-    
+
+export class UpdateLessonDto {
+
+    public readonly id            : string;
     public readonly id_user       : string;
     public readonly id_course     : string;
     public readonly title         : string;
@@ -20,9 +23,10 @@ export class CreateLessonDto {
     public readonly unit          : number;
     public readonly chapter       : number;
     public readonly lesson_number : number;
-    public readonly uploaded_at   : Date;
+    public readonly uploaded_at   : Date;    
 
-    constructor( options : CreateLessonDtoOptions ) {
+    constructor( options : UpdateLessonDtoOptions ) {
+        this.id            = options.id;
         this.id_user       = options.id_user;
         this.id_course     = options.id_course;
         this.title         = options.title;
@@ -34,19 +38,16 @@ export class CreateLessonDto {
         this.uploaded_at   = new Date();
     }
 
-    static create = ( props : { [ key : string ] : any } ) : [ string?, CreateLessonDto? ]  => {
-        const { id_user, id_course , title , description , id_file,
-                 unit, chapter , uploaded_at } =  props;
-        
+    static create = ( props : { [ key : string ] : any } ) : [ string?, UpdateLessonDto? ]  => {
+        const { id , id_user, id_course,  title , description , id_file, unit, chapter, lesson_number, uploaded_at } = props;
+
+        if( !id ) return ['El id de la lección por actualizar es obligatorio.' , undefined];
         if( !id_course ) return [ 'El id del curso es obligatorio.' , undefined];
         if( !title ) return [ 'El curso debe de contener un titulo.' , undefined];
         if( !description ) return [ 'El curso debe de contener una descripción.' , undefined];
         if( !id_file ) return [ 'Debes adjuntar contenido para la lección.' , undefined];
         
-
-        return [ undefined , new CreateLessonDto( { id_user, id_course , title , description , id_file ,
-                                                     unit , chapter , lesson_number: 0 , uploaded_at })];
+        return [ undefined , new UpdateLessonDto({ id , id_user, id_course , title, description ,id_file , unit, chapter, lesson_number, uploaded_at } )];
     }
     
-
 }

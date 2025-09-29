@@ -14,7 +14,7 @@ export interface IEnrollmentModel{
 export interface IEnrollmentDetailedModel {
     _id            :   Types.ObjectId;
     id_user        :   Types.ObjectId;
-    id_course         :   CoursePopulatedDto
+    id_course      :   CoursePopulatedDto;
     purchaseDate   :   Date;
     progress       ?:  number;
     completionDate ?:  Date | undefined; 

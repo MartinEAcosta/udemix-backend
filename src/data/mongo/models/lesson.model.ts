@@ -1,4 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose";
+import { FilePopulatedDto } from "../../../domain/dtos/lesson/lesson.response.dto";
 
 export interface ILessonModel {
     _id           : Types.ObjectId,
@@ -6,6 +7,18 @@ export interface ILessonModel {
     title         : string;
     description   : string;
     id_file      ?: Types.ObjectId | null,
+    unit         ?: number | null,
+    chapter      ?: number | null;
+    lesson_number : number;
+    uploaded_at   : Date;
+}
+
+export interface ILessonPopulateModel {
+    _id           : Types.ObjectId,
+    id_course     : Types.ObjectId,
+    title         : string;
+    description   : string;
+    id_file       : FilePopulatedDto;
     unit         ?: number | null,
     chapter      ?: number | null;
     lesson_number : number;

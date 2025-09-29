@@ -15,13 +15,13 @@ export class CreateLesson implements CreateLessonUseCase {
         private readonly lessonRepository : LessonRepository,
     ) { }
 
-    async execute( lessonRequestDto : CreateLessonDto , uid : string ) : Promise<LessonEntity> {
+    async execute( lessonRequestDto : CreateLessonDto ) : Promise<LessonEntity> {
 
         const { id_course } = lessonRequestDto;
         const course = await this.courseRepository.findCourseById( id_course );
         if( !course ) throw CustomError.notFound("El curso al que quieres asignar la lección no existe.");
         
-        if( course.id_owner != uid ) throw CustomError.unauthorized('No eres el propietario, por lo tanto no puedes añadir lecciones.');
+        if( course.id_owner != lessonRequestDto.id_user ) throw CustomError.unauthorized('No eres el propietario, por lo tanto no puedes añadir lecciones.');
 
         const arrayLessons = await this.lessonRepository.findAllLessonsByCourseId( id_course );
         console.log(arrayLessons);
