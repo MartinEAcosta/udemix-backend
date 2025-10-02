@@ -34,13 +34,13 @@ export class LessonRouter {
         );
 
         router.post(
-            '/update',
+            '/update/:id',
             [authMiddleware.validateJWT ],
             lessonController.updateLesson
         );
 
         router.delete(
-            '/:id',
+            '/delete/:id',
             [authMiddleware.validateJWT ],
             lessonController.deleteLesson
         )

@@ -11,7 +11,7 @@ import { FindFileById } from "../../domain/use-cases/file-upload/find-file-by-id
 import { DeleteCourseThumbnail } from "../../domain/use-cases/file-upload/delete-course-thumbnail";
 
 // toLowerCase aplicado a la hora de comparar.
-export const validFolders = [ 'user' , 'courses' ];
+export const validFolders = [ 'user' , 'courses' , "lessons" ];
 
 export class FileUploadController {
 

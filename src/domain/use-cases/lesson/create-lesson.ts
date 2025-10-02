@@ -24,7 +24,6 @@ export class CreateLesson implements CreateLessonUseCase {
         if( course.id_owner != lessonRequestDto.id_user ) throw CustomError.unauthorized('No eres el propietario, por lo tanto no puedes añadir lecciones.');
 
         const arrayLessons = await this.lessonRepository.findAllLessonsByCourseId( id_course );
-        console.log(arrayLessons);
         const lastLesson = arrayLessons.pop();
         const { lesson_number , ...rest } = lessonRequestDto;
                                                                             

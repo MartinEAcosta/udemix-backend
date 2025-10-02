@@ -26,7 +26,7 @@ const fileSchema = new mongoose.Schema({
 
     folder: {
         type     : String,
-        enum     : ["users" , "courses"],
+        enum     : ["users" , "courses", "lessons"],
         required : true,
     },
 

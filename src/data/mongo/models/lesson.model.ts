@@ -60,7 +60,6 @@ const lessonSchema = new mongoose.Schema({
         type     : Number,
         required : [true, 'El número de la lección es requerido.'],
         default  : 0,
-        unique   : true,
     },
 
     uploaded_at : {

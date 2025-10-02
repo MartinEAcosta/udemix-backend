@@ -41,6 +41,10 @@ export class LessonController {
     }
 
     public updateLesson = ( req : AuthenticatedRequest , res : Response ) =>{
+
+        const { id } = req.params;
+        if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id para realizar el borrado.'), res );
+
         const { user } = req;
         if( !user ) throw HandlerResponses.handleError( CustomError.unauthorized( 'Debes estar autenticado para crear una lección.' ), res );
         const [ error , lessonRequestDto ] = UpdateLessonDto.create(
