@@ -29,7 +29,7 @@ export class LessonController {
         const [ error, lessonRequestDto ] = CreateLessonDto.create(
                                                                     {   
                                                                         ...req.body,
-                                                                        id_user : user.id 
+                                                                        id_user : user.id,
                                                                     });
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
 

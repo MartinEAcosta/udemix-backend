@@ -9,6 +9,9 @@ import { AuthDatasourceImpl } from '../../infraestructure/datasources/auth-datas
 import { AuthRepositoryImpl } from './../../infraestructure/repositories/auth-repository-impl';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 import { JwtAdapter } from '../../config/';
+import { FileUploadDatasourceImpl } from '../../infraestructure/datasources/file-upload-datasource-impl';
+import { FileUploadRepositoryImpl } from '../../infraestructure/repositories/file-upload-repository-impl';
+import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
 
 
 export class CourseRouter {
@@ -18,10 +21,16 @@ export class CourseRouter {
         const router = Router();
 
         const dataSource = new CourseDatasourceImpl();
+
         const categoryDatasource = new CategoryDataSourceImpl();
         const categoryRepository = new CategoryRepositoryImpl( categoryDatasource );
+
+        const fileStorage = new CloudinaryAdapter();
+        const fileDatasource = new FileUploadDatasourceImpl( fileStorage );
+        const fileRepository = new FileUploadRepositoryImpl( fileDatasource );
+
         const courseRepository = new CourseRepositoryImpl( dataSource );
-        const courseController = new CourseController( courseRepository , categoryRepository );
+        const courseController = new CourseController( courseRepository , categoryRepository , fileRepository );
 
         // ¿Necesario para el middleware?
         const jwtAdapter = new JwtAdapter();

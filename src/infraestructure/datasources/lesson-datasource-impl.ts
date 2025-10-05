@@ -46,7 +46,7 @@ export class LessonDatasourceImpl implements LessonDatasource {
         const lessons = await LessonModel.find({ id_course : course_id })
                                         .sort({ lesson_number: 'asc'})
                                         .populate<ILessonPopulateModel>('id_file', '_id url');
-        console.log(lessons);
+        
         return lessons.map( lesson => LessonMapper.fromLessonPopulateResponseDto( lesson ) );
     }
     

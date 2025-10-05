@@ -11,7 +11,7 @@ export class CourseMapper {
             description : courseDoc.description,
             id_category : courseDoc.id_category?.toString() ?? null,
             thumbnail_url : courseDoc.thumbnail_url ?? null,
-            file_id : courseDoc.file_id?.toString() ?? null,
+            id_file : courseDoc.id_file?.toString() ?? null,
             id_owner : courseDoc.id_owner.toString(),
             price : courseDoc.price,
             capacity : courseDoc.capacity ?? undefined,

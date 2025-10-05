@@ -30,10 +30,9 @@ export class EnrollmentController{
     }
 
     public findEnrollmentsByUserId = ( req : AuthenticatedRequest , res : Response ) => {
-
+        
         const { id_user } = req.params;
         if( !id_user ) throw HandlerResponses.handleError(CustomError.badRequest('Debes indicar un id usuario válido.'), res);
-
 
         new FindEnrollmentsByUserId( this.enrollmentRepository )
             .execute( id_user )

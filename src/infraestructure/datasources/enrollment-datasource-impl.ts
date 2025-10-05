@@ -3,7 +3,6 @@ import { EnrollmentDatasource } from "../../domain/datasources/enrollment.dataso
 import { CreateEnrollmentDto } from "../../domain/dtos/enrollment/create-enrollment.dto";
 import { EnrollmentMapper } from "../mappers/enrollment.mapper";
 import { EnrollmentDetailedResponseDto, EnrollmentResponseDto } from '../../domain/dtos/enrollment/enrollment.response.dto';
-import { Types } from "mongoose";
 import { IEnrollmentDetailedModel } from '../../data/mongo/models/enrollment.model';
 
 export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
@@ -18,7 +17,7 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
         const listOfEnrollments = await EnrollmentModel.find({ id_user: uid })
                                                         .populate<IEnrollmentDetailedModel>( 'id_course' ); 
         if( !listOfEnrollments ) return;
-        
+
         return listOfEnrollments.map( enrollment => EnrollmentMapper.fromEnrollmentWithCourseDto( enrollment ) );
     }
 

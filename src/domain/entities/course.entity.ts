@@ -5,7 +5,7 @@ interface CourseEntityOptions {
     description : string; 
     id_category : string;
     thumbnail_url : string;
-    file_id : string;
+    id_file : string;
     id_owner : string;
     price : number;
     capacity ?: number;
@@ -19,7 +19,7 @@ export class CourseEntity {
     public description : string;
     public id_category : string;
     public thumbnail_url : string;
-    public file_id  : string;
+    public id_file  : string;
     public id_owner : string;
     public price : number;
     public capacity ?: number;
@@ -27,13 +27,13 @@ export class CourseEntity {
 
 
     private constructor ( options : CourseEntityOptions){
-        const { id , title , description , id_category , thumbnail_url, file_id, id_owner , price , capacity , current_enrolled } = options;
+        const { id , title , description , id_category , thumbnail_url, id_file, id_owner , price , capacity , current_enrolled } = options;
         this.id = id;       
         this.title = title;
         this.description = description;
         this.id_category = id_category;
         this.thumbnail_url = thumbnail_url;
-        this.file_id = file_id;
+        this.id_file = id_file;
         this.id_owner = id_owner;
         this.price = price;
         this.capacity = capacity;
@@ -42,7 +42,7 @@ export class CourseEntity {
 
 
     static fromObject = ( object: { [ key: string ] : any } ): CourseEntity => {
-        const { id , title, description, id_category , thumbnail_url, file_id,
+        const { id , title, description, id_category , thumbnail_url, id_file,
                  id_owner , price , capacity = undefined , current_enrolled = 0 } = object;
 
         if( !title ) throw 'El titulo es requerido.';
@@ -57,7 +57,7 @@ export class CourseEntity {
                 description,
                 id_category, 
                 thumbnail_url,
-                file_id, 
+                id_file, 
                 id_owner, 
                 price,
                 capacity,

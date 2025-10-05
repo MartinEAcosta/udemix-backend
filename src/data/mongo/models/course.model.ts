@@ -8,7 +8,7 @@ export interface ICourseModel {
     id_category     ?: Types.ObjectId | null;
     // category      : string,
     thumbnail_url   ?: string | null,
-    file_id         ?: Types.ObjectId | null,
+    id_file         ?: Types.ObjectId | null,
     id_owner         : Types.ObjectId,
     price            : number,
     capacity        ?: number | null,
@@ -37,7 +37,7 @@ const courseSchema = new mongoose.Schema({
         type     : String,
     },
 
-    file_id : {
+    id_file : {
         type     : Schema.Types.ObjectId,
         ref      : 'File',
     },

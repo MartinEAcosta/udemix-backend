@@ -7,6 +7,7 @@ import { HandlerResponses } from '../helpers/handler-responses';
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { FindCoursesByCategory } from "../../domain/use-cases/course/find-courses-by-category";
 import { CategoryRepository } from "../../domain/repository/category-repository";
+import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
 
 
 export class CourseController {
@@ -15,6 +16,7 @@ export class CourseController {
     constructor (
         private readonly courseRepository : CourseRepository,
         private readonly categoryRepository : CategoryRepository,
+        private readonly fileRepository : FileUploadRepository,
     ){ }
 
     public findAllCourses = ( req : Request , res : Response ) => {
@@ -61,7 +63,7 @@ export class CourseController {
         const [ errorMessage , updateCourseDto ] = UpdateCourseDto.create( id , req.body );
         if( errorMessage ) return res.status(400).json({ errorMessage });
 
-        new UpdateCourse( this.courseRepository )
+        new UpdateCourse( this.courseRepository, this.fileRepository )
             .execute( updateCourseDto! )
             .then( courseUpdated => HandlerResponses.handleSuccess( res , courseUpdated, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );

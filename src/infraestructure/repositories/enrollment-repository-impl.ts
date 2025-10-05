@@ -17,7 +17,7 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
         return enrollments.map( enrollment => EnrollmentEntity.fromObject( enrollment ));
     }
 
-    async findEnrollmentsByUserId( uid : string ): Promise<EnrollmentDetailedResponseDto[]> {
+    async findEnrollmentsByUserId( uid : string ) : Promise<EnrollmentDetailedResponseDto[]> {
         const enrollments = await this.enrollmentDatasource.findEnrollmentsByUserId( uid );
         if( !enrollments ) return [];
 
