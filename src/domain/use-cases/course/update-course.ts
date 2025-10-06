@@ -25,10 +25,8 @@ export class UpdateCourse implements UpdateCourseUseCase {
         if( updateCourseDto.id_file != null ){
             const fileToAssign = await this.fileRepository.findFileById( updateCourseDto.id_file );
             const urlToAssign = fileToAssign?.url;
-            console.log('DTO:', updateCourseDto.id_file);
-            console.log('COURSE:', courseToUpdate.id_file);
+
             if( courseToUpdate.id_file != null && ( updateCourseDto.id_file.toString() != courseToUpdate.id_file.toString() ) ){
-                console.log('entre');
                 const oldRef = await this.fileRepository.deleteFile( courseToUpdate.id_file );
                 if( !oldRef ) throw CustomError.internalServer('Hubo un error al borrar la referencia antigua.');
             }

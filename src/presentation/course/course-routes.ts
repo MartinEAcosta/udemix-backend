@@ -12,6 +12,7 @@ import { JwtAdapter } from '../../config/';
 import { FileUploadDatasourceImpl } from '../../infraestructure/datasources/file-upload-datasource-impl';
 import { FileUploadRepositoryImpl } from '../../infraestructure/repositories/file-upload-repository-impl';
 import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
+import { FileUploadMiddleware } from "../middlewares/file-upload.middleware";
 
 
 export class CourseRouter {
@@ -37,6 +38,8 @@ export class CourseRouter {
         const authDatasource = new AuthDatasourceImpl();
         const authRepository = new AuthRepositoryImpl( authDatasource );
         const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
+
+        const fileMiddleware = new FileUploadMiddleware();
         
         // GetAll Courses
         router.get(
@@ -60,7 +63,8 @@ export class CourseRouter {
         // Create Course
         router.post(
           '/new',
-          [ authMiddleware.validateJWT , authMiddleware.validateAndAssignOwner ],
+          [ authMiddleware.validateJWT , authMiddleware.validateAndAssignOwner, 
+            fileMiddleware.containFiles , fileMiddleware.fileUploadPreprocessor ],
           courseController.saveCourse
         );
         

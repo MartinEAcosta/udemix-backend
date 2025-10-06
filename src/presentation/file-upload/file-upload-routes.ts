@@ -26,13 +26,13 @@ export class FileUploadRouter {
 
         router.post( 
             '/upload/single/:folder',
-            fileUploadMiddleware.containFiles,
+            [ fileUploadMiddleware.containFiles, fileUploadMiddleware.fileUploadPreprocessor ],
             fileUploadController.uploadFile
         );
 
         router.post(
             '/multiple/:folder',
-            fileUploadMiddleware.containFiles,
+            [ fileUploadMiddleware.containFiles, fileUploadMiddleware.fileUploadPreprocessor ],
             fileUploadController.uploadMultipleFiles
         );
 

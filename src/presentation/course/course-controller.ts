@@ -48,11 +48,14 @@ export class CourseController {
     }
 
     public saveCourse = ( req : AuthenticatedRequest , res : Response ) => {
+
+        const fileUploadDto = req.body.attachedFile;
+
         const [ errorMessage , createCourseDto ] = CreateCourseDto.create( req.body );
         if( errorMessage ) return res.status(400).json({ errorMessage });
         
-        new SaveCourse( this.courseRepository )
-            .execute( createCourseDto! )
+        new SaveCourse( this.courseRepository , this.fileRepository )
+            .execute( createCourseDto! , fileUploadDto )
             .then( courseCreated => HandlerResponses.handleSuccess( res, courseCreated , 201 ) )
             .catch( error => HandlerResponses.handleError( error , res ));
     }
@@ -63,7 +66,7 @@ export class CourseController {
         const [ errorMessage , updateCourseDto ] = UpdateCourseDto.create( id , req.body );
         if( errorMessage ) return res.status(400).json({ errorMessage });
 
-        new UpdateCourse( this.courseRepository, this.fileRepository )
+        new UpdateCourse( this.courseRepository , this.fileRepository )
             .execute( updateCourseDto! )
             .then( courseUpdated => HandlerResponses.handleSuccess( res , courseUpdated, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );

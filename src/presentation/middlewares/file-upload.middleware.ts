@@ -1,4 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import { HandlerResponses } from "../helpers/handler-responses";
+import { CustomError } from "../../domain/errors/custom-error";
+import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 
 export class FileUploadMiddleware {
     // Utilizado para el estandarizado de respuesta, dado que Clodinary retorna un objeto cuando se sube un solo archivo y 
@@ -9,7 +12,7 @@ export class FileUploadMiddleware {
         // console.log(req.files);
 
         if( !req.files || Object.keys(req.files).length === 0 ) {
-            return res.status(400).json({ error: 'No se han seleccionado archivos.' });
+            return HandlerResponses.handleError( CustomError.badRequest('No se han seleccionado archivos.') , res);
         }
         if( !Array.isArray( req.files.file ) ){
             req.body.files = [ req.files.files ];
@@ -20,5 +23,21 @@ export class FileUploadMiddleware {
 
         next();
     }
+
+    fileUploadPreprocessor = ( req : Request , res : Response , next : NextFunction ) => {
+        const file = req.body.files.at(0);
+        if( !file ) return HandlerResponses.handleError( CustomError.badRequest('Error inesperado al leer el archivo') , res );
+        const [ error , fileToUploadDto] = UploadFileDto.create( {
+            size      : file.size,
+            data      : file.data,
+            mimetype  : file.mimetype,
+        });
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ), res );
+
+        req.body.attachedFile = fileToUploadDto;
+
+        next();
+    }
+
 
 }

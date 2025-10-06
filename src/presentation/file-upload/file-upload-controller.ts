@@ -24,22 +24,25 @@ export class FileUploadController {
         // Propiedad creada automaticamente por el middleware file-upload.
         // req.files;
         // El middleware ya se encargo de validar que haya un archivo existente.
-        const file = req.body.files.at(0);
-        if( !file ) return HandlerResponses.handleError( CustomError.badRequest('Error inesperado al leer el archivo') , res );
-        const [ error , fileToUploadDto] = UploadFileDto.create( {
-            size      : file.size,
-            data      : file.data,
-            mimetype  : file.mimetype,
-        });
-        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ), res );
+        // const file = req.body.files.at(0);
+        // if( !file ) return HandlerResponses.handleError( CustomError.badRequest('Error inesperado al leer el archivo') , res );
+        // const [ error , fileToUploadDto] = UploadFileDto.create( {
+        //     size      : file.size,
+        //     data      : file.data,
+        //     mimetype  : file.mimetype,
+        // });
+        // if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ), res );
+
+        const { fileToUploadDto } = req.body.attachedFile;
+        if( !fileToUploadDto ) return HandlerResponses.handleError( CustomError.badRequest('No se pudo recopilar el archivo.') , res );
         
         const folder = this.obtainFolder( req , res );
         if( !folder ) return;
         
         new UploadSingle( this.fileUploadRepository )
-        .execute( fileToUploadDto! , folder! )
-        .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
-        .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+            .execute( fileToUploadDto! , folder! )
+            .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
+            .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
     
     public uploadMultipleFiles = ( req : Request , res : Response ) => {
