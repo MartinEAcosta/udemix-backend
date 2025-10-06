@@ -6,11 +6,11 @@ export class CreateCourseDto {
         public readonly title : string,
         public readonly description : string,
         public readonly id_category : string,
+        public readonly id_file : string | null,
+        public readonly thumbnail_url : string | null,
         public readonly id_owner : string,
         public readonly price : number,
         public readonly capacity : number,
-        public readonly id_file : string | null,
-        public readonly thumbnail_url : string | null,
     ){}
 
     // Retornaria un array con el error en caso de que haya y el dto undefined.

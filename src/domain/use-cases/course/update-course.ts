@@ -25,7 +25,7 @@ export class UpdateCourse implements UpdateCourseUseCase {
             const category = await this.categoryRepository.findCategoryById( updateCourseDto.id_category );
             if( !category ) throw CustomError.badRequest('La categoria que asignaste al curso no es valida.');
         }
-
+        
         const courseToUpdate = await this.courseRepository.findCourseById( updateCourseDto.id );
         if( !courseToUpdate ) throw CustomError.notFound(`El curso con el id: ${updateCourseDto.id}, no fue encontrado.`);
 
