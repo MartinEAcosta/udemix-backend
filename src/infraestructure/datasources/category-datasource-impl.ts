@@ -1,5 +1,6 @@
 import { CategoryModel } from "../../data/mongo/models/category.model";
 import { CategoryDatasource } from "../../domain/datasources/category.datasource";
+import { CategoryResponseDto } from "../../domain/dtos/category/category.responses";
 import { CreateCategoryDto } from "../../domain/dtos/category/create-category-dto";
 import { CategoryEntity } from "../../domain/entities/category.entity";
 import { CategoryMapper } from "../mappers/category.mapper";
@@ -17,6 +18,11 @@ export class CategoryDataSourceImpl implements CategoryDatasource {
         if (!category) return null;
 
         return CategoryMapper.fromCategoryResponseDto(category);
+    }
+
+    async findCategoryById( id : string ) : Promise<CategoryResponseDto | null> {
+        const category = await CategoryModel.findOne({ _id : id });
+        return category ? CategoryMapper.fromCategoryResponseDto(category) : null;
     }
     
     async deleteCategory( id : string ) : Promise<boolean>{

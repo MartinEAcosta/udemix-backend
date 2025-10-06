@@ -4,8 +4,8 @@ interface CourseEntityOptions {
     title : string ;
     description : string; 
     id_category : string;
-    thumbnail_url : string;
-    id_file : string;
+    thumbnail_url ?: string;
+    id_file ?: string;
     id_owner : string;
     price : number;
     capacity ?: number;
@@ -18,8 +18,8 @@ export class CourseEntity {
     public title : string;
     public description : string;
     public id_category : string;
-    public thumbnail_url : string;
-    public id_file  : string;
+    public thumbnail_url : string | null;
+    public id_file  : string | null;
     public id_owner : string;
     public price : number;
     public capacity ?: number;
@@ -32,8 +32,8 @@ export class CourseEntity {
         this.title = title;
         this.description = description;
         this.id_category = id_category;
-        this.thumbnail_url = thumbnail_url;
-        this.id_file = id_file;
+        this.thumbnail_url = thumbnail_url ?? null;
+        this.id_file = id_file ?? null;
         this.id_owner = id_owner;
         this.price = price;
         this.capacity = capacity;

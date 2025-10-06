@@ -9,8 +9,8 @@ export class UpdateCourseDto {
         public readonly id_category : string,
         public readonly id_owner : string,
         public readonly price : number,
-        public readonly thumbnail_url ?: string | null,
-        public readonly id_file ?: string | null,
+        public readonly thumbnail_url : string | null,
+        public readonly id_file : string | null,
         public readonly capacity? : number,
     ){}
         

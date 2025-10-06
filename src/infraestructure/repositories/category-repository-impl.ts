@@ -31,7 +31,18 @@ export class CategoryRepositoryImpl implements CategoryRepository {
         catch( error ) {
             throw error;
         }
-    
+    }   
+
+    async findCategoryById( id : string ) : Promise<CategoryEntity | null> {
+        try{
+            const category = await this.categoryDatasource.findCategoryById( id );
+            if( !category ) return null;
+            
+            return CategoryEntity.fromObject( category ); 
+        }
+        catch( error ) {
+            throw error;
+        }
     }   
 
     async deleteCategory( id : string ) : Promise<boolean>{
