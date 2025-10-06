@@ -19,22 +19,21 @@ export class CreateLesson implements CreateLessonUseCase {
     ) { }
 
     async execute( lessonRequestDto : CreateLessonDto , file ?: UploadFileDto ) : Promise<LessonEntity> {
-
+    
         const { id_course } = lessonRequestDto;
         const course = await this.courseRepository.findCourseById( id_course );
         if( !course ) throw CustomError.notFound("El curso al que quieres asignar la lección no existe.");
         
         if( course.id_owner != lessonRequestDto.id_user ) throw CustomError.unauthorized('No eres el propietario, por lo tanto no puedes añadir lecciones.');
-
+        
         const arrayLessons = await this.lessonRepository.findAllLessonsByCourseId( id_course );
         const lastLesson = arrayLessons.pop();
         const { lesson_number , ...rest } = lessonRequestDto;
-                                        
+        
         if( file ){
-
+            
             const fileUploaded = await this.fileRepository.uploadFile( file , 'lessons' );
             if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al intentar cargar el contenido a la lección.');
-
             return await this.lessonRepository.createLesson(
                                                             { 
                                                                 ...rest,

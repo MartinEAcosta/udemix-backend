@@ -28,8 +28,8 @@ export class CreateLessonDto {
         this.title         = options.title;
         this.description   = options.description;
         this.id_file       = options.id_file;
-        this.unit          = options.unit;
-        this.chapter       = options.chapter;
+        this.unit          = options.unit ?? 0;
+        this.chapter       = options.chapter ?? 0;
         this.lesson_number = options.lesson_number;
         this.uploaded_at   = new Date();
     }
@@ -41,7 +41,6 @@ export class CreateLessonDto {
         if( !id_course ) return [ 'El id del curso es obligatorio.' , undefined];
         if( !title ) return [ 'El curso debe de contener un titulo.' , undefined];
         if( !description ) return [ 'El curso debe de contener una descripción.' , undefined];
-        if( !id_file ) return [ 'Debes adjuntar contenido para la lección.' , undefined];
         
 
         return [ undefined , new CreateLessonDto( { id_user, id_course , title , description , id_file ,
