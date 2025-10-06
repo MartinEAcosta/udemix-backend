@@ -7,7 +7,7 @@ import { CustomError } from "../../errors/custom-error";
 import { UploadFileDto } from "../../dtos/file-upload/file-upload.dto";
 
 export interface SaveCourseUseCase {
-    execute( createCourseDto : CreateCourseDto ) : Promise<CourseEntity>;
+    execute( createCourseDto : CreateCourseDto , file ?: UploadFileDto ) : Promise<CourseEntity>;
 }
 
 export class SaveCourse implements SaveCourseUseCase {

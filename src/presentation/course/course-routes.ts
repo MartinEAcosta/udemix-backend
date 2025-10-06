@@ -71,7 +71,8 @@ export class CourseRouter {
         // Edit Course 
         router.put(
           '/update/:id',
-          [ authMiddleware.validateJWT , authMiddleware.validateAndAssignOwner ],
+          [ authMiddleware.validateJWT , authMiddleware.validateAndAssignOwner,
+            fileMiddleware.containFiles , fileMiddleware.fileUploadPreprocessor ],
           courseController.updateCourse
         );
         

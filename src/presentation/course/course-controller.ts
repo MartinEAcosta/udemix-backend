@@ -8,6 +8,7 @@ import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { FindCoursesByCategory } from "../../domain/use-cases/course/find-courses-by-category";
 import { CategoryRepository } from "../../domain/repository/category-repository";
 import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
+import { CustomError } from "../../domain/errors/custom-error";
 
 
 export class CourseController {
@@ -52,7 +53,7 @@ export class CourseController {
         const fileUploadDto = req.body.attachedFile;
 
         const [ errorMessage , createCourseDto ] = CreateCourseDto.create( req.body );
-        if( errorMessage ) return res.status(400).json({ errorMessage });
+        if( errorMessage ) return HandlerResponses.handleError( CustomError.badRequest( errorMessage ) , res );
         
         new SaveCourse( this.courseRepository , this.fileRepository )
             .execute( createCourseDto! , fileUploadDto )
@@ -61,13 +62,15 @@ export class CourseController {
     }
 
     public updateCourse = ( req : Request , res : Response ) => {
+
+        const fileUploadDto = req.body.attachedFile;
         const { id } = req.params;
 
         const [ errorMessage , updateCourseDto ] = UpdateCourseDto.create( id , req.body );
-        if( errorMessage ) return res.status(400).json({ errorMessage });
+        if( errorMessage ) return HandlerResponses.handleError( CustomError.badRequest( errorMessage ) , res );
 
         new UpdateCourse( this.courseRepository , this.fileRepository )
-            .execute( updateCourseDto! )
+            .execute( updateCourseDto! , fileUploadDto )
             .then( courseUpdated => HandlerResponses.handleSuccess( res , courseUpdated, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
@@ -79,7 +82,11 @@ export class CourseController {
 
         new DeleteCourse( this.courseRepository )
             .execute( id )
-            .then( hasBeenRemoved => HandlerResponses.handleSuccess( res , { removed: hasBeenRemoved } , 200) )
+            .then( hasBeenRemoved => HandlerResponses.handleSuccess( res , 
+                                                                            { 
+                                                                                removed: hasBeenRemoved
+                                                                            }, 
+                                                                    200) )
             .catch( error => HandlerResponses.handleError(error , res) );
     }
 }
