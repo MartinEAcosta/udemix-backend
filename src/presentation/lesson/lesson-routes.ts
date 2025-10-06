@@ -8,6 +8,10 @@ import { JwtAdapter } from "../../config";
 import { AuthDatasourceImpl } from "../../infraestructure/datasources/auth-datasource-impl";
 import { AuthRepositoryImpl } from "../../infraestructure/repositories/auth-repository-impl";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
+import { FileUploadMiddleware } from "../middlewares/file-upload.middleware";
+import { FileUploadDatasourceImpl } from "../../infraestructure/datasources/file-upload-datasource-impl";
+import { FileUploadRepositoryImpl } from "../../infraestructure/repositories/file-upload-repository-impl";
+import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
 
 export class LessonRouter {
 
@@ -17,25 +21,41 @@ export class LessonRouter {
 
         const datasource = new LessonDatasourceImpl();
         const lessonRepository =  new LessonRepositoryImpl( datasource );
+
         const courseDatasource = new CourseDatasourceImpl();
         const courseRepository = new CourseRepositoryImpl( courseDatasource);
-        const lessonController = new LessonController(  courseRepository , lessonRepository );
 
+        const fileStorage = new CloudinaryAdapter();
+
+        const fileDatasource = new FileUploadDatasourceImpl( fileStorage );
+        const fileRepository = new FileUploadRepositoryImpl( fileDatasource );
+        
+        const lessonController = new LessonController(  courseRepository , lessonRepository , fileRepository);
 
         const jwtAdapter = new JwtAdapter();
         const authDatasource = new AuthDatasourceImpl();
         const authRepository = new AuthRepositoryImpl( authDatasource );
         const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
 
+        const fileUploadMiddleware = new FileUploadMiddleware();
+
         router.post(
             '/new',
-            [authMiddleware.validateJWT ],
+            [
+                authMiddleware.validateJWT,
+                fileUploadMiddleware.containFiles,
+                fileUploadMiddleware.fileUploadPreprocessor
+            ],
             lessonController.createLesson
         );
 
         router.post(
             '/update/:id',
-            [authMiddleware.validateJWT ],
+            [
+                authMiddleware.validateJWT,
+                fileUploadMiddleware.containFiles,
+                fileUploadMiddleware.fileUploadPreprocessor
+            ],
             lessonController.updateLesson
         );
 

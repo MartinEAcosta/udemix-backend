@@ -13,6 +13,7 @@ import { CourseRepository } from "../../domain/repository/course-repository";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { UpdateLessonDto } from "../../domain/dtos/lesson/update-lesson.dto";
 import { UpdateLesson } from "../../domain/use-cases/lesson/update-lesson";
+import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
 
 
 export class LessonController {
@@ -20,11 +21,13 @@ export class LessonController {
     constructor( 
         private readonly courseRepository : CourseRepository,
         private readonly lessonRepository : LessonRepository,
+        private readonly fileRepository   : FileUploadRepository
     ) { }
 
     public createLesson = ( req : AuthenticatedRequest , res : Response ) => {
-
+        const fileUploadDto = req.body.attachedFile;
         const { user } = req;
+
         if( !user ) throw HandlerResponses.handleError( CustomError.unauthorized( 'Debes estar autenticado para crear una lección.' ), res );
         const [ error, lessonRequestDto ] = CreateLessonDto.create(
                                                                     {   
@@ -34,14 +37,14 @@ export class LessonController {
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
 
-        new CreateLesson( this.courseRepository , this.lessonRepository )
-                .execute( lessonRequestDto! )
-                    .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
-                    .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+        new CreateLesson( this.courseRepository , this.lessonRepository , this.fileRepository )
+                .execute( lessonRequestDto! , fileUploadDto )
+                .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
+                .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
 
     public updateLesson = ( req : AuthenticatedRequest , res : Response ) =>{
-
+        const fileUploadDto = req.body.attachedFile;
         const { id } = req.params;
         if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id para realizar el borrado.'), res );
 
@@ -55,10 +58,10 @@ export class LessonController {
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
         
-        new UpdateLesson( this.courseRepository , this.lessonRepository )
-                .execute( lessonRequestDto! )
+        new UpdateLesson( this.courseRepository , this.lessonRepository , this.fileRepository )
+                .execute( lessonRequestDto!, fileUploadDto )
                 .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
-                    .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+                .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
 
     public deleteLesson = ( req : Request , res : Response ) => {
@@ -68,8 +71,8 @@ export class LessonController {
 
         new DeleteLesson( this.lessonRepository )
             .execute( id )
-                    .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
-                    .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+            .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
+            .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
 
     }
 
@@ -80,8 +83,8 @@ export class LessonController {
 
         new FindAllLessonsFromCourse( this.courseRepository , this.lessonRepository )
             .execute( course_id )
-                    .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
-                    .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+            .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
+            .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
         
     }
 
@@ -92,8 +95,8 @@ export class LessonController {
 
         new FindLessonById( this.lessonRepository )
             .execute( id )                    
-                .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
-                .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+            .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
+            .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
 
     }
 

@@ -3,9 +3,11 @@ import { LessonEntity } from "../../entities/lesson.entity";
 import { CustomError } from "../../errors/custom-error";
 import { LessonRepository } from "../../repository/lesson-repository";
 import { CourseRepository } from '../../repository/course-repository';
+import { UploadFileDto } from "../../dtos/file-upload/file-upload.dto";
+import { FileUploadRepository } from "../../repository/file-upload-repository";
 
 interface CreateLessonUseCase {
-    execute( lessonRequestDto : CreateLessonDto , uid : string) : Promise<LessonEntity>;
+    execute( lessonRequestDto : CreateLessonDto , file ?: UploadFileDto ) : Promise<LessonEntity>;
 }
 
 export class CreateLesson implements CreateLessonUseCase {
@@ -13,9 +15,10 @@ export class CreateLesson implements CreateLessonUseCase {
     constructor( 
         private readonly courseRepository : CourseRepository,
         private readonly lessonRepository : LessonRepository,
+        private readonly fileRepository   : FileUploadRepository,
     ) { }
 
-    async execute( lessonRequestDto : CreateLessonDto ) : Promise<LessonEntity> {
+    async execute( lessonRequestDto : CreateLessonDto , file ?: UploadFileDto ) : Promise<LessonEntity> {
 
         const { id_course } = lessonRequestDto;
         const course = await this.courseRepository.findCourseById( id_course );
@@ -26,16 +29,28 @@ export class CreateLesson implements CreateLessonUseCase {
         const arrayLessons = await this.lessonRepository.findAllLessonsByCourseId( id_course );
         const lastLesson = arrayLessons.pop();
         const { lesson_number , ...rest } = lessonRequestDto;
-                                                                            
-        const createdLesson = await this.lessonRepository.createLesson( 
-                                                                        {
-                                                                            lesson_number : lastLesson ? lastLesson.lesson_number+1 : 0,
-                                                                            ...rest,
-                                                                        } 
-                                                                      );
-        if( !createdLesson ) throw CustomError.internalServer('Hubo un error a la hora de intentar crear el curso.');
+                                        
+        if( file ){
 
-        return createdLesson;
+            const fileUploaded = await this.fileRepository.uploadFile( file , 'lessons' );
+            if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al intentar cargar el contenido a la lección.');
+
+            return await this.lessonRepository.createLesson(
+                                                            { 
+                                                                ...rest,
+                                                                lesson_number : lastLesson ? lastLesson.lesson_number+1 : 0,
+                                                                id_file : fileUploaded.id
+                                                            } 
+                                                           );
+        }
+        else{
+            return await this.lessonRepository.createLesson( 
+                                                            {
+                                                                ...rest,
+                                                                lesson_number : lastLesson ? lastLesson.lesson_number+1 : 0,
+                                                            } 
+                                                           );
+        }
     }
     
 }

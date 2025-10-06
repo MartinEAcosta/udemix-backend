@@ -3,9 +3,16 @@ import { LessonRepository } from "../../repository/lesson-repository";
 import { CourseRepository } from '../../repository/course-repository';
 import { CustomError } from "../../errors/custom-error";
 import { LessonEntity } from "../../entities/lesson.entity";
+import { UploadFileDto } from "../../dtos/file-upload/file-upload.dto";
+import { FileUploadRepository } from "../../repository/file-upload-repository";
+        // * MANEJOS DE LESSON_NUMBER , UNIT Y CHAPTER FALTA ¿COMO?
+        // * MANEJOS DE LESSON_NUMBER , UNIT Y CHAPTER FALTA ¿COMO?
+        // * MANEJOS DE LESSON_NUMBER , UNIT Y CHAPTER FALTA ¿COMO?
+        // * MANEJOS DE LESSON_NUMBER , UNIT Y CHAPTER FALTA ¿COMO?
+        // * MANEJOS DE LESSON_NUMBER , UNIT Y CHAPTER FALTA ¿COMO?
 
 interface UpdateLessonUseCase {
-    execute ( lessonRequestDto : UpdateLessonDto ) : Promise<LessonEntity>;
+    execute ( lessonRequestDto : UpdateLessonDto , file ?: UploadFileDto ) : Promise<LessonEntity>;
 }
 
 export class UpdateLesson implements UpdateLessonUseCase {
@@ -13,24 +20,38 @@ export class UpdateLesson implements UpdateLessonUseCase {
     constructor(
         private readonly courseRepository : CourseRepository,
         private readonly lessonRepository : LessonRepository,
+        private readonly fileRepository   : FileUploadRepository,
         
      ) { }
 
-    async execute( lessonRequestDto : UpdateLessonDto ) : Promise<LessonEntity> {
-
+    async execute( lessonRequestDto : UpdateLessonDto , file ?: UploadFileDto) : Promise<LessonEntity> {
         const { id } = lessonRequestDto;
         const lesson = await this.lessonRepository.findLessonById( id );
         if( !lesson ) throw CustomError.notFound("La lección que intentas actualizar no existe.");
         
+        
         const course = await this.courseRepository.findCourseById( lessonRequestDto.id_course );
         if( !course ) throw CustomError.notFound("El curso al que quieres asignar la lección no existe.");
         if( course.id_owner != lessonRequestDto.id_user ) throw CustomError.unauthorized('No eres el propietario, por lo tanto no puedes modificar lecciones.');
-
-        // * MANEJOS DE LESSON_NUMBER , UNIT Y CHAPTER FALTA ¿COMO?
-        const updatedLesson = await this.lessonRepository.updateLesson( lessonRequestDto );
-        if( !updatedLesson ) throw CustomError.internalServer( 'Hubo un error inesperado al intentar actualizar la lección.');
         
-        return updatedLesson;
+        if( file ){
+            
+            if( lesson.id_file ){
+                const oldFile = await this.fileRepository.deleteFile( lesson.id_file );
+                if( !oldFile ) throw CustomError.internalServer('Hubo un error al borrar la referencia del contenido de la lección.')
+            }
+
+            const fileUploaded = await this.fileRepository.uploadFile( file , 'lessons' );
+            if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al intentar cargar el contenido a la lección.');
+
+            return await this.lessonRepository.updateLesson( { 
+                                                                ...lessonRequestDto,
+                                                                id_file : fileUploaded.id
+                                                            } );
+        }
+        else{
+            return await this.lessonRepository.updateLesson( lessonRequestDto );
+        }
     }
 
 
