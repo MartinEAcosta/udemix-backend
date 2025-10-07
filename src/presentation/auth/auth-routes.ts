@@ -24,12 +24,12 @@ export class AuthRouter {
             const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
             
             router.post(
-              '/new',
+              '/register',
               authController.registerUser
             );
 
             router.post(
-                '/',
+                '/login',
                 authController.loginUser
             );
 
@@ -37,6 +37,11 @@ export class AuthRouter {
                 '/renew',
                 [authMiddleware.validateJWT],
                 authController.reloadToken
+            );
+
+            router.get(
+                '/validate-email/:token',
+                authController.validateEmail
             );
 
             return router;

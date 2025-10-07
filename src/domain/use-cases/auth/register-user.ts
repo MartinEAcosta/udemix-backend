@@ -18,7 +18,6 @@ export class RegisterUser implements RegisterUserUseCase {
         private readonly tokenManager : TokenManager,
     ){}
 
-    // TODO : CHEQuEAR RESPONSE JWT 
     async execute ( registerUserDto : RegisterUserDto ) : Promise<AuthSuccessResponseDto> {
         
         const userExists = await this.authRepository.findUserByEmail( registerUserDto.email );
@@ -34,7 +33,13 @@ export class RegisterUser implements RegisterUserUseCase {
                                                                 } 
                                                             );
 
-        const token = await this.tokenManager.generateToken({ id : newUser.id });
+        const token = await this.tokenManager.generateToken(
+                                                            {
+                                                                id : newUser.id,
+                                                                email            : newUser.email,
+                                                                isEmailVerified  : newUser.isEmailVerified,
+                                                                role             : newUser.role,
+                                                            });
         if( !token ) throw CustomError.internalServer('Error en la creación del token.');
 
         return {

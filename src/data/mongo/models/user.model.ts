@@ -21,10 +21,16 @@ const userSchema = new mongoose.Schema({
         unique   : true,
     },
 
-    // emailValidated : {
-    //     type: Boolean,
-    //     default: false,
-    // },
+    isEmailVerified : {
+        type    : Boolean,
+        default : false,
+    },
+
+    role : {
+        type : String,
+        enum : ['student' , 'teacher' , 'admin' ],
+        default : 'student'
+    },
 
     password : {
         type     : String,

@@ -46,12 +46,21 @@ export class AuthController {
         new FindUserById( this.authRepository )
             .execute( user.id )
             .then( async userResponse => {
-                const payload = { id: user.id.toString() };
+                const payload = { 
+                                    id: user.id.toString(),
+                                    email           : user.email,
+                                    isEmailVerified : user.isEmailVerified,
+                                    role            : user.role,    
+                                };
                 const token = await this.tokenManager.generateToken( payload );
                 if( !token ) return HandlerResponses.handleError( 'Hubo un error al generar el token', res );
                 return HandlerResponses.handleAuthSuccess( res , { user: userResponse , token } );
             } )
             .catch( error => HandlerResponses.handleError( error , res ) );
+    }
+
+    public validateEmail = ( req : Request , res : Response ) => {
+        
     }
 
 }

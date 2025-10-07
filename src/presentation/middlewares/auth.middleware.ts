@@ -28,7 +28,14 @@ export class AuthMiddleware {
 
         try{
 
-            const payload = await this.tokenManager.validateToken<{id: string}>( token );
+            // ** Chequeear si es necesario todos los atributos, debido a que hay algunos que no se usan
+            const payload = await this.tokenManager.validateToken<
+                                                                    {
+                                                                        id              : string,
+                                                                        email           : string,
+                                                                        isEmailVerified : boolean,
+                                                                        role            : string,
+                                                                    }>( token );
             if( !payload ) {
                 res.status(401).json({ error: 'El token invalido.'})
                 return;

@@ -28,9 +28,11 @@ export class LoginUser implements LoginUserUseCase{
         if( !isMatching ) throw CustomError.badRequest('Chequee las credenciales e intente nuevamente.');
 
         const payload = {
-            id: userExists.id,
-            email: userExists.email 
-        }
+            id               : userExists.id,
+            email            : userExists.email,
+            isEmailVerified  : userExists.isEmailVerified,
+            role             : userExists.role,
+        };
 
         const token = await this.tokenManager.generateToken( payload );
         if( !token ) throw CustomError.internalServer('Error mientras se generaba el token.');
