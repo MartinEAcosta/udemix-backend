@@ -4,7 +4,9 @@ import { AuthController } from "./auth-controller";
 import { AuthDatasourceImpl } from "../../infraestructure/datasources/auth-datasource-impl";
 import { AuthRepositoryImpl } from "../../infraestructure/repositories/auth-repository-impl";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
-import { BcryptAdapter , JwtAdapter } from "../../config/";
+import { BcryptAdapter , envs, JwtAdapter } from "../../config/";
+import { EmailSenderAdapter } from "../../config/adapters/email-sender.adapter";
+import { EmailController } from "./email-controller";
 
 
 export class AuthRouter {
@@ -19,6 +21,14 @@ export class AuthRouter {
             const tokenManager = new JwtAdapter();
             const authController = new AuthController( authRepository , encrypter , tokenManager );
             
+            const emailValidator = new EmailSenderAdapter( 
+                                                            envs.MAILER_SERVICE,
+                                                            envs.MAILER_EMAIL,
+                                                            envs.MAILER_SECRET_KEY,
+                                                            envs.WEBSERVICE_URL,
+                                                        );
+            const emailController = new EmailController( emailValidator , tokenManager );
+
             // ¿Necesario para el middleware?
             const jwtAdapter = new JwtAdapter();
             const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
@@ -40,8 +50,9 @@ export class AuthRouter {
             );
 
             router.get(
-                '/validate-email/:token',
-                authController.validateEmail
+                '/validate-email',
+                [authMiddleware.validateJWT],
+                emailController.validateEmail,
             );
 
             return router;

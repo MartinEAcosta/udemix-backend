@@ -24,14 +24,14 @@ export class UserEntity implements UserEntityOptions {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.isEmailVerified = isEmailVerified;
-        this.role = role;
+        this.isEmailVerified = isEmailVerified ?? false;
+        this.role = role ?? 'student';
         this.password = password;
         this.balance = balance ?? 0;
     }
 
     static fromObject( object : { [ key : string ] : any } ) {
-        const { id , username , email , isEmailVerified, role , password, balance } = object;
+        const { id , username , email , isEmailVerified , role , password, balance } = object;
         
         if( !username ) throw CustomError.badRequest('El nombre de usuario es requerido.'); 
         if( !email ) throw CustomError.badRequest('El email es requerido.');

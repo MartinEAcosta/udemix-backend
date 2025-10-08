@@ -14,8 +14,8 @@ export class RegisterUser implements RegisterUserUseCase {
 
     constructor(
         private readonly authRepository : AuthRepository,
-        private readonly encrypter : Encrypter,
-        private readonly tokenManager : TokenManager,
+        private readonly encrypter      : Encrypter,
+        private readonly tokenManager   : TokenManager,
     ){}
 
     async execute ( registerUserDto : RegisterUserDto ) : Promise<AuthSuccessResponseDto> {
@@ -41,6 +41,7 @@ export class RegisterUser implements RegisterUserUseCase {
                                                                 role             : newUser.role,
                                                             });
         if( !token ) throw CustomError.internalServer('Error en la creación del token.');
+
 
         return {
             user: {

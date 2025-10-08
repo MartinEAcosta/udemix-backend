@@ -5,11 +5,18 @@ import { TokenManager } from '../../domain/services/TokenManager';
 const JWT_SEED = envs.SECRET_JWT_SEED;
 export class JwtAdapter implements TokenManager{
 
-    generateToken = ( payload : any  , duration : string = '2h' ) : Promise<string | null> => {
+    generateToken = ( payload : { id : string , email : string , isEmailVerified ?: boolean, role ?: string }  , duration : string = '2h' ) : Promise<string | null> => {
         
         return new Promise( (resolve)  => {
 
-            jwt.sign( payload , JWT_SEED!  , { expiresIn: duration } as SignOptions , 
+            const completePayload = {
+                isEmailVerified : false,
+                role            : 'student',
+                ...payload,
+            }
+
+
+            jwt.sign( completePayload , JWT_SEED!  , { expiresIn: duration } as SignOptions , 
                 ( error , token ) => {
                     if( error ){
                         console.log(error);

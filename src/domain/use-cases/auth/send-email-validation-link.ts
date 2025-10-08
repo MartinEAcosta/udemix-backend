@@ -1,0 +1,41 @@
+import { CustomError } from "../../errors/custom-error";
+import { EmailValidator } from "../../services/EmailValidator";
+import { TokenManager } from "../../services/TokenManager";
+
+interface SendEmailValidationLinkUseCase {
+    execute( email : string ) : Promise<boolean>;
+}
+
+export class SendEmailValidationLink implements SendEmailValidationLinkUseCase {
+
+    constructor( 
+        private readonly emailValidator : EmailValidator,
+        private readonly tokenManager   : TokenManager,
+    ){ }
+
+    async execute( email : string ) : Promise<boolean> {
+
+        const token = await this.tokenManager.generateToken( email );
+        if( !token ) throw CustomError.internalServer('Hubo un error al generar el token.');
+
+        const link = `${ this.emailValidator.baseURL }/api/validate-email/${ token }`
+        const html = `
+            <h1>¡Valida tu email para acceder a la creación de cursos!</h1>
+            <p>Clickea en el link para validar tu email.</p>
+            <a href="${ link }"> Haz click aqui para validarte : ${ email } </a>
+        `;
+
+        const options = {
+            to : email ,
+            subject : 'Valida tu email - Udemix',
+            htmlBody : html,
+        }; 
+
+        const isSent = await this.emailValidator.sendEmail( options );
+        if( !isSent ) throw CustomError.internalServer('Hubo un error inesperado al enviar el correo.');
+
+        console.log(isSent);
+        return true;
+    }
+    
+}
