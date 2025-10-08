@@ -5,16 +5,19 @@ import { HandlerResponses } from "../helpers/handler-responses";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { TokenManager } from "../../domain/services/TokenManager";
 import { SendEmailValidationLink } from "../../domain/use-cases/auth/send-email-validation-link";
+import { ValidateEmail } from "../../domain/use-cases/auth/validate-email";
+import { AuthRepository } from "../../domain/repository/auth-repository";
 
 
 export class EmailController {
 
     constructor(
+        private readonly authRepository : AuthRepository,
         private readonly emailValidator : EmailValidator,
         private readonly tokenManager   : TokenManager,
     ) {}
 
-    public validateEmail = ( req : AuthenticatedRequest , res : Response ) => {
+    public sendValidationEmail = ( req : AuthenticatedRequest , res : Response ) => {
 
         const email = req.user?.email;
         console.log(req.user)
@@ -26,4 +29,13 @@ export class EmailController {
             .catch( error => HandlerResponses.handleError(error,res) );  
     }
 
+    public validateEmail = ( req : AuthenticatedRequest , res : Response ) => {
+
+        const { token } = req.params;
+
+        new ValidateEmail( this.authRepository , this.tokenManager )
+            .execute( token )
+            .then( response => HandlerResponses.handleSuccess( res , { verified : response } , 200 ) )
+            .catch( error => HandlerResponses.handleError(error,res) );  
+    }
 }

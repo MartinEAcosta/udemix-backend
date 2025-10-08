@@ -11,6 +11,8 @@ export interface UserRequestDto {
     id             ?: string,
     username        : string,
     email           : string,
+    isEmailVerified : boolean,
+    role            : string,
     balance         : number,
 }
 

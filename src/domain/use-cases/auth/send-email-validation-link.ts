@@ -15,10 +15,10 @@ export class SendEmailValidationLink implements SendEmailValidationLinkUseCase {
 
     async execute( email : string ) : Promise<boolean> {
 
-        const token = await this.tokenManager.generateToken( email );
+        const token = await this.tokenManager.generateToken( {email} );
         if( !token ) throw CustomError.internalServer('Hubo un error al generar el token.');
 
-        const link = `${ this.emailValidator.baseURL }/api/validate-email/${ token }`
+        const link = `${ this.emailValidator.baseURL }/api/auth/validate-email/${ token }`
         const html = `
             <h1>¡Valida tu email para acceder a la creación de cursos!</h1>
             <p>Clickea en el link para validar tu email.</p>

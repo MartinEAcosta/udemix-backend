@@ -27,7 +27,7 @@ export class AuthRouter {
                                                             envs.MAILER_SECRET_KEY,
                                                             envs.WEBSERVICE_URL,
                                                         );
-            const emailController = new EmailController( emailValidator , tokenManager );
+            const emailController = new EmailController( authRepository , emailValidator , tokenManager );
 
             // ¿Necesario para el middleware?
             const jwtAdapter = new JwtAdapter();
@@ -50,10 +50,15 @@ export class AuthRouter {
             );
 
             router.get(
-                '/validate-email',
+                '/send-validation-email',
                 [authMiddleware.validateJWT],
-                emailController.validateEmail,
+                emailController.sendValidationEmail,
             );
+
+            router.get(
+                '/validate-email/:token',
+                emailController.validateEmail
+            )
 
             return router;
         }
