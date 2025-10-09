@@ -43,17 +43,17 @@ export class CourseRouter {
         const fileMiddleware = new FileUploadMiddleware();
         const paginationMiddleware = new PaginationMiddleware();
         
-        router.get(
-          '',
-          [ paginationMiddleware.containPageOrLimit ],
-          courseController.findCoursesPaginated
-        )
-        
         // GetAll Courses
         router.get(
           '/',
           courseController.findAllCourses
         );
+        
+        router.get(
+          '/paginated',
+          [ paginationMiddleware.containPageOrLimit ],
+          courseController.findCoursesPaginated
+        )
         
         router.get(
           '/:id',
