@@ -32,7 +32,7 @@ export class CourseDatasourceImpl implements CourseDatasource {
         };
     }
 
-    async findCourseById( id: string ): Promise<CourseResponseDto | null> {   
+    async findCourseById( id: string ) : Promise<CourseResponseDto | null> {   
         const course = await CourseModel.findById({ _id: id });
         if( !course ) return null;
         
@@ -45,12 +45,8 @@ export class CourseDatasourceImpl implements CourseDatasource {
         return courses.map( course => CourseMapper.fromCourseResponseDto( course ));
     }
 
-    async saveCourse( createCourseDto : CreateCourseDto): Promise<CourseResponseDto> {
-        // TODO: delegar al caso de uso.
-        // const userExists = await UserModel.findById( owner );
+    async saveCourse( createCourseDto : CreateCourseDto) : Promise<CourseResponseDto> {
 
-        // if( !userExists )
-            // throw `El Usuario asignado como creador del curso no existe.`
         const newCourse = await CourseModel.create({
             ...createCourseDto
         });

@@ -29,7 +29,6 @@ export class AuthRouter {
                                                         );
             const emailController = new EmailController( authRepository , emailValidator , tokenManager );
 
-            // ¿Necesario para el middleware?
             const jwtAdapter = new JwtAdapter();
             const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
             

@@ -71,7 +71,7 @@ export class CourseRouter {
         // Create Course
         router.post(
           '/new',
-          [ authMiddleware.validateJWT , authMiddleware.validateAndAssignOwner, 
+          [ authMiddleware.validateJWT , authMiddleware.validatePermissions(['teacher', 'admin']) , authMiddleware.validateAndAssignOwner, 
             fileMiddleware.containFiles , fileMiddleware.fileUploadPreprocessor ],
           courseController.saveCourse
         );

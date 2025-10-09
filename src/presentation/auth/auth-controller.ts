@@ -9,6 +9,7 @@ import { HandlerResponses } from '../helpers/handler-responses';
 import { RegisterUserDto , LoginUserDto } from "../../domain/dtos";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { RegisterUser , LoginUser , FindUserById } from "../../domain/use-cases";
+import { ReloadToken } from "../../domain/use-cases/auth/reload-token";
 
 export class AuthController {
 
@@ -43,24 +44,11 @@ export class AuthController {
         const user = req.user;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe esar autenticado para refrescar el token.') , res );
 
-        new FindUserById( this.authRepository )
+        new ReloadToken( this.authRepository, this.tokenManager )
             .execute( user.id )
-            .then( async userResponse => {
-                const payload = { 
-                                    id: user.id.toString(),
-                                    email           : user.email,
-                                    isEmailVerified : user.isEmailVerified,
-                                    role            : user.role,    
-                                };
-                const token = await this.tokenManager.generateToken( payload );
-                if( !token ) return HandlerResponses.handleError( 'Hubo un error al generar el token', res );
-                return HandlerResponses.handleAuthSuccess( res , { user: userResponse , token } );
-            } )
+            .then( authResponse => HandlerResponses.handleAuthSuccess( res, authResponse , 200) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
 
-    public validateEmail = ( req : Request , res : Response ) => {
-        
-    }
 
 }
