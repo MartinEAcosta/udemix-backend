@@ -13,6 +13,7 @@ import { FileUploadDatasourceImpl } from '../../infraestructure/datasources/file
 import { FileUploadRepositoryImpl } from '../../infraestructure/repositories/file-upload-repository-impl';
 import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
 import { FileUploadMiddleware } from "../middlewares/file-upload.middleware";
+import { PaginationMiddleware } from "../middlewares/pagination.middleware";
 
 
 export class CourseRouter {
@@ -40,6 +41,13 @@ export class CourseRouter {
         const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
 
         const fileMiddleware = new FileUploadMiddleware();
+        const paginationMiddleware = new PaginationMiddleware();
+        
+        router.get(
+          '',
+          [ paginationMiddleware.containPageOrLimit ],
+          courseController.findCoursesPaginated
+        )
         
         // GetAll Courses
         router.get(

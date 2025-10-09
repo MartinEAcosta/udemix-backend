@@ -18,4 +18,5 @@ export class CourseMapper {
             current_enrolled : courseDoc.current_enrolled,
         }
     } 
+
 }

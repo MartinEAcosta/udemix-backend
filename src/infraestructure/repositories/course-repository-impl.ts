@@ -4,6 +4,7 @@ import { CourseDatasource } from '../../domain/datasources/course.datasource';
 import { CourseEntity } from '../../domain/entities/course.entity';
 import { CreateCourseDto } from '../../domain/dtos/course/create-course.dto';
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
+import { PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
 
 export class CourseRepositoryImpl implements CourseRepository{
 
@@ -26,6 +27,21 @@ export class CourseRepositoryImpl implements CourseRepository{
         try{
             const courses = await this.courseDatasource.findAllCourses();
             return courses.map( course => CourseEntity.fromObject(course) );
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
+    async findCoursesPaginated( page : number , limit : number ) : Promise<PaginationResponseDto<CourseEntity[]>> {
+        try{
+            const info = await this.courseDatasource.findCoursesPaginated( page , limit );
+            const { items , ...rest } = info;
+            
+            return {
+                ...rest,
+                items : info.items.map( course => CourseEntity.fromObject(course) ),
+            }
         }
         catch( error ){
             throw error;

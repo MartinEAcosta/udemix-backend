@@ -9,6 +9,7 @@ import { FindCoursesByCategory } from "../../domain/use-cases/course/find-course
 import { CategoryRepository } from "../../domain/repository/category-repository";
 import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
 import { CustomError } from "../../domain/errors/custom-error";
+import { FindCoursesPaginated } from "../../domain/use-cases/course/find-courses-paginated";
 
 
 export class CourseController {
@@ -26,6 +27,17 @@ export class CourseController {
             .execute()
             .then( courses => HandlerResponses.handleSuccess( res , courses, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ));
+    }
+
+    public findCoursesPaginated = ( req : Request , res : Response ) => {
+
+        const { pagination } = req.body;
+        
+        new FindCoursesPaginated( this.courseRepository )
+                .execute( pagination )
+                .then( courses => HandlerResponses.handleSuccess( res , courses , 200) )
+                .catch( error => HandlerResponses.handleError( error , res ));
+
     }
 
     public findCourseById = ( req : Request , res : Response ) => {

@@ -4,6 +4,7 @@ import { CourseModel } from "../../data/mongo/models/course.model";
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 import { CourseResponseDto } from '../../domain/dtos/course/course.responses';
 import { CourseMapper } from '../mappers/course.mapper';
+import { PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
 
 export class CourseDatasourceImpl implements CourseDatasource {
     
@@ -13,6 +14,27 @@ export class CourseDatasourceImpl implements CourseDatasource {
         return courses.map( CourseMapper.fromCourseResponseDto );
     }
     
+    async findCoursesPaginated( page : number , limit : number ) : Promise<PaginationResponseDto<CourseResponseDto[]>> {
+
+        const [ courses , total ] = await Promise.all(
+                                                [CourseModel.find({})
+                                                    .skip( (page - 1 ) * limit)
+                                                    .limit( limit ),
+                                                CourseModel.countDocuments()]
+        );
+
+        const founded = courses.map( CourseMapper.fromCourseResponseDto );
+
+        return{
+            page,
+            limit,
+            total,
+            next : null,
+            prev : null,
+            items: founded,
+        };
+    }
+
     async findCourseById( id: string ): Promise<CourseResponseDto | null> {   
         const course = await CourseModel.findById({ _id: id });
         if( !course ) return null;

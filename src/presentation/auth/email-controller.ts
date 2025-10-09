@@ -23,7 +23,7 @@ export class EmailController {
         console.log(req.user)
         if( !email ) return HandlerResponses.handleError( CustomError.unauthorized('Necesitas estar autenticado para validar tu email.') , res );
 
-        new SendEmailValidationLink( this.emailValidator , this.tokenManager )
+        new SendEmailValidationLink( this.authRepository, this.emailValidator , this.tokenManager )
             .execute( email )
             .then( emailResponse => HandlerResponses.handleSuccess( res , { send : emailResponse } , 200 ) )
             .catch( error => HandlerResponses.handleError(error,res) );  
