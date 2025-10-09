@@ -16,22 +16,19 @@ export class CourseDatasourceImpl implements CourseDatasource {
     
     async findCoursesPaginated( page : number , limit : number ) : Promise<PaginationResponseDto<CourseResponseDto[]>> {
 
-        const [ courses , total ] = await Promise.all(
-                                                [CourseModel.find({})
-                                                    .skip( (page - 1 ) * limit)
-                                                    .limit( limit ),
-                                                CourseModel.countDocuments()]
-        );
+        const courses  = await CourseModel.find({})
+                                            .skip( (page - 1 ) * limit)
+                                            .limit( limit );
 
         const founded = courses.map( CourseMapper.fromCourseResponseDto );
 
         return{
             page,
             limit,
-            total,
-            next : null,
-            prev : null,
-            items: founded,
+            total : founded.length,
+            next  : null,
+            prev  : null,
+            items : founded,
         };
     }
 
