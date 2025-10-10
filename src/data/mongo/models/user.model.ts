@@ -4,6 +4,8 @@ export interface IUserModel {
   _id             : Types.ObjectId; // Podría venir de la DB
   username        : string;
   email           : string;
+  isEmailVerified : boolean;
+  role            : string;
   password        : string;
   balance         : number;
 }

@@ -8,6 +8,8 @@ export class UserMapper {
             id: userDoc._id.toString(),
             username: userDoc.username,
             email: userDoc.email,
+            isEmailVerified: userDoc.isEmailVerified,
+            role: userDoc.role,
             password: userDoc.password,
             balance: userDoc.balance,
         }

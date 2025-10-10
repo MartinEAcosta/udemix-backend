@@ -3,6 +3,8 @@ export interface UserResponseDto {
     id             ?:   string,
     username        : string,
     email           : string,
+    isEmailVerified : boolean,
+    role            : string,
     password       ?: string,
     balance         : number,
 }
