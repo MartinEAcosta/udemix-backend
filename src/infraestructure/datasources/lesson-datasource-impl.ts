@@ -35,15 +35,15 @@ export class LessonDatasourceImpl implements LessonDatasource {
         return lessonDeleted ? true : false;
     }
 
-    async findAllLessonsByCourseId( course_id : string ) : Promise<LessonResponseDto[]> {
-        const lessons = await LessonModel.find({ id_course : course_id })
+    async findAllLessonsByCourseId( id_course : string ) : Promise<LessonResponseDto[]> {
+        const lessons = await LessonModel.find({ id_course : id_course })
                                             .sort({ lesson_number: 'asc'});
         
         return lessons.map( lesson => LessonMapper.fromLessonResponseDto( lesson ) );
     }
 
-    async findAllLessonsPopulatedByCourseId( course_id : string ) : Promise<LessonResponsePopulateDto[]> {
-        const lessons = await LessonModel.find({ id_course : course_id })
+    async findAllLessonsPopulatedByCourseId( id_course : string ) : Promise<LessonResponsePopulateDto[]> {
+        const lessons = await LessonModel.find({ id_course : id_course })
                                         .sort({ lesson_number: 'asc'})
                                         .populate<ILessonPopulateModel>('id_file', '_id url');
         

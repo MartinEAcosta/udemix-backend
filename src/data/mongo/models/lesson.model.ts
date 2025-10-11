@@ -48,8 +48,13 @@ const lessonSchema = new mongoose.Schema({
         ref      : 'File',
     },
 
-    unit : {
-        type     : Number,
+    // unit : {
+    //     type     : Number,
+    // },
+
+    modules : {
+        type     : [Schema.Types.ObjectId],
+        ref      : 'Module'
     },
 
     chapter : {
