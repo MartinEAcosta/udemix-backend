@@ -19,7 +19,7 @@ const moduleSchema = new mongoose.Schema({
         required : [true , 'Debes especificar el numero del modulo.'],
     },
 
-    lessons: {
+    id_lessons: {
         type     : [Schema.Types.ObjectId],
         ref      : 'Lesson',
     },

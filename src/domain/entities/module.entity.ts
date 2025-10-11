@@ -16,7 +16,7 @@ export class ModuleEntity {
     public lesssons  : string[];
     public id_course : string;
 
-    constructor( options : ModuleOptions ) {
+    private constructor( options : ModuleOptions ) {
         const { id , title , unit ,lessons , id_course } = options;
         this.id = id;
         this.title = title;
