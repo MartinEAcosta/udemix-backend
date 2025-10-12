@@ -5,6 +5,7 @@ import { CourseRouter } from "./course/course-routes";
 import { EnrollmentRouter } from "./enrollment/enrollment-routes";
 import { FileUploadRouter } from "./file-upload/file-upload-routes";
 import { LessonRouter } from "./lesson/lesson-routes";
+import { ModuleRouter } from "./module/module.routes";
 
 export class AppRoutes {
 
@@ -18,6 +19,7 @@ export class AppRoutes {
         router.use( '/api/enrollments' , EnrollmentRouter.routes );
         router.use( '/api/file' , FileUploadRouter.routes );
         router.use( '/api/lessons' , LessonRouter.routes );
+        router.use( '/api/modules' , ModuleRouter.routes );
 
         return router;
     }

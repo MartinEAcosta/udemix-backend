@@ -1,13 +1,14 @@
 import mongoose, { Schema, Types } from "mongoose";
 
 export interface IModuleModel {
-    _id?    : Types.ObjectId; 
+    _id     : Types.ObjectId; 
     title   : string;
     unit    : number;
-    lessons : Types.ObjectId[];
+    id_lessons : Types.ObjectId[];
+    id_course : Types.ObjectId;
 }
 
-const moduleSchema = new mongoose.Schema({
+export const moduleSchema = new mongoose.Schema({
     
     title: {
         type     : String,
@@ -27,7 +28,8 @@ const moduleSchema = new mongoose.Schema({
     id_course: {
         type     : Schema.Types.ObjectId,
         ref      : 'Course',
+        required : [true, 'Debes asignar un curso.'],
     }
 });
 
-export const ModuleSchema = mongoose.model( 'Module' , moduleSchema );
+export const ModuleModel = mongoose.model( 'Module' , moduleSchema );
