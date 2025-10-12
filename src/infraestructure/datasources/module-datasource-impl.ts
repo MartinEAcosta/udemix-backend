@@ -15,15 +15,18 @@ export class ModuleDatasourceImpl implements ModuleDatasource{
         throw new Error('Method not implemented.');
     }
     
-    async findAllModules ( ) : Promise<any> {
-        throw new Error('Method not implemented.');
+    async findAllModules ( ) : Promise<ModuleResponseDto[]> {
+        const modules = await ModuleModel.find({});
+
+        return modules.map( ModuleMapper.fromModuleResponseDto );
     }    
     
     async findModulesByCourseId ( id_course : string ) : Promise<ModuleResponseDto[]> {
         const modules = await ModuleModel.find({ id_course : id_course })
                                             .sort({ unit : 'asc'});
+        if( !modules ) return [];
 
-        return modules.map( module => ModuleMapper.fromModuleResponseDto( module ));
+        return modules.map( ModuleMapper.fromModuleResponseDto );
     }
 
     async findModuleFromCourse ( unit : number ) : Promise<any | null> {

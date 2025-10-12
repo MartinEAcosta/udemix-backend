@@ -26,7 +26,14 @@ export class ModuleRepositoryImpl implements ModuleRepository{
     }
 
     async findAllModules(): Promise<ModuleEntity[]> {
-        throw new Error('Method not implemented.');
+        try{
+            const modules = await this.moduleDatasource.findAllModules();
+
+            return modules.map( ModuleEntity.fromObject ); 
+        }
+        catch(error){
+            throw error;
+        }
     }
 
     async findModulesByCourseId( id_course : string ) : Promise<ModuleEntity[]> {
