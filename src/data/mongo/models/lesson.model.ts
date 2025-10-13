@@ -2,25 +2,27 @@ import mongoose, { Schema, Types } from "mongoose";
 import { FilePopulatedDto } from "../../../domain/dtos/lesson/lesson.response.dto";
 
 export interface ILessonModel {
-    _id           : Types.ObjectId,
-    id_course     : Types.ObjectId,
+    _id           : Types.ObjectId;
+    id_course     : Types.ObjectId;
+    id_file      ?: Types.ObjectId | null;
+    id_module     : Types.ObjectId;
     title         : string;
     description   : string;
-    id_file      ?: Types.ObjectId | null,
-    unit         ?: number | null,
-    chapter      ?: number | null;
+    // unit         ?: number | null,
+    // chapter      ?: number | null;
     lesson_number : number;
     uploaded_at   : Date;
 }
 
 export interface ILessonPopulateModel {
-    _id           : Types.ObjectId,
-    id_course     : Types.ObjectId,
+    _id           : Types.ObjectId;
+    id_course     : Types.ObjectId;
+    id_file       : FilePopulatedDto;
+    id_module     : Types.ObjectId;
     title         : string;
     description   : string;
-    id_file       : FilePopulatedDto;
-    unit         ?: number | null,
-    chapter      ?: number | null;
+    // unit         ?: number | null,
+    // chapter      ?: number | null;
     lesson_number : number;
     uploaded_at   : Date;
 }
@@ -33,6 +35,17 @@ const lessonSchema = new mongoose.Schema({
         required : [true , 'El id del curso al que se le asignara la lección es requerido.'],
     },
 
+    id_file : {
+        type     : Schema.Types.ObjectId,
+        ref      : 'File',
+    },
+    
+    id_module : {
+        type     : Schema.Types.ObjectId,
+        ref      : 'Module',
+        required : true,
+    },
+
     title : {
         type     : String,
         required : [true , 'El título es requerido.'],
@@ -43,23 +56,9 @@ const lessonSchema = new mongoose.Schema({
         required : [true , 'La descripción es requerida.'],
     },
 
-    id_file : {
-        type     : Schema.Types.ObjectId,
-        ref      : 'File',
-    },
-
-    // unit : {
+    // chapter : {
     //     type     : Number,
     // },
-
-    modules : {
-        type     : [Schema.Types.ObjectId],
-        ref      : 'Module'
-    },
-
-    chapter : {
-        type     : Number,
-    },
 
     lesson_number : {
         type     : Number,

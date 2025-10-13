@@ -14,31 +14,31 @@ import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { UpdateLessonDto } from "../../domain/dtos/lesson/update-lesson.dto";
 import { UpdateLesson } from "../../domain/use-cases/lesson/update-lesson";
 import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
+import { ModuleRepository } from "../../domain/repository/module-repository";
 
 
 export class LessonController {
 
     constructor( 
-        private readonly courseRepository : CourseRepository,
         private readonly lessonRepository : LessonRepository,
+        private readonly moduleRepository : ModuleRepository,
+        private readonly courseRepository : CourseRepository,
         private readonly fileRepository   : FileUploadRepository
     ) { }
 
     public createLesson = ( req : AuthenticatedRequest , res : Response ) => {
         const fileUploadDto = req.body.attachedFile;
-        const { user } = req;
 
+        const { user } = req;
         if( !user ) throw HandlerResponses.handleError( CustomError.unauthorized( 'Debes estar autenticado para crear una lección.' ), res );
         const [ error, lessonRequestDto ] = CreateLessonDto.create(
                                                                     {   
                                                                         ...req.body,
-                                                                        id_user : user.id,
                                                                     });
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
-
-        new CreateLesson( this.courseRepository , this.lessonRepository , this.fileRepository )
-                .execute( lessonRequestDto! , fileUploadDto )
+        new CreateLesson( this.lessonRepository , this.moduleRepository , this.courseRepository , this.fileRepository )
+                .execute( lessonRequestDto! , user.id , fileUploadDto  )
                 .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
                 .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }

@@ -2,11 +2,12 @@
 export interface LessonResponseDto {
     id            : string,
     id_course     : string,
+    id_file      ?: string,
+    id_module     : string,
     title         : string,
     description   : string,
-    id_file       ?: string,
-    unit          ?: number,
-    chapter       ?: number,
+    // unit         ?: number,
+    // chapter      ?: number,
     lesson_number : number,
     uploaded_at   : Date,
 }
@@ -14,11 +15,12 @@ export interface LessonResponseDto {
 export interface LessonResponsePopulateDto {
     id            : string,
     id_course     : string,
+    file          : FilePopulatedDto,
+    id_module     : string,
     title         : string,
     description   : string,
-    file          : FilePopulatedDto,
-    unit          ?: number,
-    chapter       ?: number,
+    // unit          ?: number,
+    // chapter       ?: number,
     lesson_number : number,
     uploaded_at   : Date,
 }

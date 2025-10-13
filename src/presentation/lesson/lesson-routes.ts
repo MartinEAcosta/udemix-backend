@@ -12,6 +12,8 @@ import { FileUploadMiddleware } from "../middlewares/file-upload.middleware";
 import { FileUploadDatasourceImpl } from "../../infraestructure/datasources/file-upload-datasource-impl";
 import { FileUploadRepositoryImpl } from "../../infraestructure/repositories/file-upload-repository-impl";
 import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
+import { ModuleDatasourceImpl } from "../../infraestructure/datasources/module-datasource-impl";
+import { ModuleRepositoryImpl } from "../../infraestructure/repositories/module-repository-impl";
 
 export class LessonRouter {
 
@@ -29,8 +31,11 @@ export class LessonRouter {
 
         const fileDatasource = new FileUploadDatasourceImpl( fileStorage );
         const fileRepository = new FileUploadRepositoryImpl( fileDatasource );
+
+        const moduleDatasource = new ModuleDatasourceImpl( );
+        const moduleRepository = new ModuleRepositoryImpl( moduleDatasource );
         
-        const lessonController = new LessonController(  courseRepository , lessonRepository , fileRepository);
+        const lessonController = new LessonController( lessonRepository , moduleRepository , courseRepository , fileRepository);
 
         const jwtAdapter = new JwtAdapter();
         const authDatasource = new AuthDatasourceImpl();

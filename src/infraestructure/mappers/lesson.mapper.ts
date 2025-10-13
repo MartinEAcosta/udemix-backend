@@ -7,11 +7,12 @@ export class LessonMapper {
         return {
             id            : lessonDoc._id.toString(),
             id_course     : lessonDoc.id_course.toString(),
+            id_file       : lessonDoc.id_file ? lessonDoc.id_file.toString() : undefined,
+            id_module     : lessonDoc.id_module.toString(),
             title         : lessonDoc.title,
             description   : lessonDoc.description,
-            id_file       : lessonDoc.id_file ? lessonDoc.id_file.toString() : undefined,
-            unit          : lessonDoc.unit ?? undefined,
-            chapter       : lessonDoc.chapter ?? undefined,
+            // unit          : lessonDoc.unit ?? undefined,
+            // chapter       : lessonDoc.chapter ?? undefined,
             lesson_number : lessonDoc.lesson_number,
             uploaded_at   : lessonDoc.uploaded_at,
         }
@@ -21,14 +22,15 @@ export class LessonMapper {
         return {
             id            : lessonDoc._id.toString(),
             id_course     : lessonDoc.id_course.toString(),
-            title         : lessonDoc.title,
-            description   : lessonDoc.description,
             file          : {
                 _id     : lessonDoc.id_file._id.toString(),
                 url     : lessonDoc.id_file.url,
             },
-            unit          : lessonDoc.unit ?? undefined,
-            chapter       : lessonDoc.chapter ?? undefined,
+            id_module     : lessonDoc.id_module.toString(),
+            title         : lessonDoc.title,
+            description   : lessonDoc.description,
+            // unit          : lessonDoc.unit ?? undefined,
+            // chapter       : lessonDoc.chapter ?? undefined,
             lesson_number : lessonDoc.lesson_number,
             uploaded_at   : lessonDoc.uploaded_at,
         }

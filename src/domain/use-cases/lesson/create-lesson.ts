@@ -5,31 +5,36 @@ import { LessonRepository } from "../../repository/lesson-repository";
 import { CourseRepository } from '../../repository/course-repository';
 import { UploadFileDto } from "../../dtos/file-upload/file-upload.dto";
 import { FileUploadRepository } from "../../repository/file-upload-repository";
+import { ModuleRepository } from "../../repository/module-repository";
 
 interface CreateLessonUseCase {
-    execute( lessonRequestDto : CreateLessonDto , file ?: UploadFileDto ) : Promise<LessonEntity>;
+    execute( createLessonDto : CreateLessonDto , id_user : string , file ?: UploadFileDto  ) : Promise<LessonEntity>;
 }
 
 export class CreateLesson implements CreateLessonUseCase {
 
     constructor( 
-        private readonly courseRepository : CourseRepository,
         private readonly lessonRepository : LessonRepository,
+        private readonly moduleRepository : ModuleRepository,
+        private readonly courseRepository : CourseRepository,
         private readonly fileRepository   : FileUploadRepository,
     ) { }
 
-    async execute( lessonRequestDto : CreateLessonDto , file ?: UploadFileDto ) : Promise<LessonEntity> {
+    async execute( createLessonDto : CreateLessonDto , id_user : string , file ?: UploadFileDto ) : Promise<LessonEntity> {
     
-        const { id_course } = lessonRequestDto;
+        const { id_course } = createLessonDto;
         const course = await this.courseRepository.findCourseById( id_course );
         if( !course ) throw CustomError.notFound("El curso al que quieres asignar la lección no existe.");
         
-        if( course.id_owner != lessonRequestDto.id_user ) throw CustomError.unauthorized('No eres el propietario, por lo tanto no puedes añadir lecciones.');
+        if( course.id_owner != id_user ) throw CustomError.unauthorized('No eres el propietario, por lo tanto no puedes añadir lecciones.');
         
+        const module = await this.moduleRepository.findModuleById( createLessonDto.id_module );
+        if( !module ) throw CustomError.notFound("El modulo al que quieres asignar la lección no existe.");
+
         const arrayLessons = await this.lessonRepository.findAllLessonsByCourseId( id_course );
         const lastLesson = arrayLessons.pop();
-        const { lesson_number , ...rest } = lessonRequestDto;
-        
+        const { lesson_number , ...rest } = createLessonDto;
+
         if( file ){
             
             const fileUploaded = await this.fileRepository.uploadFile( file , 'lessons' );
