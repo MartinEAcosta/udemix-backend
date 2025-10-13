@@ -30,16 +30,20 @@ export class CreateLesson implements CreateLessonUseCase {
         
         const module = await this.moduleRepository.findModuleById( createLessonDto.id_module );
         if( !module ) throw CustomError.notFound("El modulo al que quieres asignar la lección no existe.");
+        if( module.id_course != id_course ) throw CustomError.badRequest('El modulo al que intentas asignar la lección no pertenece al curso en cuestion.')
 
         const arrayLessons = await this.lessonRepository.findAllLessonsByCourseId( id_course );
         const lastLesson = arrayLessons.pop();
         const { lesson_number , ...rest } = createLessonDto;
 
+
+        let lessonResponse;
+
         if( file ){
             
             const fileUploaded = await this.fileRepository.uploadFile( file , 'lessons' );
             if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al intentar cargar el contenido a la lección.');
-            return await this.lessonRepository.createLesson(
+            lessonResponse = await this.lessonRepository.createLesson(
                                                             { 
                                                                 ...rest,
                                                                 lesson_number : lastLesson ? lastLesson.lesson_number+1 : 0,
@@ -48,13 +52,17 @@ export class CreateLesson implements CreateLessonUseCase {
                                                            );
         }
         else{
-            return await this.lessonRepository.createLesson( 
+            lessonResponse = await this.lessonRepository.createLesson( 
                                                             {
                                                                 ...rest,
                                                                 lesson_number : lastLesson ? lastLesson.lesson_number+1 : 0,
                                                             } 
                                                            );
         }
+        const hasAdded = await this.moduleRepository.addLessonToModule( lessonResponse.id , module );
+        if( !hasAdded ) throw CustomError.internalServer('Hubo un error al intentar vincular la lección al modulo.');
+
+        return lessonResponse;
     }
     
 }

@@ -1,4 +1,3 @@
-import Module from 'module';
 import { ModuleDatasource } from '../../domain/datasources/module.datasource';
 import { CreateModuleDto } from '../../domain/dtos/module/create-module.dto';
 import { ModuleEntity } from '../../domain/entities/module.entity';
@@ -10,18 +9,18 @@ export class ModuleRepositoryImpl implements ModuleRepository{
     constructor(
         private readonly moduleDatasource : ModuleDatasource,
     ) { }
-
+    
     async createModule( createModuleDto : CreateModuleDto ) : Promise<ModuleEntity> {
         try{
             const moduleCreated = await this.moduleDatasource.createModule( createModuleDto );
-
+            
             return ModuleEntity.fromObject( moduleCreated );
         }
         catch(error){
             throw error;
         }
     }
-
+    
     async updateModule( updateModuleDto : UpdateModuleDto ) : Promise<ModuleEntity | null> {
         try{
             const moduleUpdated = await this.moduleDatasource.updateModule( updateModuleDto );
@@ -38,6 +37,16 @@ export class ModuleRepositoryImpl implements ModuleRepository{
             const hasDeleted = await this.moduleDatasource.deleteModule( id );
             
             return hasDeleted;
+        }
+        catch(error){
+            throw error;
+        }
+    }
+    
+    async addLessonToModule( id_lesson : string , module : ModuleEntity ) : Promise<boolean> {
+        try{
+            const hasAdded = await this.moduleDatasource.addLessonToModule( id_lesson , module );
+            return hasAdded;
         }
         catch(error){
             throw error;
