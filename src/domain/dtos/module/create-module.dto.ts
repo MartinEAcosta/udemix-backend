@@ -13,7 +13,7 @@ export class CreateModuleDto {
     public readonly id_lessons : string[];
     public readonly id_course  : string;
 
-    constructor ( options : CreateModuleDtoOptions ) {
+    private constructor ( options : CreateModuleDtoOptions ) {
         const { title , unit , id_lessons, id_course } = options;
         this.title = title;
         this.unit = unit;

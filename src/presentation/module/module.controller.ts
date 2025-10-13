@@ -9,6 +9,8 @@ import { CourseRepository } from "../../domain/repository/course-repository";
 import { DeleteModule } from "../../domain/use-cases/module/delete-module";
 import { FindModuleById } from "../../domain/use-cases/module/find-module-by-id";
 import { FindAllModules } from "../../domain/use-cases/module/find-all-modules";
+import { UpdateModuleDto } from "../../domain/dtos/module/update-module.dto";
+import { UpdateModule } from "../../domain/use-cases/module/update-module";
 
 
 export class ModuleController {
@@ -31,9 +33,31 @@ export class ModuleController {
         if( error ) return HandlerResponses.handleError( CustomError.badRequest(error) , res );
 
         new CreateModule( this.moduleRepository , this.courseRepository )
-                .execute( createModuleDto!, user )
+                .execute( createModuleDto!, user.id )
                 .then( moduleResponse => HandlerResponses.handleSuccess( res , moduleResponse , 201 ) )
                 .catch( error => HandlerResponses.handleError(error,res) ); 
+    }
+
+    public updateModule = ( req : AuthenticatedRequest , res : Response ) => {
+
+        const { user } = req;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para crear un modulo.') , res );
+        
+        const { id } = req.params;
+        if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id para actualizar un modulo.') , res );
+
+        const [ error , updateModuleDto ] = UpdateModuleDto.create( 
+                                                                    {
+                                                                        ...req.body,
+                                                                        id
+                                                                    }
+                                                                  );
+        if( error ) HandlerResponses.handleError( CustomError.badRequest( error ) , res );
+
+        new UpdateModule( this.moduleRepository , this.courseRepository )
+            .execute( updateModuleDto! , user.id )
+            .then( moduleResponse => HandlerResponses.handleSuccess( res , moduleResponse , 200 ) )
+            .catch( error => HandlerResponses.handleError(error,res) ); 
     }
 
     public deleteModule = ( req : AuthenticatedRequest , res : Response ) => {

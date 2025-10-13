@@ -1,7 +1,9 @@
+import Module from 'module';
 import { ModuleDatasource } from '../../domain/datasources/module.datasource';
 import { CreateModuleDto } from '../../domain/dtos/module/create-module.dto';
 import { ModuleEntity } from '../../domain/entities/module.entity';
 import { ModuleRepository } from '../../domain/repository/module-repository';
+import { UpdateModuleDto } from '../../domain/dtos/module/update-module.dto';
 
 export class ModuleRepositoryImpl implements ModuleRepository{
 
@@ -20,6 +22,16 @@ export class ModuleRepositoryImpl implements ModuleRepository{
         }
     }
 
+    async updateModule( updateModuleDto : UpdateModuleDto ) : Promise<ModuleEntity | null> {
+        try{
+            const moduleUpdated = await this.moduleDatasource.updateModule( updateModuleDto );
+            
+            return  moduleUpdated ? ModuleEntity.fromObject( moduleUpdated ) : null;
+        }
+        catch(error){
+            throw error;
+        }
+    }
     
     async deleteModule( id : string ) : Promise<boolean> {
         try{

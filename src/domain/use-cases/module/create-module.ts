@@ -1,12 +1,11 @@
 import { CreateModuleDto } from "../../dtos/module/create-module.dto";
 import { ModuleEntity } from '../../entities/module.entity';
-import { UserEntity } from "../../entities/user.entity";
 import { CustomError } from "../../errors/custom-error";
 import { CourseRepository } from "../../repository/course-repository";
 import { ModuleRepository } from "../../repository/module-repository";
 
 interface CreateModuleUseCase{ 
-    execute ( createModuleDto : CreateModuleDto , user : UserEntity ) : Promise<ModuleEntity>;
+    execute ( createModuleDto : CreateModuleDto , id_user : string ) : Promise<ModuleEntity>;
 }
 
 const validUnit = ( modules : ModuleEntity[] ) : number => {
@@ -22,11 +21,11 @@ export class CreateModule implements CreateModuleUseCase {
         private readonly courseRepository : CourseRepository,
     ) { }
 
-    async execute( createModuleDto : CreateModuleDto , user : UserEntity ) : Promise<ModuleEntity>{
+    async execute( createModuleDto : CreateModuleDto , id_user : string ) : Promise<ModuleEntity>{
 
         const course = await this.courseRepository.findCourseById( createModuleDto.id_course );
         if( !course ) throw CustomError.badRequest('El curso al que intentas asignar el modulo no existe.');
-        if( course.id_owner != user.id ) throw CustomError.unauthorized('No puedes crear un modulo en un curso que no es tuyo.');
+        if( course.id_owner != id_user ) throw CustomError.unauthorized('No puedes crear un modulo en un curso que no es tuyo.');
 
         const modules = await this.moduleRepository.findModulesByCourseId( createModuleDto.id_course );
         return await this.moduleRepository.createModule({

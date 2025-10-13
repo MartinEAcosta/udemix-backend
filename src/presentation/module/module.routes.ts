@@ -46,6 +46,12 @@ export class ModuleRouter {
             moduleController.createModule
         );
 
+        router.post(
+            '/update/:id',
+            [ authMiddleware.validateJWT ],
+            moduleController.updateModule
+        )
+        
         router.delete(
             '/delete/:id',
             [ authMiddleware.validateJWT ],

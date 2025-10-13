@@ -2,6 +2,7 @@ import { ModuleModel } from '../../data/mongo/models/module.model';
 import { ModuleDatasource } from '../../domain/datasources/module.datasource';
 import { CreateModuleDto } from '../../domain/dtos/module/create-module.dto';
 import { ModuleResponseDto } from '../../domain/dtos/module/module.response.dto';
+import { UpdateModuleDto } from '../../domain/dtos/module/update-module.dto';
 import { ModuleMapper } from '../mappers/module.mapper';
 
 export class ModuleDatasourceImpl implements ModuleDatasource{
@@ -10,6 +11,11 @@ export class ModuleDatasourceImpl implements ModuleDatasource{
         const moduleCreated = await ModuleModel.create( createModuleDto );
         
         return ModuleMapper.fromModuleResponseDto( moduleCreated );
+    }
+
+    async updateModule ( updateModuleDto : UpdateModuleDto ) : Promise<ModuleResponseDto | null> {
+        const moduleUpdated = await ModuleModel.findOneAndUpdate({ _id : updateModuleDto.id } , updateModuleDto , { new : true });
+        return moduleUpdated ? ModuleMapper.fromModuleResponseDto( moduleUpdated ) : null;
     }
     
     async deleteModule ( id : string ) : Promise<boolean> {
