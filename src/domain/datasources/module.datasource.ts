@@ -7,7 +7,6 @@ export abstract class ModuleDatasource {
     abstract deleteModule( id : string ) : Promise<boolean>;
     abstract findAllModules( ) : Promise<ModuleResponseDto[]>;
     abstract findModulesByCourseId( id_course : string ) : Promise<ModuleResponseDto[]>;
-    abstract findModuleFromCourse( unit : number ) : Promise<any | null>;
-    abstract findModuleById( id : string ) : Promise<any>;
+    abstract findModuleById( id : string ) : Promise<ModuleResponseDto | null>;
     
 }

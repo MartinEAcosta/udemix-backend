@@ -28,12 +28,30 @@ export class ModuleRouter {
         const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
 
 
+        router.get(
+            '/',
+            [ authMiddleware.validateJWT , authMiddleware.validatePermissions(['admin']) ],
+            moduleController.findAllModules
+        )
+
+        router.get(
+            '/:id',
+            [ authMiddleware.validateJWT ],
+            moduleController.findModuleById
+        );
 
         router.post(
             '/new',
             [ authMiddleware.validateJWT ],
             moduleController.createModule
         );
+
+        router.delete(
+            '/delete/:id',
+            [ authMiddleware.validateJWT ],
+            moduleController.deleteModule
+        );
+
 
         return router
     }

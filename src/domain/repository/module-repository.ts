@@ -7,6 +7,7 @@ export abstract class ModuleRepository {
     abstract createModule( createModuleDto : CreateModuleDto ) : Promise<ModuleEntity>; 
     abstract deleteModule( id : string ) : Promise<boolean>;
     abstract findAllModules( ) : Promise<ModuleEntity[]>;
-    abstract findModulesByCourseId( id_course : string ) : Promise<ModuleEntity[]>; 
+    abstract findModulesByCourseId( id_course : string ) : Promise<ModuleEntity[]>;
+    abstract findModuleById( id : string ) : Promise<ModuleEntity | null>;
 
 }

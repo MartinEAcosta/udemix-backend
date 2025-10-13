@@ -21,8 +21,15 @@ export class ModuleRepositoryImpl implements ModuleRepository{
     }
 
     
-    async deleteModule(id: string): Promise<boolean> {
-        throw new Error('Method not implemented.');
+    async deleteModule( id : string ) : Promise<boolean> {
+        try{
+            const hasDeleted = await this.moduleDatasource.deleteModule( id );
+            
+            return hasDeleted;
+        }
+        catch(error){
+            throw error;
+        }
     }
 
     async findAllModules(): Promise<ModuleEntity[]> {
@@ -41,6 +48,17 @@ export class ModuleRepositoryImpl implements ModuleRepository{
             const modules = await this.moduleDatasource.findModulesByCourseId( id_course );
     
             return modules.map( ModuleEntity.fromObject );
+        }
+        catch(error){
+            throw error;
+        }
+    }
+
+    async findModuleById( id : string ) : Promise<ModuleEntity | null> {
+        try{
+            const module = await this.moduleDatasource.findModuleById( id );
+
+            return module ? ModuleEntity.fromObject( module ) : null;
         }
         catch(error){
             throw error;
