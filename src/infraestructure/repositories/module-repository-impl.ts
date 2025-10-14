@@ -3,6 +3,7 @@ import { CreateModuleDto } from '../../domain/dtos/module/create-module.dto';
 import { ModuleEntity } from '../../domain/entities/module.entity';
 import { ModuleRepository } from '../../domain/repository/module-repository';
 import { UpdateModuleDto } from '../../domain/dtos/module/update-module.dto';
+import { TransactionSession } from '../../domain/services/UnitOfWork';
 
 export class ModuleRepositoryImpl implements ModuleRepository{
 
@@ -43,9 +44,10 @@ export class ModuleRepositoryImpl implements ModuleRepository{
         }
     }
     
-    async addLessonToModule( id_lesson : string , module : ModuleEntity ) : Promise<boolean> {
+    async addLessonToModule( id_lesson : string , module : ModuleEntity , ts ?: TransactionSession ) : Promise<boolean> {
         try{
-            const hasAdded = await this.moduleDatasource.addLessonToModule( id_lesson , module );
+            const hasAdded = await this.moduleDatasource.addLessonToModule( id_lesson , module , ts );
+            
             return hasAdded;
         }
         catch(error){

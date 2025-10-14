@@ -2,10 +2,11 @@ import { CreateLessonDto } from "../dtos/lesson/create-lesson.dto";
 import { LessonResponsePopulateDto } from "../dtos/lesson/lesson.response.dto";
 import { UpdateLessonDto } from "../dtos/lesson/update-lesson.dto";
 import { LessonEntity } from "../entities/lesson.entity";
+import { TransactionSession } from "../services/UnitOfWork";
 
 export abstract class LessonRepository{
 
-    abstract createLesson( lessonRequestDto : CreateLessonDto ) : Promise<LessonEntity>;
+    abstract createLesson( lessonRequestDto : CreateLessonDto , ts ?: TransactionSession ) : Promise<LessonEntity>;
     abstract updateLesson( lessonRequestDto : UpdateLessonDto ) : Promise<LessonEntity>;
     abstract deleteLesson( id : string ) : Promise<boolean>;
     abstract findAllLessonsByCourseId( course_id : string ) : Promise<LessonEntity[]>;

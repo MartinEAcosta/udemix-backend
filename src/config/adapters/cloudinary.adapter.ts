@@ -4,6 +4,7 @@ import { envs } from "../envs";
 import { FileStorage } from "../../domain/services/FileStorage";
 import { UploadFileDto, ResourceValidTypes } from '../../domain/dtos/file-upload/file-upload.dto';
 import { FileStorageAdapterResponseDto } from '../../domain/dtos/file-upload/file-upload.response.dto';
+import { TransactionSession } from '../../domain/services/UnitOfWork';
 
 export class CloudinaryAdapter implements FileStorage {
 
@@ -15,7 +16,7 @@ export class CloudinaryAdapter implements FileStorage {
         });    
     }
 
-    uploadFile = ( file: UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponseDto> => {
+    uploadFile = ( file: UploadFileDto , folder : string  ) : Promise<FileStorageAdapterResponseDto> => {
         return new Promise((resolve , reject) => {
             cloudinary.uploader.upload_stream( { 
                                                 folder: folder ,
@@ -27,14 +28,12 @@ export class CloudinaryAdapter implements FileStorage {
                 console.log("Cloudinary upload result:", result);
                 if (error) {
                     console.error("Error uploading to Cloudinary:", error);
-
                     return reject(error);
                 }
 
                 if (!result) {
                     const errorMsg = "No result returned from Cloudinary upload";
                     console.error(errorMsg);
-
                     return reject(new Error(errorMsg));
                 }
                 else{

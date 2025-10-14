@@ -5,13 +5,15 @@ import { LessonMapper } from '../mappers/lesson.mapper';
 import { CreateLessonDto } from '../../domain/dtos/lesson/create-lesson.dto';
 import { LessonResponseDto, LessonResponsePopulateDto } from '../../domain/dtos/lesson/lesson.response.dto';
 import { UpdateLessonDto } from '../../domain/dtos/lesson/update-lesson.dto';
+import { TransactionSession } from '../../domain/services/UnitOfWork';
 
 export class LessonDatasourceImpl implements LessonDatasource {
 
-    async createLesson( lessonRequestDto : CreateLessonDto ) : Promise<LessonResponseDto> {
-        const lesson = await LessonModel.create( lessonRequestDto );
-        
-        return LessonMapper.fromLessonResponseDto( lesson );
+    async createLesson( lessonRequestDto : CreateLessonDto , ts ?: TransactionSession ) : Promise<LessonResponseDto> {
+        const session = ts?.getSession();
+        const lesson = await LessonModel.create([ {...lessonRequestDto} ] , { session } );
+
+        return LessonMapper.fromLessonResponseDto( lesson[0] );
     }
     
     async updateLesson( lessonRequestDto : UpdateLessonDto) : Promise<LessonResponseDto> {

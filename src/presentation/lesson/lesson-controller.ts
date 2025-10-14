@@ -15,6 +15,7 @@ import { UpdateLessonDto } from "../../domain/dtos/lesson/update-lesson.dto";
 import { UpdateLesson } from "../../domain/use-cases/lesson/update-lesson";
 import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
 import { ModuleRepository } from "../../domain/repository/module-repository";
+import { UnitOfWork } from "../../domain/services/UnitOfWork";
 
 
 export class LessonController {
@@ -23,7 +24,8 @@ export class LessonController {
         private readonly lessonRepository : LessonRepository,
         private readonly moduleRepository : ModuleRepository,
         private readonly courseRepository : CourseRepository,
-        private readonly fileRepository   : FileUploadRepository
+        private readonly fileRepository   : FileUploadRepository,
+        private readonly unitOfWork       : UnitOfWork,
     ) { }
 
     public createLesson = ( req : AuthenticatedRequest , res : Response ) => {
@@ -37,7 +39,7 @@ export class LessonController {
                                                                     });
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
-        new CreateLesson( this.lessonRepository , this.moduleRepository , this.courseRepository , this.fileRepository )
+        new CreateLesson( this.lessonRepository , this.moduleRepository , this.courseRepository , this.fileRepository , this.unitOfWork )
                 .execute( lessonRequestDto! , user.id , fileUploadDto  )
                 .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
                 .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});

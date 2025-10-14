@@ -1,25 +1,32 @@
 import mongoose, { ClientSession } from "mongoose";
+import { TransactionSession, UnitOfWork } from "../domain/services/UnitOfWork";
+import { MongoDatabase } from "./init";
 
-export class MongooseUnitOfWork{
+export class MongooseUnitOfWork implements UnitOfWork {
 
-    async withTransaction( operation : (session : ClientSession) => Promise<any> ) {
-        const session = await mongoose.startSession();
+    async startTransaction<T>( operations: ( ts : TransactionSession) => Promise<T> ) : Promise<T> {
+        const session = await MongoDatabase.connection.startSession();
+
+        let result : T;
+
         try{
-
             session.startTransaction();
 
-            const result = await operation( session );
-            await session.commitTransaction();
+            result = await operations({
+                commit : async () => await session.commitTransaction(),
+                abort  : async () => await session.abortTransaction(),
+                getSession : () => session
+            });
 
+            await session.endSession();
             return result;
         }
         catch( error ){
             await session.abortTransaction();
+            await session.endSession();
             throw error;
         }
-        finally{
-            session.endSession();
-        }
-    } 
+        
+    }
 
 }

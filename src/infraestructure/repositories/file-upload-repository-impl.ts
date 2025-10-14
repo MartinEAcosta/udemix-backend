@@ -4,6 +4,7 @@ import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { FileResponseDto } from "../../domain/dtos/file-upload/file-upload.response.dto";
 import { FileMapper } from "../mappers/file.mapper";
 import { FileEntity } from "../../domain/entities/file.entity";
+import { TransactionSession } from "../../domain/services/UnitOfWork";
 
 export class FileUploadRepositoryImpl implements FileUploadRepository {
 
@@ -11,12 +12,12 @@ export class FileUploadRepositoryImpl implements FileUploadRepository {
         private readonly fileUploadDatasource: FileUploadDatasource
     ) { }
     
-    async uploadFile( file : UploadFileDto , folder : string ) : Promise<FileResponseDto | false>  {
+    async uploadFile( file : UploadFileDto , folder : string , ts ?: TransactionSession ) : Promise<FileResponseDto | false>  {
         try {
-            const fileUploaded = await this.fileUploadDatasource.uploadFile( file , folder );
+            const fileUploaded = await this.fileUploadDatasource.uploadFile( file , folder , ts );
             if( !fileUploaded ) return false;
             
-            const uploadedFileinDB = await this.fileUploadDatasource.saveFileOnDB( fileUploaded );
+            const uploadedFileinDB = await this.fileUploadDatasource.saveFileOnDB( fileUploaded ,ts );
             if( !uploadedFileinDB) return false;
             
             return FileMapper.fromFileResponseDto( uploadedFileinDB );

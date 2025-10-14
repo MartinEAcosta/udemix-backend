@@ -6,6 +6,7 @@ import { CourseRepository } from '../../repository/course-repository';
 import { UploadFileDto } from "../../dtos/file-upload/file-upload.dto";
 import { FileUploadRepository } from "../../repository/file-upload-repository";
 import { ModuleRepository } from "../../repository/module-repository";
+import { UnitOfWork } from "../../services/UnitOfWork";
 
 interface CreateLessonUseCase {
     execute( createLessonDto : CreateLessonDto , id_user : string , file ?: UploadFileDto  ) : Promise<LessonEntity>;
@@ -18,6 +19,7 @@ export class CreateLesson implements CreateLessonUseCase {
         private readonly moduleRepository : ModuleRepository,
         private readonly courseRepository : CourseRepository,
         private readonly fileRepository   : FileUploadRepository,
+        private readonly unitOfWork       : UnitOfWork,
     ) { }
 
     async execute( createLessonDto : CreateLessonDto , id_user : string , file ?: UploadFileDto ) : Promise<LessonEntity> {
@@ -36,33 +38,37 @@ export class CreateLesson implements CreateLessonUseCase {
         const lastLesson = arrayLessons.pop();
         const { lesson_number , ...rest } = createLessonDto;
 
+        return await this.unitOfWork.startTransaction<LessonEntity>( async ( ts ) => {
 
-        let lessonResponse;
+            let lessonResponse;
 
-        if( file ){
+            if( file ){
             
-            const fileUploaded = await this.fileRepository.uploadFile( file , 'lessons' );
-            if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al intentar cargar el contenido a la lección.');
-            lessonResponse = await this.lessonRepository.createLesson(
-                                                            { 
-                                                                ...rest,
-                                                                lesson_number : lastLesson ? lastLesson.lesson_number+1 : 0,
-                                                                id_file : fileUploaded.id
-                                                            } 
-                                                           );
-        }
-        else{
-            lessonResponse = await this.lessonRepository.createLesson( 
-                                                            {
-                                                                ...rest,
-                                                                lesson_number : lastLesson ? lastLesson.lesson_number+1 : 0,
-                                                            } 
-                                                           );
-        }
-        const hasAdded = await this.moduleRepository.addLessonToModule( lessonResponse.id , module );
-        if( !hasAdded ) throw CustomError.internalServer('Hubo un error al intentar vincular la lección al modulo.');
-
-        return lessonResponse;
+                const fileUploaded = await this.fileRepository.uploadFile( file , 'lessons', ts );
+                if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al intentar cargar el contenido a la lección.');
+                lessonResponse = await this.lessonRepository.createLesson(
+                    { 
+                        ...rest,
+                        lesson_number : lastLesson ? lastLesson.lesson_number+1 : 0,
+                        id_file : fileUploaded.id
+                    },
+                    ts 
+                );
+            }
+            else{
+                lessonResponse = await this.lessonRepository.createLesson( 
+                    {
+                        ...rest,
+                        lesson_number : lastLesson ? lastLesson.lesson_number+1 : 0,
+                    },
+                    ts
+                );
+            }
+            const hasAdded = await this.moduleRepository.addLessonToModule( lessonResponse.id , module , ts );
+            if( !hasAdded ) throw CustomError.internalServer('Hubo un error al intentar vincular la lección al modulo.');
+            
+            return lessonResponse;
+        });
     }
     
 }

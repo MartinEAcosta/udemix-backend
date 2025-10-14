@@ -5,34 +5,36 @@ import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { FileMapper } from '../mappers/file.mapper';
 import { FileUploadDatasource } from '../../domain/datasources/file-upload.datasource';
 import { FileResponseDto, FileStorageAdapterResponseDto } from '../../domain/dtos/file-upload/file-upload.response.dto';
+import { TransactionSession } from "../../domain/services/UnitOfWork";
 
 
 export class FileUploadDatasourceImpl implements FileUploadDatasource {
 
     constructor( private readonly fileStorage : FileStorage ) {}
 
-    uploadFile = async( file : UploadFileDto , folder : string ) : Promise<FileStorageAdapterResponseDto> => {
-        const fileUploaded : FileStorageAdapterResponseDto = await this.fileStorage.uploadFile( file , folder );
+    uploadFile = async( file : UploadFileDto , folder : string , ts ?: TransactionSession ) : Promise<FileStorageAdapterResponseDto> => {
+        const fileUploaded : FileStorageAdapterResponseDto = await this.fileStorage.uploadFile( file , folder , ts );
         if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al subir el archivo.');
 
         return fileUploaded;
     }
 
-    saveFileOnDB = async ( file : FileStorageAdapterResponseDto ) : Promise<FileResponseDto> => {
+    saveFileOnDB = async ( file : FileStorageAdapterResponseDto , ts ?: TransactionSession ) : Promise<FileResponseDto> => {
         console.log(file);
-        const fileSaved = await FileModel.create( {
+        const session = ts?.getSession();
+        const fileSaved = await FileModel.create( [{
             public_id     : file.public_id,
             url           : file.url,
             folder        : file.folder,
             size          : file.size,
             extension     : file.extension,
             resource_type : file?.resource_type,
-        });
+        }], { session });
         if( !fileSaved ) throw CustomError.internalServer('Hubo un error al grabar el archivo en la base de datos.')
         
-        file.id = fileSaved._id.toString();
+        file.id = fileSaved[0]._id.toString();
 
-        return FileMapper.fromFileResponseDto( file );
+        return FileMapper.fromFileResponseDto( fileSaved[0] );
     }
 
     deleteFile = async( folder : string ,public_id: string) : Promise<boolean> => {

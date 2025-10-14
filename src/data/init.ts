@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Connection } from "mongoose";
 
 interface ConnectionOptions {
     dbUrl : string,
@@ -6,16 +6,19 @@ interface ConnectionOptions {
 }
 
 export class MongoDatabase {
-    
+
+    static connection : Connection;
+
     static async connect( options : ConnectionOptions ){
         const { dbUrl , dbName } = options;
 
         try{
 
-            await mongoose.connect( dbUrl );
+            this.connection  = (await mongoose.connect( dbUrl )).connection;
+            
 
-             console.log('Hemos sido conectados con éxito ;) !');
-
+            console.log('Hemos sido conectados con éxito ;) !');
+            return this.connection;
         }
         catch( error ){
             console.log('Ha surgido un error al intentar conectarnos con la DB.');

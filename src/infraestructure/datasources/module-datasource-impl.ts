@@ -4,6 +4,7 @@ import { CreateModuleDto } from '../../domain/dtos/module/create-module.dto';
 import { ModuleResponseDto } from '../../domain/dtos/module/module.response.dto';
 import { UpdateModuleDto } from '../../domain/dtos/module/update-module.dto';
 import { ModuleEntity } from '../../domain/entities/module.entity';
+import { TransactionSession } from '../../domain/services/UnitOfWork';
 import { ModuleMapper } from '../mappers/module.mapper';
 
 export class ModuleDatasourceImpl implements ModuleDatasource{
@@ -25,13 +26,14 @@ export class ModuleDatasourceImpl implements ModuleDatasource{
         return true;
     }
     
-    async addLessonToModule( id_lesson: string , module : ModuleEntity ) : Promise<boolean> {
+    async addLessonToModule( id_lesson: string , module : ModuleEntity , ts ?: TransactionSession ) : Promise<boolean> {
         
+        const session = ts?.getSession();
         const lessons = module.lesssons;
 
         lessons.push( id_lesson );
         // $addToSet se encarga de persistir los valores actuales y agregar uno al final.
-        const moduleUpdated = await ModuleModel.findOneAndUpdate({ _id: module.id }, {$addToSet: {id_lessons : lessons}} , {new : true} );
+        const moduleUpdated = await ModuleModel.findOneAndUpdate({ _id: module.id }, {$addToSet: {id_lessons : lessons}} , {new : true, session}  );
 
         return moduleUpdated ? true : false;
     }

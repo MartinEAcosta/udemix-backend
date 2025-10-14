@@ -4,6 +4,7 @@ import { LessonResponsePopulateDto } from '../../domain/dtos/lesson/lesson.respo
 import { UpdateLessonDto } from '../../domain/dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../../domain/entities/lesson.entity';
 import { LessonRepository } from '../../domain/repository/lesson-repository';
+import { TransactionSession } from '../../domain/services/UnitOfWork';
 
 
 export class LessonRepositoryImpl implements LessonRepository {
@@ -12,9 +13,9 @@ export class LessonRepositoryImpl implements LessonRepository {
         private readonly lessonDatasource : LessonDatasource,
     ) { }
 
-    async createLesson( lessonRequestDto : CreateLessonDto ) : Promise<LessonEntity> {
+    async createLesson( lessonRequestDto : CreateLessonDto , ts ?: TransactionSession ) : Promise<LessonEntity> {
         try{
-            const createdLesson = await this.lessonDatasource.createLesson( lessonRequestDto );
+            const createdLesson = await this.lessonDatasource.createLesson( lessonRequestDto , ts );
             
             return LessonEntity.fromObject( createdLesson );
         } 

@@ -14,12 +14,14 @@ import { FileUploadRepositoryImpl } from "../../infraestructure/repositories/fil
 import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
 import { ModuleDatasourceImpl } from "../../infraestructure/datasources/module-datasource-impl";
 import { ModuleRepositoryImpl } from "../../infraestructure/repositories/module-repository-impl";
+import { MongooseUnitOfWork } from '../../data/mongoose-unit-of-work';
 
 export class LessonRouter {
 
     static get routes() : Router {
 
         const router = Router();
+        const mongoUnitOfWork = new MongooseUnitOfWork();
 
         const datasource = new LessonDatasourceImpl();
         const lessonRepository =  new LessonRepositoryImpl( datasource );
@@ -35,7 +37,7 @@ export class LessonRouter {
         const moduleDatasource = new ModuleDatasourceImpl( );
         const moduleRepository = new ModuleRepositoryImpl( moduleDatasource );
         
-        const lessonController = new LessonController( lessonRepository , moduleRepository , courseRepository , fileRepository);
+        const lessonController = new LessonController( lessonRepository , moduleRepository , courseRepository , fileRepository , mongoUnitOfWork);
 
         const jwtAdapter = new JwtAdapter();
         const authDatasource = new AuthDatasourceImpl();
