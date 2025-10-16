@@ -5,7 +5,7 @@ import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 import { CourseResponseDto } from '../../domain/dtos/course/course.responses';
 import { CourseMapper } from '../mappers/course.mapper';
 import { PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
-import { CourseQueryFilter } from '../helpers/CourseQueryBuilder';
+import { CourseQueryFilter } from '../../domain/helpers/course-query-builder';
 
 export class CourseDatasourceImpl implements CourseDatasource {
     

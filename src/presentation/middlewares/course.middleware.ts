@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { CourseQueryBuilder, CourseQueryFilter } from "../../infraestructure/helpers/CourseQueryBuilder";
+import { CourseQueryBuilder, CourseQueryFilter } from "../../domain/helpers/course-query-builder";
 import { regularExps } from "../../config";
 
 export interface CourseFilterRequest extends Request {

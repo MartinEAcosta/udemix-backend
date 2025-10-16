@@ -5,7 +5,7 @@ import { CourseEntity } from '../../domain/entities/course.entity';
 import { CreateCourseDto } from '../../domain/dtos/course/create-course.dto';
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 import { PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
-import { CourseQueryFilter } from '../helpers/CourseQueryBuilder';
+import { CourseQueryFilter } from '../../domain/helpers/course-query-builder';
 
 export class CourseRepositoryImpl implements CourseRepository{
 

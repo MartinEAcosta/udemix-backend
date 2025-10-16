@@ -2,6 +2,7 @@ import { CustomError } from "../../errors/custom-error";
 import { AuthRepository } from "../../repository/auth-repository";
 import { EmailValidator } from "../../services/EmailValidator";
 import { TokenManager } from "../../services/TokenManager";
+import { regularExps } from '../../helpers/regular.exp';
 
 interface SendEmailValidationLinkUseCase {
     execute( email : string ) : Promise<boolean>;
@@ -17,6 +18,7 @@ export class SendEmailValidationLink implements SendEmailValidationLinkUseCase {
 
     async execute( email : string ) : Promise<boolean> {
 
+        if( !regularExps.email.test( email ) ) throw CustomError.badRequest('El email no tiene un formato valido.');
         const user = await this.authRepository.findUserByEmail( email );
         if( !user ) throw CustomError.notFound('No se encontro un usuario vinculado a ese email.');
         if( user.isEmailVerified ) throw CustomError.badRequest('El email del usuario ya se encuentra verificado.');

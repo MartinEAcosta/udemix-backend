@@ -1,4 +1,4 @@
-import { CourseQueryFilter } from "../../infraestructure/helpers/CourseQueryBuilder";
+import { CourseQueryFilter } from "../helpers/course-query-builder";
 import { CourseResponseDto } from "../dtos/course/course.responses";
 import { CreateCourseDto } from "../dtos/course/create-course.dto";
 import { UpdateCourseDto } from "../dtos/course/update-course.dto";

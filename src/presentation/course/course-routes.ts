@@ -12,7 +12,7 @@ import { FileUploadDatasourceImpl } from '../../infraestructure/datasources/file
 import { FileUploadRepositoryImpl } from '../../infraestructure/repositories/file-upload-repository-impl';
 import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
 import { AuthMiddleware, FileUploadMiddleware, PaginationMiddleware, CourseMiddleware } from "../middlewares";
-import { CourseQueryBuilder } from "../../infraestructure/helpers/CourseQueryBuilder";
+import { CourseQueryBuilder } from "../../domain/helpers/course-query-builder";
 
 
 export class CourseRouter {

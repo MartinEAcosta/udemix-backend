@@ -3,7 +3,7 @@ import { CourseEntity } from "../entities/course.entity";
 import { CreateCourseDto } from "../dtos/course/create-course.dto";
 import { UpdateCourseDto } from "../dtos/course/update-course.dto";
 import { PaginationResponseDto } from "../dtos/shared/pagination.dto";
-import { CourseQueryFilter } from "../../infraestructure/helpers/CourseQueryBuilder";
+import { CourseQueryFilter } from "../helpers/course-query-builder";
 
 export abstract class CourseRepository {
 
