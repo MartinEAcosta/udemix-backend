@@ -8,8 +8,6 @@ export interface ILessonModel {
     id_module     : Types.ObjectId;
     title         : string;
     description   : string;
-    // unit         ?: number | null,
-    // chapter      ?: number | null;
     lesson_number : number;
     uploaded_at   : Date;
 }
@@ -21,8 +19,6 @@ export interface ILessonPopulateModel {
     id_module     : Types.ObjectId;
     title         : string;
     description   : string;
-    // unit         ?: number | null,
-    // chapter      ?: number | null;
     lesson_number : number;
     uploaded_at   : Date;
 }
@@ -55,10 +51,6 @@ const lessonSchema = new mongoose.Schema({
         type     : String,
         required : [true , 'La descripción es requerida.'],
     },
-
-    // chapter : {
-    //     type     : Number,
-    // },
 
     lesson_number : {
         type     : Number,

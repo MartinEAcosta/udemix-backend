@@ -40,10 +40,22 @@ export class CourseDatasourceImpl implements CourseDatasource {
     }
     
     async findCoursesByCategoryId( category_id : string ) : Promise<CourseResponseDto[]> {
-        const courses = await CourseModel.find({ id_category : category_id  });
+        const courses = await CourseModel.find({ id_category : category_id });
 
         return courses.map( course => CourseMapper.fromCourseResponseDto( course ));
     }
+
+    async findCoursesSortByPrice( dir : string ) : Promise<CourseResponseDto[]> {
+
+        const courses = await CourseModel.find({}).sort({ price : dir as 'asc' | 'desc' });
+        
+        return courses.map(CourseMapper.fromCourseResponseDto);
+    }
+
+    // async findAllCoursesNotFullyEnrolled ( ) : Promise<CourseResponseDto[]> {
+    // 
+    //     const courses = await CourseModel.find({ })
+    // }
 
     async saveCourse( createCourseDto : CreateCourseDto) : Promise<CourseResponseDto> {
 

@@ -4,9 +4,7 @@ export interface ICourseModel {
     _id              : Types.ObjectId,
     title            : string,
     description      : string,
-    // TODO: Reemplazar por entidad Category
     id_category     ?: Types.ObjectId | null;
-    // category      : string,
     thumbnail_url   ?: string | null,
     id_file         ?: Types.ObjectId | null,
     id_owner         : Types.ObjectId,

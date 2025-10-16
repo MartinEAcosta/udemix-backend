@@ -5,6 +5,7 @@ import { CreateEnrollmentDto } from "../../dtos/enrollment/create-enrollment.dto
 import { CustomError } from "../../errors/custom-error";
 import { AuthRepository } from "../../repository/auth-repository";
 import { CourseRepository } from "../../repository/course-repository";
+import { UnitOfWork } from '../../services/UnitOfWork';
 
 export interface EnrollUserInCourseUseCase {
     execute( enrollmentDto : CreateEnrollmentDto ) : Promise<EnrollmentEntity>;
@@ -16,6 +17,7 @@ export class EnrollUserInCourse implements EnrollUserInCourseUseCase {
         private readonly enrollmentRepository : EnrollmentRepository,
         private readonly authRepository       : AuthRepository,
         private readonly courseRepository     : CourseRepository,
+        private readonly unitOfWork           : UnitOfWork,
     ) { }
 
     execute = async( enrollmentDto : CreateEnrollmentDto ) : Promise<EnrollmentEntity> => {
@@ -31,17 +33,24 @@ export class EnrollUserInCourse implements EnrollUserInCourseUseCase {
 
         if( user.balance <= course.price ) throw CustomError.badRequest("El usuario no tiene el saldo suficiente para adquirir el curso");
 
-        user.balance -= course.price;
-        
-        const enrollmentCreated = await this.enrollmentRepository.saveEnrollment( enrollmentDto );
-        if( !enrollmentCreated ) throw CustomError.internalServer('Hubo un error al crear la inscripción del curso.');
-        
-        const updatedUser = await this.authRepository.updateUser( {...user} );
-        if( !updatedUser ) throw CustomError.internalServer('Hubo un error al actualizar el usuario con el curso adquirido.');
-        
+        let enrollmentCreated : EnrollmentEntity | null = null;
+
+        await this.unitOfWork.startTransaction<EnrollmentEntity>( async ( ts ) => {
+                user.balance -= course.price;
+                enrollmentCreated = await this.enrollmentRepository.saveEnrollment( enrollmentDto , ts );
+                if( !enrollmentCreated ) throw CustomError.internalServer('Hubo un error al crear la inscripción del curso.');
+                
+                const updatedUser = await this.authRepository.updateUser( {...user} , ts );
+                if( !updatedUser ) throw CustomError.internalServer('Hubo un error al actualizar el usuario con el curso adquirido.');
+                
+                
+            return enrollmentCreated;
+        });
+
+        if( !enrollmentCreated ) throw CustomError.internalServer('Hubo un error inesperado.');
 
         return enrollmentCreated;
     }
-
-
+    
+    
 }

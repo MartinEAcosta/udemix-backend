@@ -9,6 +9,7 @@ export abstract class CourseDatasource {
     abstract findCoursesPaginated( page : number , limit : number ) : Promise<PaginationResponseDto<CourseResponseDto[]>>;
     abstract findCourseById( id : string ) : Promise<CourseResponseDto | null>;
     abstract findCoursesByCategoryId ( category_id : string ) : Promise<CourseResponseDto[]>;
+    abstract findCoursesSortByPrice( dir : string ) : Promise<CourseResponseDto[]>;
     abstract saveCourse( createCourseDto : CreateCourseDto ) : Promise<CourseResponseDto>;
     abstract updateCourse( updateCourseDto : UpdateCourseDto ) : Promise<CourseResponseDto>;
     abstract deleteCourse( id : string ) : Promise<boolean>;

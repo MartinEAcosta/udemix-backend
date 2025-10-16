@@ -10,11 +10,11 @@ import { CategoryRepository } from "../../domain/repository/category-repository"
 import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
 import { CustomError } from "../../domain/errors/custom-error";
 import { FindCoursesPaginated } from "../../domain/use-cases/course/find-courses-paginated";
+import { FindCoursesSortByPrice } from "../../domain/use-cases/course/find-courses-sort-by-price";
 
 
 export class CourseController {
 
-    // Inyección de dependencias
     constructor (
         private readonly courseRepository : CourseRepository,
         private readonly categoryRepository : CategoryRepository,
@@ -58,6 +58,16 @@ export class CourseController {
             .then( course => HandlerResponses.handleSuccess( res, course, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ));
 
+    }
+
+    public findCoursesSortByPrice = ( req : Request , res : Response ) => {
+        const { order } = req.params;
+        if( (order.toLowerCase() != 'asc') && (order.toLowerCase() != 'desc') ) return HandlerResponses.handleError( CustomError.badRequest('Parametro no valido.') , res );
+
+        new FindCoursesSortByPrice( this.courseRepository )
+                .execute( order )
+                .then( course => HandlerResponses.handleSuccess( res, course, 200 ) )
+                .catch( error => HandlerResponses.handleError( error , res ));
     }
 
     public saveCourse = ( req : AuthenticatedRequest , res : Response ) => {

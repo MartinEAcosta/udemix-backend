@@ -50,7 +50,12 @@ export class CourseRouter {
           '/paginated',
           [ paginationMiddleware.containPageOrLimit ],
           courseController.findCoursesPaginated
-        )
+        );
+
+        router.get(
+          '/sort/price/:order',
+          courseController.findCoursesSortByPrice,
+        );
         
         router.get(
           '/:id',

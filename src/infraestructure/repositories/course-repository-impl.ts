@@ -5,20 +5,32 @@ import { CourseEntity } from '../../domain/entities/course.entity';
 import { CreateCourseDto } from '../../domain/dtos/course/create-course.dto';
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 import { PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
+import { CourseMapper } from '../mappers/course.mapper';
 
 export class CourseRepositoryImpl implements CourseRepository{
 
     constructor( 
         private readonly courseDatasource : CourseDatasource, 
     ){ }
-
+    
     async findCoursesByCategory( category_id : string) : Promise<CourseEntity[]> {
         try{
             const courses = await this.courseDatasource.findCoursesByCategoryId( category_id );
-
-            return courses.map( course => CourseEntity.fromObject( course ) );
+            
+            return courses.map( CourseEntity.fromObject );
         }  
         catch( error ){
+            throw error;
+        }
+    }
+
+    async findCoursesSortByPrice( order : string ) : Promise<CourseEntity[]> {
+        try{
+            const courses = await this.courseDatasource.findCoursesSortByPrice( order );
+
+            return courses.map( CourseEntity.fromObject );
+        }
+        catch(error){
             throw error;
         }
     }
@@ -26,7 +38,8 @@ export class CourseRepositoryImpl implements CourseRepository{
     async findAllCourses() : Promise<CourseEntity[]> {
         try{
             const courses = await this.courseDatasource.findAllCourses();
-            return courses.map( course => CourseEntity.fromObject(course) );
+
+            return courses.map( course => CourseEntity.fromObject( course ) );
         }
         catch( error ){
             throw error;
