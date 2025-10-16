@@ -9,7 +9,7 @@ import { AuthRepository } from "../../domain/repository/auth-repository";
 import { CourseRepository } from "../../domain/repository/course-repository";
 import { FindAllEnrollments } from "../../domain/use-cases/enrollment/find-all-enrollments";
 import { FindEnrollmentsByUserId } from "../../domain/use-cases/enrollment/find-enrollments-by-user-id";
-
+import { UnitOfWork } from "../../domain/services/UnitOfWork";
 
 
 export class EnrollmentController{
@@ -18,6 +18,7 @@ export class EnrollmentController{
         private readonly enrollmentRepository : EnrollmentRepository,
         private readonly authRepository       : AuthRepository,
         private readonly courseRepository     : CourseRepository,
+        private readonly unitOfWork           : UnitOfWork,
     ) { }
 
     // Solo permitido por administradores en teoria
@@ -55,7 +56,7 @@ export class EnrollmentController{
                                                                                 );
         if( errorMessage ) return res.status(400).json( { error : errorMessage });
 
-        new EnrollUserInCourse( this.enrollmentRepository, this.authRepository , this.courseRepository )
+        new EnrollUserInCourse( this.enrollmentRepository, this.authRepository , this.courseRepository , this.unitOfWork )
             .execute( createEnrollmentDto! )
             .then( enrollmentCreated => HandlerResponses.handleSuccess( res , enrollmentCreated, 201 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );

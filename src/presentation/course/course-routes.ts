@@ -11,7 +11,8 @@ import { AuthRepositoryImpl } from './../../infraestructure/repositories/auth-re
 import { FileUploadDatasourceImpl } from '../../infraestructure/datasources/file-upload-datasource-impl';
 import { FileUploadRepositoryImpl } from '../../infraestructure/repositories/file-upload-repository-impl';
 import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
-import { AuthMiddleware, FileUploadMiddleware, PaginationMiddleware } from "../middlewares";
+import { AuthMiddleware, FileUploadMiddleware, PaginationMiddleware, CourseMiddleware } from "../middlewares";
+import { CourseQueryBuilder } from "../../infraestructure/helpers/CourseQueryBuilder";
 
 
 export class CourseRouter {
@@ -37,12 +38,14 @@ export class CourseRouter {
         const authRepository = new AuthRepositoryImpl( authDatasource );
         const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
 
+        const courseMiddleware = new CourseMiddleware( new CourseQueryBuilder() );
         const fileMiddleware = new FileUploadMiddleware();
         const paginationMiddleware = new PaginationMiddleware();
         
         // GetAll Courses
         router.get(
           '/',
+          [ courseMiddleware.validateQueryParams ],
           courseController.findAllCourses
         );
         
@@ -52,11 +55,6 @@ export class CourseRouter {
           courseController.findCoursesPaginated
         );
 
-        router.get(
-          '/sort/price/:order',
-          courseController.findCoursesSortByPrice,
-        );
-        
         router.get(
           '/:id',
           courseController.findCourseById
@@ -70,9 +68,11 @@ export class CourseRouter {
         // Create Course
         router.post(
           '/new',
-          [ authMiddleware.validateJWT , authMiddleware.validatePermissions(['teacher', 'admin']) ,
+          [
+            authMiddleware.validateJWT , authMiddleware.validatePermissions(['teacher', 'admin']) ,
             authMiddleware.validateAndAssignOwner, 
-            fileMiddleware.containFiles , fileMiddleware.fileUploadPreprocessor ],
+            fileMiddleware.containFiles , fileMiddleware.fileUploadPreprocessor 
+          ],
           courseController.saveCourse
         );
         

@@ -5,17 +5,18 @@ import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 import { CourseResponseDto } from '../../domain/dtos/course/course.responses';
 import { CourseMapper } from '../mappers/course.mapper';
 import { PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
+import { CourseQueryFilter } from '../helpers/CourseQueryBuilder';
 
 export class CourseDatasourceImpl implements CourseDatasource {
     
-    async findAllCourses(): Promise<CourseResponseDto[]> {
-        const courses = await CourseModel.find({});
+    async findAllCourses( filter ?: CourseQueryFilter ): Promise<CourseResponseDto[]> {
+        const courses = await CourseModel.find( filter || {} );
         if( !courses ) return [];
+
         return courses.map( CourseMapper.fromCourseResponseDto );
     }
     
     async findCoursesPaginated( page : number , limit : number ) : Promise<PaginationResponseDto<CourseResponseDto[]>> {
-
         const courses  = await CourseModel.find({})
                                             .skip( (page - 1 ) * limit)
                                             .limit( limit );
@@ -45,17 +46,6 @@ export class CourseDatasourceImpl implements CourseDatasource {
         return courses.map( course => CourseMapper.fromCourseResponseDto( course ));
     }
 
-    async findCoursesSortByPrice( dir : string ) : Promise<CourseResponseDto[]> {
-
-        const courses = await CourseModel.find({}).sort({ price : dir as 'asc' | 'desc' });
-        
-        return courses.map(CourseMapper.fromCourseResponseDto);
-    }
-
-    // async findAllCoursesNotFullyEnrolled ( ) : Promise<CourseResponseDto[]> {
-    // 
-    //     const courses = await CourseModel.find({ })
-    // }
 
     async saveCourse( createCourseDto : CreateCourseDto) : Promise<CourseResponseDto> {
 

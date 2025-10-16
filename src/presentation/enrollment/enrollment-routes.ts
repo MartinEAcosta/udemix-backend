@@ -9,6 +9,7 @@ import { CourseRepositoryImpl } from '../../infraestructure/repositories/course-
 
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 import { JwtAdapter } from '../../config';
+import { MongooseUnitOfWork } from '../../data/mongoose-unit-of-work';
 
 
 export class EnrollmentRouter { 
@@ -16,6 +17,8 @@ export class EnrollmentRouter {
     static get routes() : Router {
 
         const router = Router();
+        const mongoUnitOfWork = new MongooseUnitOfWork();
+        
 
         const enrollmentDatasource = new EnrollmentDatasourceImpl();
         const enrollmentRepository = new EnrollmentRepositoryImpl( enrollmentDatasource );
@@ -29,7 +32,8 @@ export class EnrollmentRouter {
         const courseDatasource = new CourseDatasourceImpl();
         const courseRepository = new CourseRepositoryImpl( courseDatasource );
 
-        const enrollmentController = new EnrollmentController( enrollmentRepository, authRepository, courseRepository );
+    
+        const enrollmentController = new EnrollmentController( enrollmentRepository, authRepository, courseRepository , mongoUnitOfWork );
         
 
         router.get(

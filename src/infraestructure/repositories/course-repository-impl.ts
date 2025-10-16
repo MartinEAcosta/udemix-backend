@@ -5,7 +5,7 @@ import { CourseEntity } from '../../domain/entities/course.entity';
 import { CreateCourseDto } from '../../domain/dtos/course/create-course.dto';
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 import { PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
-import { CourseMapper } from '../mappers/course.mapper';
+import { CourseQueryFilter } from '../helpers/CourseQueryBuilder';
 
 export class CourseRepositoryImpl implements CourseRepository{
 
@@ -24,20 +24,9 @@ export class CourseRepositoryImpl implements CourseRepository{
         }
     }
 
-    async findCoursesSortByPrice( order : string ) : Promise<CourseEntity[]> {
+    async findAllCourses( filter ?: CourseQueryFilter ) : Promise<CourseEntity[]> {
         try{
-            const courses = await this.courseDatasource.findCoursesSortByPrice( order );
-
-            return courses.map( CourseEntity.fromObject );
-        }
-        catch(error){
-            throw error;
-        }
-    }
-
-    async findAllCourses() : Promise<CourseEntity[]> {
-        try{
-            const courses = await this.courseDatasource.findAllCourses();
+            const courses = await this.courseDatasource.findAllCourses( filter );
 
             return courses.map( course => CourseEntity.fromObject( course ) );
         }

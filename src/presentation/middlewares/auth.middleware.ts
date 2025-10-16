@@ -15,15 +15,13 @@ export class AuthMiddleware {
                 private readonly authRepository : AuthRepository,
      ) {}
 
-    validateJWT = async( req : AuthenticatedRequest , res : Response , next : NextFunction ) : Promise<void> => {
+    validateJWT = async( req : AuthenticatedRequest , res : Response , next : NextFunction ) => {
         const authorization = req.header('Authorization');
         if( !authorization ) {
-            res.status(401).json({ error: 'No hay token en la petición.'});
-            return;
+            return HandlerResponses.handleError( CustomError.unauthorized('No hay token en la petición') , res );
         }
         if( !authorization.startsWith('Bearer ') ) {
-             res.status(401).json({ error: 'El token es invalido.' });
-             return;
+            return HandlerResponses.handleError( CustomError.unauthorized('El token ingresado es invalido.') , res );
         }
 
         const token = authorization.split(' ')[1] || '';
@@ -39,14 +37,12 @@ export class AuthMiddleware {
                                                                         role            : string,
                                                                     }>( token );
             if( !payload ) {
-                res.status(401).json({ error: 'El token invalido.'})
-                return;
+                return HandlerResponses.handleError( CustomError.unauthorized('El token ingresado es invalido.') , res );
             }
 
             const user = await this.authRepository.findUserById( payload.id );
             if( !user ) {
-                res.status(400).json({ error: 'El usuario no existe.' });
-                return;
+                return HandlerResponses.handleError( CustomError.notFound('Revise las credenciales e intente nuevamente.') , res );
             }
 
             req.user = user;
@@ -54,8 +50,7 @@ export class AuthMiddleware {
         }
         catch(error){
             console.log(error);
-            res.status(500).json({ error: 'Internal Server Error'});
-            return;
+            return HandlerResponses.handleError( CustomError.internalServer('Hubo un error inesperado al validar el token') , res );
         }
     }
 
@@ -63,11 +58,7 @@ export class AuthMiddleware {
         const user = req.user;
 
         if(!user) {
-            res.status(401).json({ 
-                ok : false,
-                error : 'Hubo un error al recopilar el usuario.'
-            });
-            return;
+            return HandlerResponses.handleError( CustomError.notFound( 'Hubo un error al recopilar el usuario.' ) , res );
         }
 
         req.body = { 
