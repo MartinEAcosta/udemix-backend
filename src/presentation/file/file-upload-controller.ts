@@ -4,11 +4,11 @@ import { CustomError } from "../../domain/errors/custom-error";
 import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
 import { CourseRepository } from "../../domain/repository/course-repository";
 
-import { UploadSingle } from "../../domain/use-cases/file-upload/upload-single";
+import { UploadSingle } from "../../domain/use-cases/file/upload-single";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
-import { DeleteFile } from "../../domain/use-cases/file-upload/delete-file";
-import { FindFileById } from "../../domain/use-cases/file-upload/find-file-by-id";
-import { DeleteCourseThumbnail } from "../../domain/use-cases/file-upload/delete-course-thumbnail";
+import { DeleteFile } from "../../domain/use-cases/file/delete-file";
+import { FindFileById } from "../../domain/use-cases/file/find-file-by-id";
+import { DeleteCourseThumbnail } from "../../domain/use-cases/file/delete-course-thumbnail";
 
 // toLowerCase aplicado a la hora de comparar.
 export const validFolders = [ 'user' , 'courses' , "lessons" ];

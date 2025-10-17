@@ -8,7 +8,7 @@ import { JwtAdapter } from "../../config";
 import { AuthDatasourceImpl } from "../../infraestructure/datasources/auth-datasource-impl";
 import { AuthRepositoryImpl } from "../../infraestructure/repositories/auth-repository-impl";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
-import { FileUploadMiddleware } from "../middlewares/file-upload.middleware";
+import { FileMiddleware } from "../middlewares/file.middleware";
 import { FileUploadDatasourceImpl } from "../../infraestructure/datasources/file-upload-datasource-impl";
 import { FileUploadRepositoryImpl } from "../../infraestructure/repositories/file-upload-repository-impl";
 import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
@@ -44,7 +44,7 @@ export class LessonRouter {
         const authRepository = new AuthRepositoryImpl( authDatasource );
         const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
 
-        const fileUploadMiddleware = new FileUploadMiddleware();
+        const fileUploadMiddleware = new FileMiddleware();
 
         router.post(
             '/new',

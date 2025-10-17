@@ -5,7 +5,7 @@ import { EmailValidator, SendEmailOptions } from "../../domain/services/EmailVal
 export class EmailSenderAdapter implements EmailValidator {
 
     private transporter : Transporter;
-    public baseURL     : string;
+    public baseURL      : string;
 
     constructor( 
         mailerService       :  string,
@@ -36,7 +36,7 @@ export class EmailSenderAdapter implements EmailValidator {
                                                         }
                                                     );
 
-            console.log( info );
+            // console.log( info );
             return true;
         }
         catch( error ){

@@ -3,7 +3,7 @@ import { HandlerResponses } from "../helpers/handler-responses";
 import { CustomError } from "../../domain/errors/custom-error";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 
-export class FileUploadMiddleware {
+export class FileMiddleware {
     // Utilizado para el estandarizado de respuesta, dado que Clodinary retorna un objeto cuando se sube un solo archivo y 
     // un array cuando se se suben varios arhivos.
     requireFiles = ( req : Request , res: Response , next : NextFunction )  => {

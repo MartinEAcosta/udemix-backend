@@ -11,7 +11,7 @@ import { AuthRepositoryImpl } from './../../infraestructure/repositories/auth-re
 import { FileUploadDatasourceImpl } from '../../infraestructure/datasources/file-upload-datasource-impl';
 import { FileUploadRepositoryImpl } from '../../infraestructure/repositories/file-upload-repository-impl';
 import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
-import { AuthMiddleware, FileUploadMiddleware, PaginationMiddleware, CourseMiddleware } from "../middlewares";
+import { AuthMiddleware, FileMiddleware , PaginationMiddleware, CourseMiddleware } from "../middlewares";
 import { CourseQueryBuilder } from "../../domain/helpers/course-query-builder";
 
 
@@ -39,7 +39,7 @@ export class CourseRouter {
         const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
 
         const courseMiddleware = new CourseMiddleware( new CourseQueryBuilder() );
-        const fileMiddleware = new FileUploadMiddleware();
+        const fileMiddleware = new FileMiddleware();
         const paginationMiddleware = new PaginationMiddleware();
         
         // GetAll Courses

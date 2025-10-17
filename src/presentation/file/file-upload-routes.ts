@@ -3,7 +3,7 @@ import { FileUploadController } from "./file-upload-controller";
 import { FileUploadDatasourceImpl } from "../../infraestructure/datasources/file-upload-datasource-impl";
 import { FileUploadRepositoryImpl } from "../../infraestructure/repositories/file-upload-repository-impl";
 import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
-import { FileUploadMiddleware } from "../middlewares/file-upload.middleware";
+import { FileMiddleware } from "../middlewares/file.middleware";
 import { CourseRepositoryImpl } from "../../infraestructure/repositories/course-repository-impl";
 import { CourseDatasourceImpl } from "../../infraestructure/datasources/course-datasource-impl";
 
@@ -22,7 +22,7 @@ export class FileUploadRouter {
         const courseRepository = new CourseRepositoryImpl( courseDatasource );
         const fileUploadController = new FileUploadController( fileUploadRepository , courseRepository );
 
-        const fileUploadMiddleware = new FileUploadMiddleware();
+        const fileUploadMiddleware = new FileMiddleware();
 
         router.post( 
             '/upload/single/:folder',

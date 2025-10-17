@@ -23,7 +23,6 @@ export class CourseController {
 
     public findAllCourses = ( req : CourseFilterRequest , res : Response ) => {
 
-            
         new FindAllCourses( this.courseRepository )
             .execute( req?.courseQuery )
             .then( courses => HandlerResponses.handleSuccess( res , courses, 200 ) )
