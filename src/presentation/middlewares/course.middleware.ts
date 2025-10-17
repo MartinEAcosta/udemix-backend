@@ -7,10 +7,10 @@ export interface CourseFilterRequest extends Request {
 }
 
 export class CourseMiddleware {
+    
+    private readonly courseQueryBuilder : CourseQueryBuilder = new CourseQueryBuilder();
 
-    constructor(
-        private readonly courseQueryBuilder : CourseQueryBuilder
-     ) { }
+    constructor( ) { }
 
     validateQueryParams = ( req : CourseFilterRequest , res : Response , next : NextFunction ) => {
 

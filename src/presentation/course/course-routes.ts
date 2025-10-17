@@ -13,6 +13,7 @@ import { FileUploadRepositoryImpl } from '../../infraestructure/repositories/fil
 import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
 import { AuthMiddleware, FileMiddleware , PaginationMiddleware, CourseMiddleware } from "../middlewares";
 import { CourseQueryBuilder } from "../../domain/helpers/course-query-builder";
+import { DependencyContainer } from "../dependency-container";
 
 
 export class CourseRouter {
@@ -21,27 +22,8 @@ export class CourseRouter {
 
         const router = Router();
 
-        const dataSource = new CourseDatasourceImpl();
+        const { courseMiddleware, courseController, paginationMiddleware, authMiddleware, fileMiddleware } = DependencyContainer.getInstance();
 
-        const categoryDatasource = new CategoryDataSourceImpl();
-        const categoryRepository = new CategoryRepositoryImpl( categoryDatasource );
-
-        const fileStorage = new CloudinaryAdapter();
-        const fileDatasource = new FileUploadDatasourceImpl( fileStorage );
-        const fileRepository = new FileUploadRepositoryImpl( fileDatasource );
-
-        const courseRepository = new CourseRepositoryImpl( dataSource );
-        const courseController = new CourseController( courseRepository , categoryRepository , fileRepository );
-
-        const jwtAdapter = new JwtAdapter();
-        const authDatasource = new AuthDatasourceImpl();
-        const authRepository = new AuthRepositoryImpl( authDatasource );
-        const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
-
-        const courseMiddleware = new CourseMiddleware( new CourseQueryBuilder() );
-        const fileMiddleware = new FileMiddleware();
-        const paginationMiddleware = new PaginationMiddleware();
-        
         // GetAll Courses
         router.get(
           '/',

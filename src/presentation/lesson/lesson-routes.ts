@@ -1,57 +1,21 @@
 import { Router } from "express";
-import { LessonDatasourceImpl } from "../../infraestructure/datasources/lesson-datasource-impl";
-import { LessonRepositoryImpl } from "../../infraestructure/repositories/lesson-repository-impl";
-import { LessonController } from "./lesson-controller";
-import { CourseDatasourceImpl } from "../../infraestructure/datasources/course-datasource-impl";
-import { CourseRepositoryImpl } from "../../infraestructure/repositories/course-repository-impl";
-import { JwtAdapter } from "../../config";
-import { AuthDatasourceImpl } from "../../infraestructure/datasources/auth-datasource-impl";
-import { AuthRepositoryImpl } from "../../infraestructure/repositories/auth-repository-impl";
-import { AuthMiddleware } from "../middlewares/auth.middleware";
-import { FileMiddleware } from "../middlewares/file.middleware";
-import { FileUploadDatasourceImpl } from "../../infraestructure/datasources/file-upload-datasource-impl";
-import { FileUploadRepositoryImpl } from "../../infraestructure/repositories/file-upload-repository-impl";
-import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
-import { ModuleDatasourceImpl } from "../../infraestructure/datasources/module-datasource-impl";
-import { ModuleRepositoryImpl } from "../../infraestructure/repositories/module-repository-impl";
-import { MongooseUnitOfWork } from '../../data/mongoose-unit-of-work';
+
+import { DependencyContainer } from "../dependency-container";
 
 export class LessonRouter {
 
     static get routes() : Router {
 
         const router = Router();
-        const mongoUnitOfWork = new MongooseUnitOfWork();
 
-        const datasource = new LessonDatasourceImpl();
-        const lessonRepository =  new LessonRepositoryImpl( datasource );
-
-        const courseDatasource = new CourseDatasourceImpl();
-        const courseRepository = new CourseRepositoryImpl( courseDatasource);
-
-        const fileStorage = new CloudinaryAdapter();
-
-        const fileDatasource = new FileUploadDatasourceImpl( fileStorage );
-        const fileRepository = new FileUploadRepositoryImpl( fileDatasource );
-
-        const moduleDatasource = new ModuleDatasourceImpl( );
-        const moduleRepository = new ModuleRepositoryImpl( moduleDatasource );
-        
-        const lessonController = new LessonController( lessonRepository , moduleRepository , courseRepository , fileRepository , mongoUnitOfWork);
-
-        const jwtAdapter = new JwtAdapter();
-        const authDatasource = new AuthDatasourceImpl();
-        const authRepository = new AuthRepositoryImpl( authDatasource );
-        const authMiddleware = new AuthMiddleware( jwtAdapter , authRepository );
-
-        const fileUploadMiddleware = new FileMiddleware();
+        const { lessonController , authMiddleware , fileMiddleware } = DependencyContainer.getInstance();
 
         router.post(
             '/new',
             [
                 authMiddleware.validateJWT,
-                fileUploadMiddleware.containFiles,
-                fileUploadMiddleware.fileUploadPreprocessor
+                fileMiddleware.containFiles,
+                fileMiddleware.fileUploadPreprocessor
             ],
             lessonController.createLesson
         );
@@ -60,8 +24,8 @@ export class LessonRouter {
             '/update/:id',
             [
                 authMiddleware.validateJWT,
-                fileUploadMiddleware.containFiles,
-                fileUploadMiddleware.fileUploadPreprocessor
+                fileMiddleware.containFiles,
+                fileMiddleware.fileUploadPreprocessor
             ],
             lessonController.updateLesson
         );

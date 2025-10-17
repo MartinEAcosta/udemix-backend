@@ -1,11 +1,6 @@
 import { Router } from "express";
-import { FileUploadController } from "./file-upload-controller";
-import { FileUploadDatasourceImpl } from "../../infraestructure/datasources/file-upload-datasource-impl";
-import { FileUploadRepositoryImpl } from "../../infraestructure/repositories/file-upload-repository-impl";
-import { CloudinaryAdapter } from "../../config/adapters/cloudinary.adapter";
-import { FileMiddleware } from "../middlewares/file.middleware";
-import { CourseRepositoryImpl } from "../../infraestructure/repositories/course-repository-impl";
-import { CourseDatasourceImpl } from "../../infraestructure/datasources/course-datasource-impl";
+
+import { DependencyContainer } from "../dependency-container";
 
 
 export class FileUploadRouter {
@@ -15,40 +10,33 @@ export class FileUploadRouter {
 
         const router = Router();
 
-        const fileStorage = new CloudinaryAdapter();
-        const fileDatasource = new FileUploadDatasourceImpl( fileStorage );
-        const fileUploadRepository = new FileUploadRepositoryImpl( fileDatasource );
-        const courseDatasource = new CourseDatasourceImpl();
-        const courseRepository = new CourseRepositoryImpl( courseDatasource );
-        const fileUploadController = new FileUploadController( fileUploadRepository , courseRepository );
-
-        const fileUploadMiddleware = new FileMiddleware();
+        const { fileMiddleware , fileController ,   } = DependencyContainer.getInstance();
 
         router.post( 
             '/upload/single/:folder',
-            [ fileUploadMiddleware.requireFiles , fileUploadMiddleware.fileUploadPreprocessor ],
-            fileUploadController.uploadFile
+            [ fileMiddleware.requireFiles , fileMiddleware.fileUploadPreprocessor ],
+            fileController.uploadFile
         );
 
         router.post(
             '/multiple/:folder',
-            [ fileUploadMiddleware.requireFiles , fileUploadMiddleware.fileUploadPreprocessor ],
-            fileUploadController.uploadMultipleFiles
+            [ fileMiddleware.requireFiles , fileMiddleware.fileUploadPreprocessor ],
+            fileController.uploadMultipleFiles
         );
 
         router.delete(
             '/:id',
-            fileUploadController.deleteFile
+            fileController.deleteFile
         );
         
         router.delete(
             '/course-thumbnail/:course_id',
-            fileUploadController.deleteCourseThumbnail,
+            fileController.deleteCourseThumbnail,
         );
         
         router.get( 
             '/:id',
-            fileUploadController.findFileById,
+            fileController.findFileById,
         )
 
 
