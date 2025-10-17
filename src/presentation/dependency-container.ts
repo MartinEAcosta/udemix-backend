@@ -20,7 +20,6 @@ export class DependencyContainer {
 
     private static instance : DependencyContainer | null = null; 
 
-
     //* Middlewares
     readonly authMiddleware : AuthMiddleware;
     readonly courseMiddleware : CourseMiddleware;
