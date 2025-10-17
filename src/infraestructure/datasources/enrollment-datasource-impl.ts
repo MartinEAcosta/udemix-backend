@@ -1,5 +1,5 @@
 import { EnrollmentModel } from "../../data";
-import { EnrollmentDatasource } from "../../domain/datasources/enrollment.datasource";
+import { EnrollmentDatasource } from "../../domain/datasources/enrollment-datasource";
 import { CreateEnrollmentDto } from "../../domain/dtos/enrollment/create-enrollment.dto";
 import { EnrollmentMapper } from "../mappers/enrollment.mapper";
 import { EnrollmentDetailedResponseDto, EnrollmentResponseDto } from '../../domain/dtos/enrollment/enrollment.response.dto';

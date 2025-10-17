@@ -1,5 +1,5 @@
 import { CourseRepository } from '../../domain/repository/course-repository';
-import { CourseDatasource } from '../../domain/datasources/course.datasource';
+import { CourseDatasource } from '../../domain/datasources/course-datasource';
 
 import { CourseEntity } from '../../domain/entities/course.entity';
 import { CreateCourseDto } from '../../domain/dtos/course/create-course.dto';

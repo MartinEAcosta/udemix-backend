@@ -1,4 +1,4 @@
-import { LessonDatasource } from '../../domain/datasources/lesson.datasource';
+import { LessonDatasource } from '../../domain/datasources/lesson-datasource';
 import { ILessonPopulateModel, LessonModel } from '../../data/mongo/models/lesson.model';
 import { LessonMapper } from '../mappers/lesson.mapper';
 

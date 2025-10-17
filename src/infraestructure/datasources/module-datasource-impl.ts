@@ -1,5 +1,5 @@
 import { ModuleModel } from '../../data/mongo/models/module.model';
-import { ModuleDatasource } from '../../domain/datasources/module.datasource';
+import { ModuleDatasource } from '../../domain/datasources/module-datasource';
 import { CreateModuleDto } from '../../domain/dtos/module/create-module.dto';
 import { ModuleResponseDto } from '../../domain/dtos/module/module.response.dto';
 import { UpdateModuleDto } from '../../domain/dtos/module/update-module.dto';

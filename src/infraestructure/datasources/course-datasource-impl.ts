@@ -1,5 +1,5 @@
 import { CreateCourseDto } from './../../domain/dtos/course/create-course.dto';
-import { CourseDatasource } from "../../domain/datasources/course.datasource";
+import { CourseDatasource } from "../../domain/datasources/course-datasource";
 import { CourseModel } from "../../data/mongo/models/course.model";
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 import { CourseResponseDto } from '../../domain/dtos/course/course.responses';

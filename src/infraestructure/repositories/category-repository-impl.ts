@@ -1,4 +1,4 @@
-import { CategoryDatasource } from "../../domain/datasources/category.datasource";
+import { CategoryDatasource } from "../../domain/datasources/category-datasource";
 import { CreateCategoryDto } from "../../domain/dtos/category/create-category-dto";
 import { CategoryEntity } from "../../domain/entities/category.entity";
 import { CategoryRepository } from "../../domain/repository/category-repository";

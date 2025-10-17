@@ -1,4 +1,4 @@
-import { ModuleDatasource } from '../../domain/datasources/module.datasource';
+import { ModuleDatasource } from '../../domain/datasources/module-datasource';
 import { CreateModuleDto } from '../../domain/dtos/module/create-module.dto';
 import { ModuleEntity } from '../../domain/entities/module.entity';
 import { ModuleRepository } from '../../domain/repository/module-repository';

@@ -1,5 +1,5 @@
 import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
-import { FileUploadDatasource } from "../../domain/datasources/file-upload.datasource";
+import { FileUploadDatasource } from "../../domain/datasources/file-datasource";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { FileResponseDto } from "../../domain/dtos/file-upload/file-upload.response.dto";
 import { FileMapper } from "../mappers/file.mapper";

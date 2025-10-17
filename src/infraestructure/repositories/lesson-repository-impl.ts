@@ -1,4 +1,4 @@
-import { LessonDatasource } from '../../domain/datasources/lesson.datasource';
+import { LessonDatasource } from '../../domain/datasources/lesson-datasource';
 import { CreateLessonDto } from '../../domain/dtos/lesson/create-lesson.dto';
 import { LessonResponsePopulateDto } from '../../domain/dtos/lesson/lesson.response.dto';
 import { UpdateLessonDto } from '../../domain/dtos/lesson/update-lesson.dto';

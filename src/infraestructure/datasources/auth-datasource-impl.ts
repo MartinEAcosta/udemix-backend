@@ -1,5 +1,5 @@
 
-import { AuthDatasource } from "../../domain/datasources/auth.datasource";
+import { AuthDatasource } from "../../domain/datasources/auth-datasource";
 import { UserModel } from './../../data/mongo/models/user.model';
 import { UserMapper } from "../mappers/user.mapper";
 import { RegisterUserDto } from '../../domain/dtos/auth/register-user.dto';

@@ -1,7 +1,7 @@
 import { CreateEnrollmentDto } from "../../domain/dtos/enrollment/create-enrollment.dto";
 import { EnrollmentEntity } from "../../domain/entities/enrollment.entity";
 import { EnrollmentRepository } from "../../domain/repository/enrollment-repository";
-import { EnrollmentDatasource } from '../../domain/datasources/enrollment.datasource';
+import { EnrollmentDatasource } from '../../domain/datasources/enrollment-datasource';
 import { EnrollmentDetailedResponseDto } from "../../domain/dtos/enrollment/enrollment.response.dto";
 
 

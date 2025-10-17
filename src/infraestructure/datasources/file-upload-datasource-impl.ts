@@ -3,7 +3,7 @@ import { CustomError } from "../../domain/errors/custom-error";
 import { FileModel } from "../../data/mongo/models/file.model";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { FileMapper } from '../mappers/file.mapper';
-import { FileUploadDatasource } from '../../domain/datasources/file-upload.datasource';
+import { FileUploadDatasource } from '../../domain/datasources/file-datasource';
 import { FileResponseDto, FileStorageAdapterResponseDto } from '../../domain/dtos/file-upload/file-upload.response.dto';
 import { TransactionSession } from "../../domain/services/UnitOfWork";
 
