@@ -1,37 +1,19 @@
 import { envs } from "../config";
-import { AuthRepositoryImpl } from "../infraestructure/repositories/auth-repository-impl";
 import { AuthController } from "./auth/auth-controller";
 import { CategoryController } from "./category/category-controller";
 import { CourseController } from "./course/course-controller";
+import { EmailController } from "./auth/email-controller";
 import { EnrollmentController } from "./enrollment/enrollment-controller";
 import { FileUploadController } from "./file/file-upload-controller";
 import { LessonController } from "./lesson/lesson-controller";
 import { ModuleController } from "./module/module.controller";
 import { AuthMiddleware, CourseMiddleware, PaginationMiddleware , FileMiddleware } from "./middlewares";
-import { AuthRepository } from "../domain/repository/auth-repository";
-import { CategoryRepository } from "../domain/repository/category-repository";
-import { CourseRepository } from "../domain/repository/course-repository";
-import { EnrollmentRepository } from "../domain/repository/enrollment-repository";
-import { FileUploadRepository } from "../domain/repository/file-upload-repository";
-import { LessonRepository } from '../domain/repository/lesson-repository';
-import { ModuleRepository } from '../domain/repository/module-repository';
 import { EmailValidator , Encrypter , FileStorage , TokenManager , UnitOfWork } from "../domain/services";
 import { MongooseUnitOfWork } from "../data/mongoose-unit-of-work";
 import { BcryptAdapter , CloudinaryAdapter , EmailSenderAdapter , JwtAdapter } from "../config/adapters";
-import { CategoryRepositoryImpl } from "../infraestructure/repositories/category-repository-impl";
-import { CourseRepositoryImpl } from "../infraestructure/repositories/course-repository-impl";
-import { EnrollmentDatasourceImpl } from "../infraestructure/datasources/enrollment-datasource-impl";
-import { FileUploadRepositoryImpl } from "../infraestructure/repositories/file-upload-repository-impl";
-import { LessonRepositoryImpl } from "../infraestructure/repositories/lesson-repository-impl";
-import { ModuleRepositoryImpl } from "../infraestructure/repositories/module-repository-impl";
-import { ModuleDatasourceImpl } from "../infraestructure/datasources/module-datasource-impl";
-import { LessonDatasourceImpl } from "../infraestructure/datasources/lesson-datasource-impl";
-import { FileUploadDatasourceImpl } from '../infraestructure/datasources/file-upload-datasource-impl';
-import { EnrollmentRepositoryImpl } from "../infraestructure/repositories/enrollment-repository-impl";
-import { AuthDatasourceImpl } from "../infraestructure/datasources/auth-datasource-impl";
-import { CategoryDataSourceImpl } from "../infraestructure/datasources/category-datasource-impl";
-import { CourseDatasourceImpl } from "../infraestructure/datasources/course-datasource-impl";
-import { EmailController } from "./auth/email-controller";
+import { AuthRepository, CategoryRepository, CourseRepository, EnrollmentRepository, FileUploadRepository, LessonRepository, ModuleRepository } from "../domain/repository";
+import { AuthRepositoryImpl, CategoryRepositoryImpl, CourseRepositoryImpl, EnrollmentRepositoryImpl, FileUploadRepositoryImpl, LessonRepositoryImpl, ModuleRepositoryImpl } from "../infraestructure/repositories";
+import { AuthDatasourceImpl, CategoryDataSourceImpl, CourseDatasourceImpl, EnrollmentDatasourceImpl, FileUploadDatasourceImpl, LessonDatasourceImpl, ModuleDatasourceImpl } from "../infraestructure/datasources";
 
 
 export class DependencyContainer {
