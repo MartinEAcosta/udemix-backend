@@ -1,5 +1,5 @@
 import { CourseRepository } from "../../repository/course-repository";
-import { FileUploadRepository } from "../../repository/file-upload-repository";
+import { FileRepository } from '../../repository/file-repository';
 
 interface DeleteCourseThumbnailUseCase {
     execute( id : string ) : Promise<boolean>;
@@ -8,7 +8,7 @@ interface DeleteCourseThumbnailUseCase {
 export class DeleteCourseThumbnail implements DeleteCourseThumbnailUseCase {
 
     constructor( 
-        private readonly fileUploadRepository : FileUploadRepository,
+        private readonly fileRepository : FileRepository,
         private readonly courseRepository : CourseRepository 
     ) { }
 
@@ -25,7 +25,7 @@ export class DeleteCourseThumbnail implements DeleteCourseThumbnailUseCase {
             const { id_file , thumbnail_url, ...rest } = course;
             if( !id_file ) return false;
 
-            const hasDeleted = await this.fileUploadRepository.deleteFile( id_file );
+            const hasDeleted = await this.fileRepository.deleteFile( id_file );
             if( !hasDeleted ) return false;
 
             const hasUpdatedCourse = await this.courseRepository.updateCourse( 

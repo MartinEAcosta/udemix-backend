@@ -4,16 +4,16 @@ import { CategoryController } from "./category/category-controller";
 import { CourseController } from "./course/course-controller";
 import { EmailController } from "./auth/email-controller";
 import { EnrollmentController } from "./enrollment/enrollment-controller";
-import { FileUploadController } from "./file/file-upload-controller";
+import { FileController } from "./file/file-controller";
 import { LessonController } from "./lesson/lesson-controller";
 import { ModuleController } from "./module/module.controller";
 import { AuthMiddleware, CourseMiddleware, PaginationMiddleware , FileMiddleware } from "./middlewares";
 import { EmailValidator , Encrypter , FileStorage , TokenManager , UnitOfWork } from "../domain/services";
 import { MongooseUnitOfWork } from "../data/mongoose-unit-of-work";
 import { BcryptAdapter , CloudinaryAdapter , EmailSenderAdapter , JwtAdapter } from "../config/adapters";
-import { AuthRepository, CategoryRepository, CourseRepository, EnrollmentRepository, FileUploadRepository, LessonRepository, ModuleRepository } from "../domain/repository";
-import { AuthRepositoryImpl, CategoryRepositoryImpl, CourseRepositoryImpl, EnrollmentRepositoryImpl, FileUploadRepositoryImpl, LessonRepositoryImpl, ModuleRepositoryImpl } from "../infraestructure/repositories";
-import { AuthDatasourceImpl, CategoryDataSourceImpl, CourseDatasourceImpl, EnrollmentDatasourceImpl, FileUploadDatasourceImpl, LessonDatasourceImpl, ModuleDatasourceImpl } from "../infraestructure/datasources";
+import { AuthRepository, CategoryRepository, CourseRepository, EnrollmentRepository, FileRepository , LessonRepository, ModuleRepository } from "../domain/repository";
+import { AuthRepositoryImpl, CategoryRepositoryImpl, CourseRepositoryImpl, EnrollmentRepositoryImpl, FileRepositoryImpl, LessonRepositoryImpl, ModuleRepositoryImpl } from "../infraestructure/repositories";
+import { AuthDatasourceImpl, CategoryDataSourceImpl, CourseDatasourceImpl, EnrollmentDatasourceImpl, FileDatasourceImpl, LessonDatasourceImpl, ModuleDatasourceImpl } from "../infraestructure/datasources";
 
 
 export class DependencyContainer {
@@ -32,7 +32,7 @@ export class DependencyContainer {
     readonly courseController     : CourseController;
     readonly emailController      : EmailController;
     readonly enrollmentController : EnrollmentController;
-    readonly fileController       : FileUploadController;
+    readonly fileController       : FileController;
     readonly lessonController     : LessonController;
     readonly moduleController     : ModuleController;
 
@@ -41,7 +41,7 @@ export class DependencyContainer {
     readonly categoryRepository   : CategoryRepository;
     readonly courseRepository     : CourseRepository;
     readonly enrollmentRepository : EnrollmentRepository;
-    readonly fileRepository       : FileUploadRepository;
+    readonly fileRepository       : FileRepository;
     readonly lessonRepository     : LessonRepository;
     readonly moduleRepository     : ModuleRepository;
 
@@ -69,7 +69,7 @@ export class DependencyContainer {
         this.categoryRepository   = new CategoryRepositoryImpl( new CategoryDataSourceImpl() );
         this.courseRepository     = new CourseRepositoryImpl( new CourseDatasourceImpl() );
         this.enrollmentRepository = new EnrollmentRepositoryImpl( new EnrollmentDatasourceImpl() );
-        this.fileRepository       = new FileUploadRepositoryImpl( new FileUploadDatasourceImpl( this.fileStorage ) );
+        this.fileRepository       = new FileRepositoryImpl( new FileDatasourceImpl( this.fileStorage ) );
         this.lessonRepository     = new LessonRepositoryImpl( new LessonDatasourceImpl() );
         this.moduleRepository     = new ModuleRepositoryImpl( new ModuleDatasourceImpl() );
         
@@ -84,7 +84,7 @@ export class DependencyContainer {
         this.courseController     = new CourseController( this.courseRepository , this.categoryRepository , this.fileRepository );
         this.emailController      = new EmailController( this.authRepository , this.emailValidator , this.tokenManager );
         this.enrollmentController = new EnrollmentController( this.enrollmentRepository , this.authRepository , this.courseRepository , this.unitOfWork );
-        this.fileController       = new FileUploadController( this.fileRepository , this.courseRepository );
+        this.fileController       = new FileController( this.fileRepository , this.courseRepository );
         this.lessonController     = new LessonController( this.lessonRepository , this.moduleRepository , this.courseRepository , this.fileRepository, this.unitOfWork );
         this.moduleController     = new ModuleController( this.moduleRepository , this.courseRepository );
     }

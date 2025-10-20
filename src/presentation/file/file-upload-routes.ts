@@ -2,15 +2,14 @@ import { Router } from "express";
 
 import { DependencyContainer } from "../dependency-container";
 
-
-export class FileUploadRouter {
+export class FileRouter {
 
 
     static get routes( ){
 
         const router = Router();
 
-        const { fileMiddleware , fileController ,   } = DependencyContainer.getInstance();
+        const { fileMiddleware , fileController } = DependencyContainer.getInstance();
 
         router.post( 
             '/upload/single/:folder',

@@ -13,7 +13,7 @@ import { CourseRepository } from "../../domain/repository/course-repository";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { UpdateLessonDto } from "../../domain/dtos/lesson/update-lesson.dto";
 import { UpdateLesson } from "../../domain/use-cases/lesson/update-lesson";
-import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
+import { FileRepository } from "../../domain/repository/file-repository";
 import { ModuleRepository } from "../../domain/repository/module-repository";
 import { UnitOfWork } from "../../domain/services/UnitOfWork";
 
@@ -24,7 +24,7 @@ export class LessonController {
         private readonly lessonRepository : LessonRepository,
         private readonly moduleRepository : ModuleRepository,
         private readonly courseRepository : CourseRepository,
-        private readonly fileRepository   : FileUploadRepository,
+        private readonly fileRepository   : FileRepository,
         private readonly unitOfWork       : UnitOfWork,
     ) { }
 

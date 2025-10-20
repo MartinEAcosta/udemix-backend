@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 import { HandlerResponses } from "../helpers/handler-responses";
 import { CustomError } from "../../domain/errors/custom-error";
-import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
+import { FileRepository } from "../../domain/repository/file-repository";
 import { CourseRepository } from "../../domain/repository/course-repository";
 
 import { UploadSingle } from "../../domain/use-cases/file/upload-single";
-import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { DeleteFile } from "../../domain/use-cases/file/delete-file";
 import { FindFileById } from "../../domain/use-cases/file/find-file-by-id";
 import { DeleteCourseThumbnail } from "../../domain/use-cases/file/delete-course-thumbnail";
@@ -13,10 +12,10 @@ import { DeleteCourseThumbnail } from "../../domain/use-cases/file/delete-course
 // toLowerCase aplicado a la hora de comparar.
 export const validFolders = [ 'user' , 'courses' , "lessons" ];
 
-export class FileUploadController {
+export class FileController {
 
     constructor( 
-        private readonly fileUploadRepository : FileUploadRepository, 
+        private readonly fileRepository : FileRepository, 
         private readonly courseRepository : CourseRepository 
     ) { }
 
@@ -39,7 +38,7 @@ export class FileUploadController {
         const folder = this.obtainFolder( req , res );
         if( !folder ) return;
         
-        new UploadSingle( this.fileUploadRepository )
+        new UploadSingle( this.fileRepository )
             .execute( fileToUploadDto! , folder! )
             .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
@@ -65,7 +64,7 @@ export class FileUploadController {
         const { id } = req.params;
         if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
 
-        new DeleteFile( this.fileUploadRepository )
+        new DeleteFile( this.fileRepository )
             .execute( id )
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
@@ -75,7 +74,7 @@ export class FileUploadController {
         const { course_id } = req.params;
         if( !course_id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
 
-        new DeleteCourseThumbnail( this.fileUploadRepository , this.courseRepository )
+        new DeleteCourseThumbnail( this.fileRepository , this.courseRepository )
             .execute( course_id )
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
@@ -85,7 +84,7 @@ export class FileUploadController {
         const { id } = req.params;
         if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
 
-        new FindFileById( this.fileUploadRepository )
+        new FindFileById( this.fileRepository )
             .execute( id )
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});

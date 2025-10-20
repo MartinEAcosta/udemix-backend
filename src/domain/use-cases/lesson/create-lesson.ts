@@ -4,7 +4,7 @@ import { CustomError } from "../../errors/custom-error";
 import { LessonRepository } from "../../repository/lesson-repository";
 import { CourseRepository } from '../../repository/course-repository';
 import { UploadFileDto } from "../../dtos/file-upload/file-upload.dto";
-import { FileUploadRepository } from "../../repository/file-upload-repository";
+import { FileRepository } from "../../repository/file-repository";
 import { ModuleRepository } from "../../repository/module-repository";
 import { UnitOfWork } from "../../services/UnitOfWork";
 
@@ -18,7 +18,7 @@ export class CreateLesson implements CreateLessonUseCase {
         private readonly lessonRepository : LessonRepository,
         private readonly moduleRepository : ModuleRepository,
         private readonly courseRepository : CourseRepository,
-        private readonly fileRepository   : FileUploadRepository,
+        private readonly fileRepository   : FileRepository,
         private readonly unitOfWork       : UnitOfWork,
     ) { }
 

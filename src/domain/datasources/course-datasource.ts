@@ -7,6 +7,7 @@ import { PaginationResponseDto } from "../dtos/shared/pagination.dto";
 export abstract class CourseDatasource {
 
     abstract findAllCourses( filter ?: CourseQueryFilter ) : Promise<CourseResponseDto[]>;
+    abstract findCoursesByIds( id_courses : string[] ) : Promise<CourseResponseDto[]>;
     abstract findCoursesPaginated( page : number , limit : number ) : Promise<PaginationResponseDto<CourseResponseDto[]>>;
     abstract findCourseById( id : string ) : Promise<CourseResponseDto | null>;
     abstract findCoursesByCategoryId ( category_id : string ) : Promise<CourseResponseDto[]>;

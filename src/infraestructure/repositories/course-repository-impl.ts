@@ -13,6 +13,28 @@ export class CourseRepositoryImpl implements CourseRepository{
         private readonly courseDatasource : CourseDatasource, 
     ){ }
     
+    async findAllCourses( filter ?: CourseQueryFilter ) : Promise<CourseEntity[]> {
+        try{
+            const courses = await this.courseDatasource.findAllCourses( filter );
+
+            return courses.map( course => CourseEntity.fromObject( course ) );
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
+    async findCoursesByIds( id_courses : string[] ) : Promise<CourseEntity[]> {
+        try{
+            const courses = await this.courseDatasource.findCoursesByIds( id_courses );
+
+            return courses.map( CourseEntity.fromObject );
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
     async findCoursesByCategory( category_id : string) : Promise<CourseEntity[]> {
         try{
             const courses = await this.courseDatasource.findCoursesByCategoryId( category_id );
@@ -24,16 +46,6 @@ export class CourseRepositoryImpl implements CourseRepository{
         }
     }
 
-    async findAllCourses( filter ?: CourseQueryFilter ) : Promise<CourseEntity[]> {
-        try{
-            const courses = await this.courseDatasource.findAllCourses( filter );
-
-            return courses.map( course => CourseEntity.fromObject( course ) );
-        }
-        catch( error ){
-            throw error;
-        }
-    }
 
     async findCoursesPaginated( page : number , limit : number ) : Promise<PaginationResponseDto<CourseEntity[]>> {
         try{

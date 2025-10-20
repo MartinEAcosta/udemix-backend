@@ -3,7 +3,7 @@ import { CourseRepository } from "../../repository/course-repository";
 import { CourseEntity } from "../../entities/course.entity";
 import { CustomError } from "../../errors/custom-error";
 import { UpdateCourseDto } from "../../dtos/course/update-course.dto";
-import { FileUploadRepository } from "../../repository/file-upload-repository";
+import { FileRepository } from "../../repository/file-repository";
 import { UploadFileDto } from "../../dtos/file-upload/file-upload.dto";
 import { CategoryRepository } from "../../repository/category-repository";
 
@@ -15,7 +15,7 @@ export class UpdateCourse implements UpdateCourseUseCase {
 
     constructor(
         private readonly courseRepository : CourseRepository,
-        private readonly fileRepository   : FileUploadRepository,
+        private readonly fileRepository   : FileRepository,
         private readonly categoryRepository : CategoryRepository, 
     ) {}
 

@@ -12,6 +12,15 @@ export class CourseDatasourceImpl implements CourseDatasource {
     async findAllCourses( filter ?: CourseQueryFilter ): Promise<CourseResponseDto[]> {
         const courses = await CourseModel.find( filter || {} );
         if( !courses ) return [];
+        
+        return courses.map( CourseMapper.fromCourseResponseDto );
+    }
+
+    async findCoursesByIds( id_courses : string[] ) : Promise<CourseResponseDto[]> {
+        const courses = await CourseModel.find( { _id : { $in : id_courses } } );
+        if( !courses ) return [];
+        
+        console.log(courses);
 
         return courses.map( CourseMapper.fromCourseResponseDto );
     }

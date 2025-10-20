@@ -4,7 +4,7 @@ import { CourseRepository } from '../../repository/course-repository';
 import { CustomError } from "../../errors/custom-error";
 import { LessonEntity } from "../../entities/lesson.entity";
 import { UploadFileDto } from "../../dtos/file-upload/file-upload.dto";
-import { FileUploadRepository } from "../../repository/file-upload-repository";
+import { FileRepository } from "../../repository/file-repository";
         // * MANEJOS DE LESSON_NUMBER , UNIT Y CHAPTER FALTA ¿COMO?
         // * MANEJOS DE LESSON_NUMBER , UNIT Y CHAPTER FALTA ¿COMO?
         // * MANEJOS DE LESSON_NUMBER , UNIT Y CHAPTER FALTA ¿COMO?
@@ -20,7 +20,7 @@ export class UpdateLesson implements UpdateLessonUseCase {
     constructor(
         private readonly courseRepository : CourseRepository,
         private readonly lessonRepository : LessonRepository,
-        private readonly fileRepository   : FileUploadRepository,
+        private readonly fileRepository   : FileRepository,
         
      ) { }
 

@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
 
-interface Options {
+interface OptionsServer {
     port: number,
     routes: Router,
     public_path?: string,
@@ -15,7 +15,7 @@ export class Server {
     private readonly routes : Router;
     private readonly publicPath : string;
 
-    constructor ( options : Options ) {
+    constructor ( options : OptionsServer ) {
         const { port , routes , public_path = 'public' } = options;
         this.port = port;
         this.routes = routes;

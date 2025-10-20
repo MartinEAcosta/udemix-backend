@@ -3,12 +3,12 @@ import { CustomError } from "../../domain/errors/custom-error";
 import { FileModel } from "../../data/mongo/models/file.model";
 import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 import { FileMapper } from '../mappers/file.mapper';
-import { FileUploadDatasource } from '../../domain/datasources/file-datasource';
+import { FileDatasource } from '../../domain/datasources/file-datasource';
 import { FileResponseDto, FileStorageAdapterResponseDto } from '../../domain/dtos/file-upload/file-upload.response.dto';
 import { TransactionSession } from "../../domain/services/UnitOfWork";
 
 
-export class FileUploadDatasourceImpl implements FileUploadDatasource {
+export class FileDatasourceImpl implements FileDatasource {
 
     constructor( private readonly fileStorage : FileStorage ) {}
 

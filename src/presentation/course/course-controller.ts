@@ -7,10 +7,11 @@ import { HandlerResponses } from '../helpers/handler-responses';
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { FindCoursesByCategory } from "../../domain/use-cases/course/find-courses-by-category";
 import { CategoryRepository } from "../../domain/repository/category-repository";
-import { FileUploadRepository } from "../../domain/repository/file-upload-repository";
+import { FileRepository } from "../../domain/repository/file-repository";
 import { CustomError } from "../../domain/errors/custom-error";
 import { FindCoursesPaginated } from "../../domain/use-cases/course/find-courses-paginated";
 import { CourseFilterRequest } from "../middlewares";
+import { FindCoursesByIds } from "../../domain/use-cases/course/find-courses-by-ids";
 
 
 export class CourseController {
@@ -18,7 +19,7 @@ export class CourseController {
     constructor (
         private readonly courseRepository : CourseRepository,
         private readonly categoryRepository : CategoryRepository,
-        private readonly fileRepository : FileUploadRepository,
+        private readonly fileRepository : FileRepository,
     ){ }
 
     public findAllCourses = ( req : CourseFilterRequest , res : Response ) => {
@@ -26,6 +27,17 @@ export class CourseController {
         new FindAllCourses( this.courseRepository )
             .execute( req?.courseQuery )
             .then( courses => HandlerResponses.handleSuccess( res , courses, 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ));
+    }
+
+    public findCoursesByIds = ( req : Request , res : Response ) => {
+
+        const { id_courses } = req.body;
+        if( !id_courses ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar el id de los cursos a buscar.'), res);
+
+        new FindCoursesByIds( this.courseRepository )
+            .execute( id_courses )
+            .then( courses => HandlerResponses.handleSuccess( res , courses , 200) )
             .catch( error => HandlerResponses.handleError( error , res ));
     }
 
