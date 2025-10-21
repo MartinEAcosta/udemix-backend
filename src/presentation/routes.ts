@@ -6,6 +6,7 @@ import { EnrollmentRouter } from "./enrollment/enrollment-routes";
 import { FileRouter } from "./file/file-upload-routes";
 import { LessonRouter } from "./lesson/lesson-routes";
 import { ModuleRouter } from "./module/module.routes";
+import { PaymentRouter } from "./payment/payment-routes";
 
 export class AppRoutes {
 
@@ -20,6 +21,7 @@ export class AppRoutes {
         router.use( '/api/file' , FileRouter.routes );
         router.use( '/api/lessons' , LessonRouter.routes );
         router.use( '/api/modules' , ModuleRouter.routes );
+        router.use( '/api/payments' , PaymentRouter.routes );
 
         return router;
     }

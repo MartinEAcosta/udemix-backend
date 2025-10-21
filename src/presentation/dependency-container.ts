@@ -8,12 +8,19 @@ import { FileController } from "./file/file-controller";
 import { LessonController } from "./lesson/lesson-controller";
 import { ModuleController } from "./module/module.controller";
 import { AuthMiddleware, CourseMiddleware, PaginationMiddleware , FileMiddleware } from "./middlewares";
-import { EmailValidator , Encrypter , FileStorage , TokenManager , UnitOfWork } from "../domain/services";
+import { EmailValidator , Encrypter , FileStorage , PaymentService, TokenManager , UnitOfWork } from "../domain/services";
 import { MongooseUnitOfWork } from "../data/mongoose-unit-of-work";
 import { BcryptAdapter , CloudinaryAdapter , EmailSenderAdapter , JwtAdapter } from "../config/adapters";
 import { AuthRepository, CategoryRepository, CourseRepository, EnrollmentRepository, FileRepository , LessonRepository, ModuleRepository } from "../domain/repository";
 import { AuthRepositoryImpl, CategoryRepositoryImpl, CourseRepositoryImpl, EnrollmentRepositoryImpl, FileRepositoryImpl, LessonRepositoryImpl, ModuleRepositoryImpl } from "../infraestructure/repositories";
 import { AuthDatasourceImpl, CategoryDataSourceImpl, CourseDatasourceImpl, EnrollmentDatasourceImpl, FileDatasourceImpl, LessonDatasourceImpl, ModuleDatasourceImpl } from "../infraestructure/datasources";
+import { PaymentRepository } from "../domain/repository/payment-repository";
+import { PaymentController } from "./payment/payment-controller";
+import { MercadoPagoAdapter } from "../config/adapters/mercadopago-adapter";
+import { Payment } from "mercadopago";
+import { PaymentRepositoryImpl } from '../infraestructure/repositories/payment-repository-impl';
+import { PaymentDataSource } from "../domain/datasources/payment-datasource";
+import { PaymentDataSourceImpl } from "../infraestructure/datasources/payment-datasource-impl";
 
 
 export class DependencyContainer {
@@ -35,6 +42,7 @@ export class DependencyContainer {
     readonly fileController       : FileController;
     readonly lessonController     : LessonController;
     readonly moduleController     : ModuleController;
+    readonly paymentController    : PaymentController;
 
     //* Repositorios
     readonly authRepository       : AuthRepository;
@@ -44,6 +52,7 @@ export class DependencyContainer {
     readonly fileRepository       : FileRepository;
     readonly lessonRepository     : LessonRepository;
     readonly moduleRepository     : ModuleRepository;
+    readonly paymentRepository    : PaymentRepository
 
     //* Services 
     readonly emailValidator : EmailValidator;
@@ -51,6 +60,7 @@ export class DependencyContainer {
     readonly fileStorage : FileStorage;
     readonly tokenManager : TokenManager;
     readonly unitOfWork : UnitOfWork;
+    readonly paymentService : PaymentService;
     
 
     private constructor( ) {
@@ -64,6 +74,9 @@ export class DependencyContainer {
         this.fileStorage = new CloudinaryAdapter();
         this.tokenManager = new JwtAdapter();
         this.unitOfWork = new MongooseUnitOfWork();
+        this.paymentService = new MercadoPagoAdapter(
+                                                        envs.MERCADOPAGO_ACCESS_TOKEN
+        );
 
         this.authRepository       = new AuthRepositoryImpl( new AuthDatasourceImpl() );
         this.categoryRepository   = new CategoryRepositoryImpl( new CategoryDataSourceImpl() );
@@ -72,6 +85,7 @@ export class DependencyContainer {
         this.fileRepository       = new FileRepositoryImpl( new FileDatasourceImpl( this.fileStorage ) );
         this.lessonRepository     = new LessonRepositoryImpl( new LessonDatasourceImpl() );
         this.moduleRepository     = new ModuleRepositoryImpl( new ModuleDatasourceImpl() );
+        this.paymentRepository    = new PaymentRepositoryImpl( new PaymentDataSourceImpl( this.paymentService ) );
         
         this.authMiddleware = new AuthMiddleware( this.tokenManager , this.authRepository);
         this.courseMiddleware = new CourseMiddleware( );
@@ -87,6 +101,7 @@ export class DependencyContainer {
         this.fileController       = new FileController( this.fileRepository , this.courseRepository );
         this.lessonController     = new LessonController( this.lessonRepository , this.moduleRepository , this.courseRepository , this.fileRepository, this.unitOfWork );
         this.moduleController     = new ModuleController( this.moduleRepository , this.courseRepository );
+        this.paymentController    = new PaymentController( this.paymentRepository , this.courseRepository, this.authRepository );
     }
 
     public static getInstance() : DependencyContainer {
