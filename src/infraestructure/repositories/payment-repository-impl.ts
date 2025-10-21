@@ -1,4 +1,5 @@
 import { PaymentDataSource } from "../../domain/datasources/payment-datasource";
+import { PaymentMethodsResponse } from "../../domain/dtos/payment/payment.response";
 import { PaymentRepository } from "../../domain/repository/payment-repository";
 
 export class PaymentRepositoryImpl implements PaymentRepository {
@@ -11,7 +12,7 @@ export class PaymentRepositoryImpl implements PaymentRepository {
         throw new Error("Method not implemented.");
     }
 
-    async findPaymentsMethods(): Promise<any> {
+    async findPaymentsMethods(): Promise<PaymentMethodsResponse[]> {
 
         const paymentsMethods = await this.paymentDatasource.findPaymentsMethods();
 

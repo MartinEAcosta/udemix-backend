@@ -21,7 +21,7 @@ export class MercadoPagoAdapter implements PaymentService{
 
     async findPaymentsMethods(): Promise<any> {
         const paymentsMethods = await this.payment.get();
-        console.log(paymentsMethods);
+        // console.log(paymentsMethods);
         return paymentsMethods;
     }
 
