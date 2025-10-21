@@ -1,4 +1,3 @@
-
 interface CourseEntityOptions {
     id : string;
     title : string ;

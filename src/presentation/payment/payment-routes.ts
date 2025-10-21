@@ -7,8 +7,14 @@ export class PaymentRouter {
 
         const router = Router();
 
-        const { paymentController } = DependencyContainer.getInstance();
+        const { paymentController , authMiddleware} = DependencyContainer.getInstance();
         
+        router.post(
+            '/',
+            [ authMiddleware.validateJWT ],
+            paymentController.createPayment,
+        );
+
         router.get(
             '/methods',
             paymentController.findPaymentsMethods,

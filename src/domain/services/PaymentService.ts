@@ -2,7 +2,7 @@
 
 export abstract class PaymentService {
 
-    abstract createPayment() : Promise<any>;
+    abstract createPayment( paymentRequestDto : any ) : Promise<any>;
     abstract findPaymentsMethods() : Promise<any>;
     
 }
