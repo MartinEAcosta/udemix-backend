@@ -1,5 +1,6 @@
 import { CardToken, MercadoPagoConfig, PaymentMethod, Payment } from 'mercadopago';
 import { PaymentService } from '../../domain/services';
+import { PaymentRequestAdapter } from '../../domain/dtos/payment/payment.response';
 
 export class MercadoPagoAdapter implements PaymentService{
 
@@ -17,8 +18,8 @@ export class MercadoPagoAdapter implements PaymentService{
         this.cardToken = new CardToken( this.client );
     }
 
-    async createPayment( paymentRequestDto : any ): Promise<any> {
-        const createdPayment = await this.payment.create({...paymentRequestDto})
+    async createPayment( paymentRequestAdapter : PaymentRequestAdapter ): Promise<any> {
+        const createdPayment = await this.payment.create({ body: { ...paymentRequestAdapter } });
         console.log(createdPayment);
         return createdPayment;
     }

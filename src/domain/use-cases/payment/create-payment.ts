@@ -1,10 +1,11 @@
 import { PaymentCreateDto } from "../../dtos/payment/payment-create.dto";
+import { UserEntity } from "../../entities/user.entity";
 import { CustomError } from "../../errors/custom-error";
 import { AuthRepository, CourseRepository } from "../../repository";
 import { PaymentRepository } from "../../repository/payment-repository";
 
 interface CreatePaymentUseCase {
-    execute( paymentRequestDto : PaymentCreateDto ) : Promise<any>;
+    execute( paymentRequestDto : PaymentCreateDto, user : UserEntity ) : Promise<any>;
 }
 
 export class CreatePayment implements CreatePaymentUseCase {
@@ -15,7 +16,7 @@ export class CreatePayment implements CreatePaymentUseCase {
         private readonly authRepository    : AuthRepository,
     ) { }
 
-    async execute( paymentRequestDto : PaymentCreateDto ) : Promise<any> {
+    async execute( paymentRequestDto : PaymentCreateDto, user : UserEntity ) : Promise<any> {
 
         const courses = await this.courseRepository.findCoursesByIds( paymentRequestDto.items );
         if( courses.length !== paymentRequestDto.items.length ) throw CustomError.badRequest('No puedes crear un pago con cursos inexistentes.');
@@ -24,16 +25,21 @@ export class CreatePayment implements CreatePaymentUseCase {
         for( let course of courses){
             totalAmount += course.price;
         }
-
-        const userPayer = await this.authRepository.findUserById( paymentRequestDto.user_id );
+        console.log(totalAmount)
+        console.log(paymentRequestDto)
+        const userPayer = await this.authRepository.findUserById( user.id );
         if( !userPayer ) throw CustomError.badRequest('No puedes generar un pago sin un usuario vinculado.');
-
+        const { items , ...rest } =paymentRequestDto;
         const paymentResponse = await this.paymentRepository.createPayment(
             {
+                ...rest,
                 transaction_amount : totalAmount,
-                ...paymentRequestDto,
+                payer: {
+                    email : user.email,
+                }
             }
         );
+        return paymentResponse;
     }
 
 }

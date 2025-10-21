@@ -26,3 +26,12 @@ export interface PaymentMethodsResponse {
     financial_institutions: {},
     processing_modes: string,
 }
+
+export interface PaymentRequestAdapter{
+        transaction_amount: number,
+		description: string,
+		payment_method_id: string,
+		payer: {
+			email: string,
+		}
+};

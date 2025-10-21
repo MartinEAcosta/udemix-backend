@@ -28,7 +28,7 @@ export class PaymentController {
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest(error) , res );
 
         new CreatePayment( this.paymentRepository, this.courseRepository , this.authRepository )
-            .execute( paymentRequestDto! )
+            .execute( paymentRequestDto! , user  )
             .then( paymentResponse => HandlerResponses.handleSuccess( res , paymentResponse , 201 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
