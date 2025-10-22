@@ -12,7 +12,7 @@ export interface IModulePopulatedModel {
     _id     : Types.ObjectId; 
     title   : string;
     unit    : number;
-    lessons : {
+    id_lessons : {
         _id : Types.ObjectId[];
         title : string,
     }[],

@@ -13,7 +13,7 @@ export class ModuleEntity {
     public id        : string;
     public title     : string;    
     public unit      : number;
-    public lesssons  : string[];
+    public lessons  : string[];
     public id_course : string;
 
     private constructor( options : ModuleOptions ) {
@@ -21,7 +21,7 @@ export class ModuleEntity {
         this.id = id;
         this.title = title;
         this.unit = unit;
-        this.lesssons = lessons;
+        this.lessons = lessons;
         this.id_course = id_course;
     }
 

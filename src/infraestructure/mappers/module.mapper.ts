@@ -18,7 +18,7 @@ export class ModuleMapper {
             id: moduleDoc._id!.toString(),
             title: moduleDoc.title,
             unit: moduleDoc.unit,
-            lessons: moduleDoc.lessons?.map( lesson => ({
+            lessons: moduleDoc.id_lessons?.map( lesson => ({
                 id: lesson._id!.toString(),
                 title: lesson.title,
             }) ) || [],
