@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { CustomError } from "../../domain/errors/custom-error";
 import { ModuleRepository } from "../../domain/repository/module-repository";
 import { HandlerResponses } from "../helpers/handler-responses";
@@ -11,6 +11,7 @@ import { FindModuleById } from "../../domain/use-cases/module/find-module-by-id"
 import { FindAllModules } from "../../domain/use-cases/module/find-all-modules";
 import { UpdateModuleDto } from "../../domain/dtos/module/update-module.dto";
 import { UpdateModule } from "../../domain/use-cases/module/update-module";
+import { FindModulesByCourseId } from "../../domain/use-cases/module/find-module-by-course-id";
 
 
 export class ModuleController {
@@ -99,4 +100,15 @@ export class ModuleController {
             .catch( error => HandlerResponses.handleError(error,res) ); 
     }
 
+    public findModulesByCourseId = ( req : Request , res : Response ) => {
+        
+        const { id_course } = req.params;
+        if( !id_course ) throw CustomError.badRequest('El id del curso no puede estar vació.');
+
+        new FindModulesByCourseId( this.moduleRepository  , this.courseRepository )
+            .execute( id_course )
+            .then( moduleResponse => HandlerResponses.handleSuccess( res , moduleResponse , 200 ) )
+            .catch( error => HandlerResponses.handleError(error,res) ); 
+
+    }
 }

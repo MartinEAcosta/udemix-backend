@@ -13,12 +13,17 @@ export class ModuleRouter {
             '/',
             [ authMiddleware.validateJWT , authMiddleware.validatePermissions(['admin']) ],
             moduleController.findAllModules
-        )
+        );
 
         router.get(
             '/:id',
             [ authMiddleware.validateJWT ],
             moduleController.findModuleById
+        );
+
+        router.get(
+            '/course/:id_course',
+            moduleController.findModulesByCourseId
         );
 
         router.post(

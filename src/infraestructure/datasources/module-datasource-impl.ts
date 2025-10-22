@@ -29,12 +29,9 @@ export class ModuleDatasourceImpl implements ModuleDatasource{
     async addLessonToModule( id_lesson: string , module : ModuleEntity , ts ?: TransactionSession ) : Promise<boolean> {
         
         const session = ts?.getSession();
-        const lessons = module.lesssons;
 
-        lessons.push( id_lesson );
         // $addToSet se encarga de persistir los valores actuales y agregar uno al final.
-        const moduleUpdated = await ModuleModel.findOneAndUpdate({ _id: module.id }, {$addToSet: {id_lessons : lessons}} , {new : true, session}  );
-
+        const moduleUpdated = await ModuleModel.findOneAndUpdate({ _id: module.id }, {$addToSet: { id_lessons : id_lesson }} , {new : true, session}  );
         return moduleUpdated ? true : false;
     }
 

@@ -17,7 +17,7 @@ export class MongooseUnitOfWork implements UnitOfWork {
                 abort  : async () => await session.abortTransaction(),
                 getSession : () => session
             });
-
+            await session.commitTransaction(); 
             await session.endSession();
             return result;
         }
