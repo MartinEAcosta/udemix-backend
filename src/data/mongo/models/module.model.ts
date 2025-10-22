@@ -8,6 +8,17 @@ export interface IModuleModel {
     id_course : Types.ObjectId;
 }
 
+export interface IModulePopulatedModel {
+    _id     : Types.ObjectId; 
+    title   : string;
+    unit    : number;
+    lessons : {
+        _id : Types.ObjectId[];
+        title : string,
+    }[],
+    id_course : Types.ObjectId;
+}
+
 export const moduleSchema = new mongoose.Schema({
     
     title: {

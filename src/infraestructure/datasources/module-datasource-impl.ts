@@ -1,7 +1,7 @@
-import { ModuleModel } from '../../data/mongo/models/module.model';
+import { IModulePopulatedModel, ModuleModel } from '../../data/mongo/models/module.model';
 import { ModuleDatasource } from '../../domain/datasources/module-datasource';
 import { CreateModuleDto } from '../../domain/dtos/module/create-module.dto';
-import { ModuleResponseDto } from '../../domain/dtos/module/module.response.dto';
+import { ModuleResponseDto, ModuleResponsePopulatedDto } from '../../domain/dtos/module/module.response.dto';
 import { UpdateModuleDto } from '../../domain/dtos/module/update-module.dto';
 import { ModuleEntity } from '../../domain/entities/module.entity';
 import { TransactionSession } from '../../domain/services/UnitOfWork';
@@ -48,6 +48,17 @@ export class ModuleDatasourceImpl implements ModuleDatasource{
 
         return modules.map( ModuleMapper.fromModuleResponseDto );
     }
+
+    async findModulesByCourseIdPopulated ( id_course : string ) : Promise<ModuleResponsePopulatedDto[]> {
+        const modules = await ModuleModel.find({ id_course : id_course })
+                                            .sort({ unit : 'asc'})
+                                            .populate<IModulePopulatedModel>('id_lessons');
+        console.log(modules)
+        if( !modules ) return [];
+
+        return modules.map( ModuleMapper.fromModuleResponsePopulatedDto );
+    }
+    
     
     async findModuleById ( id : string ) : Promise<ModuleResponseDto | null> {
         const module = await ModuleModel.findOne({ _id: id });

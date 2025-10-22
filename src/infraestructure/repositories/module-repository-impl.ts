@@ -4,6 +4,7 @@ import { ModuleEntity } from '../../domain/entities/module.entity';
 import { ModuleRepository } from '../../domain/repository/module-repository';
 import { UpdateModuleDto } from '../../domain/dtos/module/update-module.dto';
 import { TransactionSession } from '../../domain/services/UnitOfWork';
+import { ModuleResponsePopulatedDto } from '../../domain/dtos/module/module.response.dto';
 
 export class ModuleRepositoryImpl implements ModuleRepository{
 
@@ -71,6 +72,17 @@ export class ModuleRepositoryImpl implements ModuleRepository{
             const modules = await this.moduleDatasource.findModulesByCourseId( id_course );
     
             return modules.map( ModuleEntity.fromObject );
+        }
+        catch(error){
+            throw error;
+        }
+    }
+
+        async findModulesByCourseIdPopulated( id_course : string ) : Promise<ModuleResponsePopulatedDto[]> {
+        try{
+            const modules = await this.moduleDatasource.findModulesByCourseIdPopulated( id_course );
+    
+            return modules;
         }
         catch(error){
             throw error;

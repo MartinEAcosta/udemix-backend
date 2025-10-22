@@ -25,6 +25,11 @@ export class ModuleRouter {
             '/course/:id_course',
             moduleController.findModulesByCourseId
         );
+        
+        router.get(
+            '/course/detailed/:id_course',
+            moduleController.findModulesByCourseIdPopulated
+        );
 
         router.post(
             '/new',
