@@ -28,10 +28,10 @@ export interface PaymentMethodsResponse {
 }
 
 export interface PaymentRequestAdapter{
-        transaction_amount: number,
-		description: string,
-		payment_method_id: string,
-		payer: {
-			email: string,
-		}
+    transaction_amount: number,
+    description: string,
+    payment_method_id: string,
+    payer: {
+        email: string,
+    }
 };
