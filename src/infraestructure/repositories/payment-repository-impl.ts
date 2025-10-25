@@ -1,5 +1,5 @@
 import { PaymentDataSource } from "../../domain/datasources/payment-datasource";
-import { PaymentMethodsResponse } from "../../domain/dtos/payment/payment.response";
+import { IdentificationTypesResponse, PaymentMethodsResponse } from "../../domain/dtos/payment/payment.response";
 import { PaymentRepository } from "../../domain/repository/payment-repository";
 import { PaymentCreateDto } from '../../domain/dtos/payment/payment-create.dto';
 
@@ -21,6 +21,11 @@ export class PaymentRepositoryImpl implements PaymentRepository {
         const paymentsMethods = await this.paymentDatasource.findPaymentsMethods();
 
         return paymentsMethods;
+    }
+
+    async findIdentificationTypes(): Promise<IdentificationTypesResponse[]> {
+        const identificationTypes  = await this.paymentDatasource.findIdentificationTypes();
+        return identificationTypes;
     }
 
 }

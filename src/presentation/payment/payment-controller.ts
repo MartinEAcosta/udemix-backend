@@ -9,6 +9,7 @@ import { AuthRepository } from '../../domain/repository/auth-repository';
 import { FindPaymentsMethods } from "../../domain/use-cases/payment/find-payments-methods";
 import { AuthenticatedRequest } from "../middlewares";
 import { PaymentCreateDto } from "../../domain/dtos/payment/payment-create.dto";
+import { FindIdentificationTypes } from "../../domain/use-cases/payment/find-identification-types";
 
 
 export class PaymentController {
@@ -37,7 +38,15 @@ export class PaymentController {
 
         new FindPaymentsMethods( this.paymentRepository )
             .execute(  )
-            .then( paymentResponse => HandlerResponses.handleSuccess( res , paymentResponse , 201 ))
+            .then( paymentResponse => HandlerResponses.handleSuccess( res , paymentResponse , 200 ))
+            .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+    }
+
+    public findIdentificationTypes = ( req : Request , res : Response ) => {
+        
+        new FindIdentificationTypes( this.paymentRepository )
+            .execute()
+            .then( paymentResponse => HandlerResponses.handleSuccess( res , paymentResponse , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
 

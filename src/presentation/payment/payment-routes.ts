@@ -20,6 +20,11 @@ export class PaymentRouter {
             paymentController.findPaymentsMethods,
         );
 
+        router.get(
+            '/identificationTypes',
+            paymentController.findIdentificationTypes
+        );
+
 
         return router;
     }
