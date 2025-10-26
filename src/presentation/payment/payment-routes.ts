@@ -21,7 +21,7 @@ export class PaymentRouter {
         );
 
         router.get(
-            '/identificationTypes',
+            '/identification-types',
             paymentController.findIdentificationTypes
         );
 
