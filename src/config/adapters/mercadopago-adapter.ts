@@ -1,9 +1,10 @@
-import { CardToken, PaymentMethod, Payment, IdentificationType } from 'mercadopago';
+import MercadoPago from 'mercadopago';
+import { CardToken, PaymentMethod, Payment, IdentificationType, CustomerCard } from 'mercadopago';
+import { IdentificationTypeResponse } from 'mercadopago/dist/clients/identificationType/list/types';
+
 import { PaymentService } from '../../domain/services';
 import { PaymentRequestAdapter } from '../../domain/dtos/payment/payment.response';
 import { PaymentMethodResponse } from 'mercadopago/dist/clients/order/commonTypes';
-import { IdentificationTypeResponse } from 'mercadopago/dist/clients/identificationType/list/types';
-import MercadoPago from 'mercadopago';
 
 export class MercadoPagoAdapter implements PaymentService{
 
@@ -12,6 +13,7 @@ export class MercadoPagoAdapter implements PaymentService{
     private readonly paymentMethods : PaymentMethod;
     private readonly cardToken : CardToken;
     private readonly identificationType : IdentificationType;
+    private readonly customerCardIssuer : CustomerCard;
 
     constructor( accessToken : string ) {
         this.client = new MercadoPago( {
@@ -21,11 +23,14 @@ export class MercadoPagoAdapter implements PaymentService{
         this.paymentMethods = new PaymentMethod( this.client );
         this.cardToken = new CardToken( this.client );
         this.identificationType = new IdentificationType( this.client );
+        this.customerCardIssuer = new CustomerCard( this.client );
     }
 
     async createPayment( paymentRequestAdapter : PaymentRequestAdapter ): Promise<any> {
-        const createdPayment = await this.payment.create({ body: { ...paymentRequestAdapter } });
-        console.log(createdPayment);
+        const createdPayment = await this.payment.create({ body: { 
+                                                                    ...paymentRequestAdapter,
+                                                                    installments: 1,
+                                                                } });
         return createdPayment;
     }
 

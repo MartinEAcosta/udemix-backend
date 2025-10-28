@@ -25,6 +25,10 @@ export class PaymentRouter {
             paymentController.findIdentificationTypes
         );
 
+        router.post(
+            '/total',
+            paymentController.calculateTotal
+        );
 
         return router;
     }

@@ -1,3 +1,9 @@
+import { CourseEntity } from "../../entities/course.entity";
+export interface CartItem {
+    course : CourseEntity,
+    quantity : number,
+}
+
 export interface PaymentMethodsResponse {
     id: string,
     name: string,
@@ -28,6 +34,8 @@ export interface PaymentMethodsResponse {
 }
 
 export interface PaymentRequestAdapter{
+    token: string,
+    installments: number,
     transaction_amount: number,
     description: string,
     payment_method_id: string,

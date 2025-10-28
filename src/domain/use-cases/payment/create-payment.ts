@@ -17,7 +17,7 @@ export class CreatePayment implements CreatePaymentUseCase {
     ) { }
 
     async execute( paymentRequestDto : PaymentCreateDto, user : UserEntity ) : Promise<any> {
-
+        console.log('b')
         const courses = await this.courseRepository.findCoursesByIds( paymentRequestDto.items );
         if( courses.length !== paymentRequestDto.items.length ) throw CustomError.badRequest('No puedes crear un pago con cursos inexistentes.');
 
@@ -36,7 +36,8 @@ export class CreatePayment implements CreatePaymentUseCase {
                 transaction_amount : totalAmount,
                 payer: {
                     email : user.email,
-                }
+                },
+                installments : 1,
             }
         );
         return paymentResponse;
