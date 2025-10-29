@@ -1,5 +1,5 @@
 import { PaymentDataSource } from "../../domain/datasources/payment-datasource";
-import { IdentificationTypesResponse, PaymentMethodsResponse } from "../../domain/dtos/payment/payment.response";
+import { IdentificationTypesResponse, PaymentMethodsResponse, PaymentRequestAdapter } from "../../domain/dtos/payment/payment.response";
 import { PaymentRepository } from "../../domain/repository/payment-repository";
 import { PaymentCreateDto } from '../../domain/dtos/payment/payment-create.dto';
 
@@ -9,7 +9,7 @@ export class PaymentRepositoryImpl implements PaymentRepository {
         private readonly paymentDatasource : PaymentDataSource,
     ){ }
 
-    async createPayment( paymentRequestDto : any ) : Promise<any> {
+    async createPayment( paymentRequestDto : PaymentRequestAdapter ) : Promise<any> {
         
         const paymentResponse = await this.paymentDatasource.createPayment( paymentRequestDto );
 

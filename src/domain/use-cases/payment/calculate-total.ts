@@ -1,9 +1,9 @@
-import { CartItem } from "../../dtos/payment/payment.response";
+import { ItemQuantity } from "../../dtos/payment/payment.response";
 import { CustomError } from "../../errors/custom-error";
 import { CourseRepository } from "../../repository";
 
 interface CalculateTotalUseCase {
-    execute( items : CartItem[] , code ?: string ) : Promise<any>;
+    execute( items : ItemQuantity[] , code ?: string ) : Promise<any>;
 }
 
 export class CalculateTotal implements CalculateTotalUseCase {
@@ -13,11 +13,11 @@ export class CalculateTotal implements CalculateTotalUseCase {
     ) { }
 
 
-    async execute( items : CartItem[] , code ?: string ) : Promise<any> {
+    async execute( items : ItemQuantity[] , code ?: string ) : Promise<any> {
 
         let total = 0;
         for( let item of items ){
-            const course = await this.courseRepository.findCourseById( item.course.id );
+            const course = await this.courseRepository.findCourseById( item.id_course );
             if( !course ) throw CustomError.notFound('No se puede calcular el total del carrito, debido a que no se encontro uno de los articulos.');
             total += +course.price * item.quantity;
         }

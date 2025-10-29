@@ -1,6 +1,5 @@
-import { CourseEntity } from "../../entities/course.entity";
-export interface CartItem {
-    course : CourseEntity,
+export interface ItemQuantity {
+    id_course : string,
     quantity : number,
 }
 

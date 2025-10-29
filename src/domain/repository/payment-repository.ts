@@ -3,7 +3,7 @@ import { IdentificationTypesResponse, PaymentMethodsResponse, PaymentRequestAdap
 
 export abstract class PaymentRepository {
 
-    abstract createPayment( paymentRequest : PaymentRequestAdapter ) : Promise<any>;
+    abstract createPayment( paymentRequest : any ) : Promise<any>;
     abstract findPaymentsMethods( ) : Promise<PaymentMethodsResponse[]>;
     abstract findIdentificationTypes( ) : Promise<IdentificationTypesResponse[]>;
     

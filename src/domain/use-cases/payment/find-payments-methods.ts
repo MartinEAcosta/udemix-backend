@@ -15,9 +15,9 @@ export class FindPaymentsMethods implements FindPaymentsMethodsUseCase {
 
     async execute() : Promise<PaymentMethodsResponse[]> {
         const paymentMethods = await this.paymentRepository.findPaymentsMethods();
-        console.log(paymentMethods)
-        if( !paymentMethods ) throw CustomError.internalServer('Hubo un error al recopilar los metodos de pago.');
 
+        if( !paymentMethods ) throw CustomError.internalServer('Hubo un error al recopilar los metodos de pago.');
+        
         return paymentMethods;
     }
 

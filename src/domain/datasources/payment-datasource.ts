@@ -1,4 +1,4 @@
-import { IdentificationTypesResponse, PaymentMethodsResponse } from "../dtos/payment/payment.response";
+import { IdentificationTypesResponse, PaymentMethodsResponse, PaymentRequestAdapter } from "../dtos/payment/payment.response";
 
 export abstract class PaymentDataSource {
 

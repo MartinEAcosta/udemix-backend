@@ -24,10 +24,10 @@ export class PaymentController {
     public createPayment = ( req : AuthenticatedRequest , res : Response ) => {
         const { user } = req;
         if( !user ) throw HandlerResponses.handleError(CustomError.unauthorized('No hay usuario en la petición.') , res );
-        console.log(req.body)
+
         const [ error , paymentRequestDto ] = PaymentCreateDto.create( req.body );
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest(error) , res );
-        console.log('a')
+
         new CreatePayment( this.paymentRepository, this.courseRepository , this.authRepository )
             .execute( paymentRequestDto! , user  )
             .then( paymentResponse => HandlerResponses.handleSuccess( res , paymentResponse , 201 ))
