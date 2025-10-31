@@ -21,6 +21,10 @@ export class PaymentController {
         private readonly authRepository    : AuthRepository,
     ){ }
 
+    public webhookHandler = ( req : Request , res : Response ) => {
+        return HandlerResponses.handleSuccess( res , 'Se recibio la notificación correctamente', 200);
+    }
+
     public createPayment = ( req : AuthenticatedRequest , res : Response ) => {
         const { user } = req;
         if( !user ) throw HandlerResponses.handleError(CustomError.unauthorized('No hay usuario en la petición.') , res );

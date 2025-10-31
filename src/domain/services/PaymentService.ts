@@ -1,5 +1,3 @@
-import { IdentificationTypesResponse } from "../dtos/payment/payment.response";
-
 
 export abstract class PaymentService {
 

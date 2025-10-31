@@ -7,13 +7,19 @@ export class PaymentRouter {
 
         const router = Router();
 
-        const { paymentController , authMiddleware} = DependencyContainer.getInstance();
+        const { paymentController , authMiddleware , paymentMiddleware } = DependencyContainer.getInstance();
         
         router.post(
             '/',
             [ authMiddleware.validateJWT ],
             paymentController.createPayment,
         );
+
+        router.post(
+            '/notifications',
+            [ paymentMiddleware.validateMercadoPagoNotification ],
+            paymentController.webhookHandler
+        )
 
         router.get(
             '/methods',

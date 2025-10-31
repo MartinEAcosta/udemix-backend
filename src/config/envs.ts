@@ -12,6 +12,8 @@ export const envs = {
     CLODUINARY_API_SECRET: get('CLOUDINARY_API_SECRET').required().asString(),
 
     MERCADOPAGO_ACCESS_TOKEN: get('MERCADOPAGO_ACCESS_TOKEN').required().asString(),
+    MERCADOPAGO_WEBHOOK_SECRET_KEY: get('MERCADOPAGO_WEBHOOK_SECRET_KEY').required().asString(),
+
 
     MAILER_SERVICE: get('MAILER_SERVICE').required().asString(),
     MAILER_EMAIL: get('MAILER_EMAIL').required().asString(),

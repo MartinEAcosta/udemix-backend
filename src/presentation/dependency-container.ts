@@ -7,7 +7,7 @@ import { EnrollmentController } from "./enrollment/enrollment-controller";
 import { FileController } from "./file/file-controller";
 import { LessonController } from "./lesson/lesson-controller";
 import { ModuleController } from "./module/module.controller";
-import { AuthMiddleware, CourseMiddleware, PaginationMiddleware , FileMiddleware } from "./middlewares";
+import { AuthMiddleware, CourseMiddleware, PaginationMiddleware , FileMiddleware, PaymentMiddleware } from "./middlewares";
 import { EmailValidator , Encrypter , FileStorage , PaymentService, TokenManager , UnitOfWork } from "../domain/services";
 import { MongooseUnitOfWork } from "../data/mongoose-unit-of-work";
 import { BcryptAdapter , CloudinaryAdapter , EmailSenderAdapter , JwtAdapter } from "../config/adapters";
@@ -31,6 +31,7 @@ export class DependencyContainer {
     readonly authMiddleware : AuthMiddleware;
     readonly courseMiddleware : CourseMiddleware;
     readonly fileMiddleware   : FileMiddleware;
+    readonly paymentMiddleware : PaymentMiddleware;
     readonly paginationMiddleware : PaginationMiddleware;
 
     //* Controladores
@@ -90,6 +91,7 @@ export class DependencyContainer {
         this.authMiddleware = new AuthMiddleware( this.tokenManager , this.authRepository);
         this.courseMiddleware = new CourseMiddleware( );
         this.fileMiddleware   = new FileMiddleware();
+        this.paymentMiddleware = new PaymentMiddleware();
         this.paginationMiddleware = new PaginationMiddleware();
         
 
