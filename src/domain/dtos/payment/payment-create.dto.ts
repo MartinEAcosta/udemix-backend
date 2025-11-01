@@ -24,6 +24,7 @@ export class PaymentCreateDto {
         const { items , token , payment_method_id, issuer_id , email, installments = 1, identificationType, identificationNumber , code = undefined } = props;
 
         if( !token ) return ['El token es obligatorio', undefined];
+        if (!email) return ['El email del pagador es requerido.', undefined];
         if( !payment_method_id ) return ['El método de pago es requerido.' , undefined ];
         if( !identificationType ) return ['El tipo de identificación es requerido.' , undefined ];
         if( !identificationNumber ) return ['El número de identificación es requerido.' , undefined ];

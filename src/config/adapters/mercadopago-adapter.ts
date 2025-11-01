@@ -27,11 +27,14 @@ export class MercadoPagoAdapter implements PaymentService{
     }
 
     async createPayment( paymentRequestAdapter : PaymentRequestAdapter ): Promise<any> {
+        console.log(
+            paymentRequestAdapter
+        )
         const createdPayment = await this.payment.create({ body: { 
                                                                     ...paymentRequestAdapter,
                                                                     notification_url: 'https://prerailroad-tamia-voluptuous.ngrok-free.dev/api/payments/notifications?source_news=webhooks',
                                                                     installments: 1,
-                                                                } });
+                                                                } }).catch( (error) => console.log(error));
         return createdPayment;
     }
 
