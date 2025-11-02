@@ -1,4 +1,5 @@
 import { PaymentCreateDto } from "../../dtos/payment/payment-create.dto";
+import { PaymentEntity } from "../../entities/payment.entity";
 import { UserEntity } from "../../entities/user.entity";
 import { CustomError } from "../../errors/custom-error";
 import { AuthRepository, CourseRepository } from "../../repository";
@@ -25,13 +26,14 @@ export class CreatePayment implements CreatePaymentUseCase {
 
         const userLogged = await this.authRepository.findUserById( user.id );
         if( !userLogged ) throw CustomError.badRequest('No puedes generar un pago sin un usuario vinculado.');
-        const paymentResponse : PaymentCreateDto = await this.paymentRepository.createPayment(
+        const paymentResponse : PaymentEntity | null = await this.paymentRepository.createPayment(
             {
                 ...paymentRequestDto,
                 transaction_amount : total,
             },
             userLogged,
         );
+        if( !paymentResponse ) throw CustomError.internalServer('Ocurrió un error inesperado y no se pudo iniciar el pago.');
         return paymentResponse;
     }
 

@@ -3,6 +3,7 @@ import { IdentificationTypesResponse, PaymentMethodsResponse } from "../../domai
 import { PaymentRepository } from "../../domain/repository/payment-repository";
 import { PaymentCreateDto } from '../../domain/dtos/payment/payment-create.dto';
 import { UserEntity } from "../../domain/entities/user.entity";
+import { PaymentEntity } from "../../domain/entities/payment.entity";
 
 export class PaymentRepositoryImpl implements PaymentRepository {
 
@@ -10,23 +11,36 @@ export class PaymentRepositoryImpl implements PaymentRepository {
         private readonly paymentDatasource : PaymentDataSource,
     ){ }
 
-    async createPayment( paymentRequestDto : PaymentCreateDto , user : UserEntity ) : Promise<any> {
-        
-        const paymentResponse = await this.paymentDatasource.createPayment( paymentRequestDto , user );
+    async createPayment( paymentRequestDto : PaymentCreateDto , user : UserEntity ) : Promise<PaymentEntity | null> {
+        try{
+            const paymentResponse = await this.paymentDatasource.createPayment( paymentRequestDto , user );
+            if ( !paymentResponse ) return null;
 
-        return paymentResponse;
+            return paymentResponse;
+        }
+        catch( error ) {
+            throw error;
+        }
     }
 
     async findPaymentsMethods() : Promise<PaymentMethodsResponse[]> {
-
-        const paymentsMethods = await this.paymentDatasource.findPaymentsMethods();
-
-        return paymentsMethods;
+        try{
+            const paymentsMethods = await this.paymentDatasource.findPaymentsMethods();
+            return paymentsMethods;
+        }
+        catch( error ) {
+            throw error;
+        }
     }
 
-    async findIdentificationTypes(): Promise<IdentificationTypesResponse[]> {
-        const identificationTypes  = await this.paymentDatasource.findIdentificationTypes();
-        return identificationTypes;
+    async findIdentificationTypes(): Promise<IdentificationTypesResponse[]>  {
+        try{
+            const identificationTypes  = await this.paymentDatasource.findIdentificationTypes();
+            return identificationTypes;
+        }
+        catch( error ) {
+            throw error;
+        }
     }
 
 }
