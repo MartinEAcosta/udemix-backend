@@ -11,6 +11,8 @@ import { AuthenticatedRequest } from "../middlewares";
 import { PaymentCreateDto } from "../../domain/dtos/payment/payment-create.dto";
 import { FindIdentificationTypes } from "../../domain/use-cases/payment/find-identification-types";
 import { CalculateTotal } from "../../domain/use-cases/payment/calculate-total";
+import { WebhookPayload } from "../../domain/dtos/payment/payment.response";
+import { CheckStatusById } from "../../domain/use-cases/payment/check-status-by-id";
 
 
 export class PaymentController {
@@ -22,6 +24,21 @@ export class PaymentController {
     ){ }
 
     public webhookHandler = ( req : Request , res : Response ) => {
+
+        const { action , data } : WebhookPayload = req.body;
+
+        if( action.includes('payment') ) {
+            // new CheckStatusById( this.paymentRepository )
+            //     .execute( action , data.id )
+            //     .then( paymentResponse => HandlerResponses.handleSuccess( res , paymentResponse , 201 ))
+            //     .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+                
+            // Llamo al caso de uso 'checkStatusById'
+                // le paso el data.id y el action en si para verificar que acción tomar
+                // Hago el findById chequeo su estatus
+                // Actualizo el pago.
+        } 
+
         return HandlerResponses.handleSuccess( res , 'Se recibio la notificación correctamente', 200);
     }
 
@@ -33,7 +50,7 @@ export class PaymentController {
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest(error) , res );
 
         new CreatePayment( this.paymentRepository, this.courseRepository , this.authRepository )
-            .execute( paymentRequestDto! , user  )
+            .execute( paymentRequestDto! , user )
             .then( paymentResponse => HandlerResponses.handleSuccess( res , paymentResponse , 201 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }

@@ -1,3 +1,17 @@
+
+export interface WebhookPayload{
+  action: string,
+  api_version: string
+  data: { 
+    id: number
+   },
+  date_created: string,
+  id: number,
+  live_mode: boolean,
+  type: string,
+  user_id: number,
+}
+
 export interface ItemQuantity {
     id_course : string,
     quantity : number,
@@ -32,16 +46,6 @@ export interface PaymentMethodsResponse {
     processing_modes: string,
 }
 
-export interface PaymentRequestAdapter{
-    token: string,
-    installments: number,
-    transaction_amount: number,
-    description: string,
-    payment_method_id: string,
-    payer: {
-        email: string,
-    }
-};
 
 export interface IdentificationTypesResponse{
     id: string;

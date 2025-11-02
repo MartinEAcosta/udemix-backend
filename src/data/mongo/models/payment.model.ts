@@ -1,4 +1,15 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
+
+export interface IPaymentModel {
+    _id : Types.ObjectId,
+    id_user : Types.ObjectId,
+    id_courses : Types.ObjectId[],
+    id_payment : string,
+    amount : number, 
+    date : Date,
+    method : string,
+    status : string,
+}
 
 export const paymentSchema = new mongoose.Schema({
 
@@ -13,11 +24,19 @@ export const paymentSchema = new mongoose.Schema({
         ref   : 'Course',
     }],
 
+    // Este campo se encarga de almacenar el id que provee el gestor de pagos.
+    id_payment : {
+        type   : String,
+        unique : true,
+        required : [ true , 'El Id del pago es requerido.'],
+    },
+    
     amount  : {
         type  : Number,
         required : [ true , 'El monto del pago es requerido.']
     },
 
+    // La idea es que se marque la ultima vez actualizado con el ultimo estado.
     date  : {
         type    : Date,
         default : Date.now,
@@ -25,9 +44,15 @@ export const paymentSchema = new mongoose.Schema({
 
     method  : {
         type     : String,
+        enum     : [ 'balance' , 'card' ],
         required : [ true , 'El método de pago es requerido.']
     },
 
+    status  : {
+        type     : String,
+        enum     : [ 'approved' , 'in_process' ],
+        required : [ true , 'Debes indicar el estado del pago.'],
+    },
 
 });
 

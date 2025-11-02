@@ -15,7 +15,8 @@ export class PaymentCreateDto {
                                                     number : number,
                                                 }
                                             },
-        public readonly installments : number,
+        public readonly installments : string,
+        public readonly transaction_amount ?: number,
         public readonly code              ?: string,
     ) { }
 
@@ -28,6 +29,8 @@ export class PaymentCreateDto {
         if( !payment_method_id ) return ['El método de pago es requerido.' , undefined ];
         if( !identificationType ) return ['El tipo de identificación es requerido.' , undefined ];
         if( !identificationNumber ) return ['El número de identificación es requerido.' , undefined ];
+
+        const installmentsRef = Number(installments) || 1;
 
         return [undefined , new PaymentCreateDto( 
                                                 
@@ -43,7 +46,7 @@ export class PaymentCreateDto {
                                                             number : identificationNumber,
                                                         }
                                                     },
-                                                    installments,
+                                                    installmentsRef.toString(),
                                                     code
                                                 )];
     }

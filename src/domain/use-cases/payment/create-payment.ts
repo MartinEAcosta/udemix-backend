@@ -23,14 +23,14 @@ export class CreatePayment implements CreatePaymentUseCase {
                             .execute( paymentRequestDto.items , paymentRequestDto.code )
         if( !total ) throw CustomError.internalServer('Hubo un error en el calculo de el total.')
 
-        const userPayer = await this.authRepository.findUserById( user.id );
-        if( !userPayer ) throw CustomError.badRequest('No puedes generar un pago sin un usuario vinculado.');
-        const { items , ...rest } =paymentRequestDto;
-        const paymentResponse = await this.paymentRepository.createPayment(
+        const userLogged = await this.authRepository.findUserById( user.id );
+        if( !userLogged ) throw CustomError.badRequest('No puedes generar un pago sin un usuario vinculado.');
+        const paymentResponse : PaymentCreateDto = await this.paymentRepository.createPayment(
             {
-                ...rest,
+                ...paymentRequestDto,
                 transaction_amount : total,
-            }
+            },
+            userLogged,
         );
         return paymentResponse;
     }

@@ -1,9 +1,11 @@
-import { IdentificationTypesResponse, PaymentMethodsResponse, PaymentRequestAdapter } from "../dtos/payment/payment.response";
+import { PaymentCreateDto } from "../dtos/payment/payment-create.dto";
+import { IdentificationTypesResponse, PaymentMethodsResponse } from "../dtos/payment/payment.response";
+import { UserEntity } from "../entities/user.entity";
 
 
 export abstract class PaymentRepository {
 
-    abstract createPayment( paymentRequest : any ) : Promise<any>;
+    abstract createPayment( paymentRequest : PaymentCreateDto , user : UserEntity ) : Promise<any>;
     abstract findPaymentsMethods( ) : Promise<PaymentMethodsResponse[]>;
     abstract findIdentificationTypes( ) : Promise<IdentificationTypesResponse[]>;
     
