@@ -1,10 +1,11 @@
 import MercadoPago from 'mercadopago';
-import { CardToken, PaymentMethod, Payment, IdentificationType, CustomerCard } from 'mercadopago';
+import { PaymentMethod, Payment, IdentificationType } from 'mercadopago';
 import { IdentificationTypeResponse } from 'mercadopago/dist/clients/identificationType/list/types';
 
 import { PaymentService } from '../../domain/services';
 import { PaymentMethodResponse } from 'mercadopago/dist/clients/order/commonTypes';
-import { PaymentCreateDto } from '../../domain/dtos/payment/payment-create.dto';
+import { PaymentRequestAdapterDto } from '../../domain/dtos/payment/payment-request-adapter.dto';
+import { PaymentMapper } from '../../infraestructure/mappers/payment.mapper';
 
 export class MercadoPagoAdapter implements PaymentService{
 
@@ -22,11 +23,9 @@ export class MercadoPagoAdapter implements PaymentService{
         this.identificationType = new IdentificationType( this.client );
     }
 
-    async createPayment( paymentRequestAdapter : PaymentCreateDto ): Promise<any> {
+    async createPayment( paymentRequestAdapter : PaymentRequestAdapterDto ): Promise<any> {
         try{
-            console.log(
-                paymentRequestAdapter
-            )
+
             const createdPayment = await this.payment.create(
                                                             { 
                                                                 body: { 
@@ -49,7 +48,8 @@ export class MercadoPagoAdapter implements PaymentService{
                                                                     console.log(error);
                                                                     throw error;
                                                                 });
-            return createdPayment;
+                                                                console.log(createdPayment);
+            return PaymentMapper.fromPaymentAdapterResponseToPaymentResponse( createdPayment );
         }
         catch( error ){
             throw error;

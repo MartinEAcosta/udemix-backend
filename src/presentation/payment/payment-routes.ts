@@ -12,7 +12,7 @@ export class PaymentRouter {
         router.post(
             '/',
             [ authMiddleware.validateJWT ],
-            paymentController.createPayment,
+            paymentController.startPayment,
         );
 
         router.post(

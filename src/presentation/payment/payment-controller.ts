@@ -3,12 +3,12 @@ import { Request, Response } from "express";
 import { PaymentRepository } from "../../domain/repository/payment-repository";
 import { HandlerResponses } from "../helpers/handler-responses";
 import { CustomError } from "../../domain/errors/custom-error";
-import { CreatePayment } from "../../domain/use-cases/payment/create-payment";
+import { StartPayment } from "../../domain/use-cases/payment/start-payment";
 import { CourseRepository } from "../../domain/repository";
 import { AuthRepository } from '../../domain/repository/auth-repository';
 import { FindPaymentsMethods } from "../../domain/use-cases/payment/find-payments-methods";
 import { AuthenticatedRequest } from "../middlewares";
-import { PaymentCreateDto } from "../../domain/dtos/payment/payment-create.dto";
+import { PaymentRequestAdapterDto } from "../../domain/dtos/payment/payment-request-adapter.dto";
 import { FindIdentificationTypes } from "../../domain/use-cases/payment/find-identification-types";
 import { CalculateTotal } from "../../domain/use-cases/payment/calculate-total";
 import { WebhookPayload } from "../../domain/dtos/payment/payment.response";
@@ -42,14 +42,14 @@ export class PaymentController {
         return HandlerResponses.handleSuccess( res , 'Se recibio la notificación correctamente', 200);
     }
 
-    public createPayment = ( req : AuthenticatedRequest , res : Response ) => {
+    public startPayment = ( req : AuthenticatedRequest , res : Response ) => {
         const { user } = req;
         if( !user ) throw HandlerResponses.handleError(CustomError.unauthorized('No hay usuario en la petición.') , res );
 
-        const [ error , paymentRequestDto ] = PaymentCreateDto.create( req.body );
+        const [ error , paymentRequestDto ] = PaymentRequestAdapterDto.create( req.body );
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest(error) , res );
 
-        new CreatePayment( this.paymentRepository, this.courseRepository , this.authRepository )
+        new StartPayment( this.paymentRepository, this.courseRepository , this.authRepository )
             .execute( paymentRequestDto! , user )
             .then( paymentResponse => HandlerResponses.handleSuccess( res , paymentResponse , 201 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});

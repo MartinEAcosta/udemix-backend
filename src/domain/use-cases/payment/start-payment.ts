@@ -1,16 +1,15 @@
-import { PaymentCreateDto } from "../../dtos/payment/payment-create.dto";
-import { PaymentEntity } from "../../entities/payment.entity";
+import { PaymentRequestAdapterDto } from "../../dtos/payment/payment-request-adapter.dto";
 import { UserEntity } from "../../entities/user.entity";
 import { CustomError } from "../../errors/custom-error";
 import { AuthRepository, CourseRepository } from "../../repository";
 import { PaymentRepository } from "../../repository/payment-repository";
 import { CalculateTotal } from "./calculate-total";
 
-interface CreatePaymentUseCase {
-    execute( paymentRequestDto : PaymentCreateDto, user : UserEntity ) : Promise<any>;
+interface StartPaymentUseCase {
+    execute( paymentRequestDto : PaymentRequestAdapterDto , user : UserEntity ) : Promise<any>;
 }
 
-export class CreatePayment implements CreatePaymentUseCase {
+export class StartPayment implements StartPaymentUseCase {
 
     constructor(
         private readonly paymentRepository : PaymentRepository,
@@ -18,7 +17,7 @@ export class CreatePayment implements CreatePaymentUseCase {
         private readonly authRepository    : AuthRepository,
     ) { }
 
-    async execute( paymentRequestDto : PaymentCreateDto, user : UserEntity ) : Promise<any> {
+    async execute( paymentRequestDto : PaymentRequestAdapterDto , user : UserEntity ) : Promise<any> {
 
         const total = await new CalculateTotal( this.courseRepository )
                             .execute( paymentRequestDto.items , paymentRequestDto.code )
@@ -26,15 +25,28 @@ export class CreatePayment implements CreatePaymentUseCase {
 
         const userLogged = await this.authRepository.findUserById( user.id );
         if( !userLogged ) throw CustomError.badRequest('No puedes generar un pago sin un usuario vinculado.');
-        const paymentResponse : PaymentEntity | null = await this.paymentRepository.createPayment(
+        
+        const paymentResponse = await this.paymentRepository.startPayment(
             {
                 ...paymentRequestDto,
                 transaction_amount : total,
             },
-            userLogged,
         );
+        
         if( !paymentResponse ) throw CustomError.internalServer('Ocurrió un error inesperado y no se pudo iniciar el pago.');
-        return paymentResponse;
+        const paymentCreated = await this.paymentRepository.createPayment(
+            {
+                id_user : userLogged.id,
+                id_courses : paymentRequestDto.items.map( item => item.id_course ),
+                id_payment : paymentResponse.id,
+                amount : total,
+                date : new Date(),
+                method : 'card',
+                status : paymentResponse.status
+            }
+        );
+
+        return paymentCreated;
     }
 
 }

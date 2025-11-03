@@ -1,8 +1,9 @@
 import { PaymentModel } from '../../data/mongo/models/payment.model';
 import { PaymentDataSource } from '../../domain/datasources/payment-datasource';
 import { PaymentCreateDto } from '../../domain/dtos/payment/payment-create.dto';
+import { PaymentRequestAdapterDto } from '../../domain/dtos/payment/payment-request-adapter.dto';
 import { IdentificationTypesResponse, PaymentMethodsResponse } from '../../domain/dtos/payment/payment.response';
-import { UserEntity } from '../../domain/entities/user.entity';
+import { PaymentEntity } from '../../domain/entities/payment.entity';
 import { PaymentService } from '../../domain/services';
 import { PaymentMapper } from '../mappers/payment.mapper';
 
@@ -13,22 +14,26 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
         private readonly paymentService : PaymentService
     ) { }
     
-    async createPayment( paymentRequestDto : PaymentCreateDto , user : UserEntity ) : Promise<any> {
-        const paymentResponse = await this.paymentService.createPayment( paymentRequestDto );
+    async startPayment( paymentRequest : PaymentRequestAdapterDto ) : Promise<any> {
+        const paymentResponse = await this.paymentService.createPayment( paymentRequest );
         if( !paymentResponse ) return null;
+        
+        return paymentResponse
+    }
+
+    async createPayment( paymentRequest : PaymentCreateDto ) : Promise<PaymentEntity> {
 
         const paymentToSave = await PaymentModel.create({ 
-                                                            id_courses : paymentRequestDto.items.map( item => item.id_course ),
-                                                            id_user    : user.id,
-                                                            id_payment : paymentResponse.id,
-                                                            amount     : paymentResponse.transaction_amount,
-                                                            method     : 'card',
-                                                            status     : paymentResponse.status,
-                                                        });
+            ...paymentRequest
+        });
         console.log( paymentToSave );
-        return PaymentMapper.MapResponseToEntity( paymentToSave );
+        return PaymentMapper.fromModelToEntity( paymentToSave );
     }
     
+    updatePayment(paymentRequest: any): Promise<any> {
+        throw new Error('Method not implemented.');
+    }
+
     async findPaymentById( id : number ) : Promise<any> {
         const paymentResponse = await this.paymentService.findPaymentById( id );
         return paymentResponse;

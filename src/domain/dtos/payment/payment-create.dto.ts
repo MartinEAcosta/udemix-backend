@@ -1,53 +1,37 @@
+import { stat } from "fs";
 import { ItemQuantity } from "./payment.response";
 
 export class PaymentCreateDto {
 
     constructor( 
-        public readonly items             : ItemQuantity[],
-        public readonly token             : string,
-        public readonly description       : string,
-        public readonly issuer_id         : number,
-        public readonly payment_method_id : string,
-        public readonly payer             : {
-                                                email : string,
-                                                identification: {
-                                                    type : string,
-                                                    number : number,
-                                                }
-                                            },
-        public readonly installments : string,
-        public readonly transaction_amount ?: number,
-        public readonly code              ?: string,
+        public readonly id_user : string,
+        public readonly id_courses : string[],
+        public readonly id_payment : number,
+        public readonly amount : number,
+        public readonly date : Date,
+        public readonly method : string,
+        public readonly status : string,
     ) { }
 
 
     static create = ( props : { [ key : string ] : any } ) : [ string?, PaymentCreateDto? ]  => {
-        const { items , token , payment_method_id, issuer_id , email, installments = 1, identificationType, identificationNumber , code = undefined } = props;
+        const { id_user , id_courses , id_payment , amount , date , method , status } = props;
 
-        if( !token ) return ['El token es obligatorio', undefined];
-        if (!email) return ['El email del pagador es requerido.', undefined];
-        if( !payment_method_id ) return ['El método de pago es requerido.' , undefined ];
-        if( !identificationType ) return ['El tipo de identificación es requerido.' , undefined ];
-        if( !identificationNumber ) return ['El número de identificación es requerido.' , undefined ];
-
-        const installmentsRef = Number(installments) || 1;
+        if (!id_user ) return ['El id del usuario que va obtener el curso no puede estar vació.', undefined];
+        if (!id_courses) return ['El id de el/los curso/s a comprar no puede estar vació.', undefined];
+        if (!amount) return ['El monto final no puede estar vació.', undefined];
+        if (!date) return ['La fecha de emisión del pago no puede estar vacía.']
+        if ( method != 'card' || method != 'balance' ) return ['Método de pago invalido.', undefined];
+        if (!status) return ['El estado del pago no puede ser nulo.' , undefined]
 
         return [undefined , new PaymentCreateDto( 
-                                                
-                                                    items,
-                                                    token,
-                                                    `Pago de ${ items.length } cursos.`,
-                                                    issuer_id,
-                                                    payment_method_id,
-                                                    {   
-                                                        email,
-                                                        identification : {
-                                                            type : identificationType,
-                                                            number : identificationNumber,
-                                                        }
-                                                    },
-                                                    installmentsRef.toString(),
-                                                    code
+                                                    id_user,
+                                                    id_courses,
+                                                    id_payment,
+                                                    amount,
+                                                    date,
+                                                    method,
+                                                    status
                                                 )];
     }
 

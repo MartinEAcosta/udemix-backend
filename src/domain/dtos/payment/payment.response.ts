@@ -54,3 +54,23 @@ export interface IdentificationTypesResponse{
     min_length?: number;
     max_length?: number;
 }
+
+export interface PaymentResponse {
+    id : number,
+    date_created : string,
+    date_approved : string,
+    date_last_updated : string,
+    transaction_amount : number,
+    payer: {
+        email : string,
+    },
+    cardholder : {
+        name : string,
+        identification : {
+            number :  number,
+            type   : string
+        }
+    },
+    status : string,
+    status_detail : string,
+}
