@@ -2,7 +2,8 @@ import { PaymentModel } from '../../data/mongo/models/payment.model';
 import { PaymentDataSource } from '../../domain/datasources/payment-datasource';
 import { PaymentCreateDto } from '../../domain/dtos/payment/payment-create.dto';
 import { PaymentRequestAdapterDto } from '../../domain/dtos/payment/payment-request-adapter.dto';
-import { IdentificationTypesResponse, PaymentMethodsResponse } from '../../domain/dtos/payment/payment.response';
+import { PaymentUpdateDto } from '../../domain/dtos/payment/payment-update.dto';
+import { IdentificationTypesResponse, PaymentCreatedResponseDto, PaymentMethodsResponse, PaymentResponseDto } from '../../domain/dtos/payment/payment.response';
 import { PaymentEntity } from '../../domain/entities/payment.entity';
 import { PaymentService } from '../../domain/services';
 import { PaymentMapper } from '../mappers/payment.mapper';
@@ -14,24 +15,25 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
         private readonly paymentService : PaymentService
     ) { }
     
-    async startPayment( paymentRequest : PaymentRequestAdapterDto ) : Promise<any> {
+    async startPayment( paymentRequest : PaymentRequestAdapterDto ) : Promise<PaymentCreatedResponseDto | null> {
         const paymentResponse = await this.paymentService.createPayment( paymentRequest );
         if( !paymentResponse ) return null;
         
         return paymentResponse
     }
 
-    async createPayment( paymentRequest : PaymentCreateDto ) : Promise<PaymentEntity> {
-
+    async createPayment( paymentRequest : PaymentCreateDto ) : Promise<PaymentResponseDto> {
         const paymentToSave = await PaymentModel.create({ 
             ...paymentRequest
         });
-        console.log( paymentToSave );
-        return PaymentMapper.fromModelToEntity( paymentToSave );
+
+        return PaymentMapper.fromPaymentResponseDto( paymentToSave );
     }
     
-    updatePayment(paymentRequest: any): Promise<any> {
-        throw new Error('Method not implemented.');
+    async updatePayment( paymentRequest : PaymentUpdateDto ) : Promise<PaymentResponseDto> {
+        const paymentToUpdate = await PaymentModel.findByIdAndUpdate({ _id : paymentRequest.id }, paymentRequest , { new : true }).exec();
+        
+        return PaymentMapper.fromPaymentResponseDto( paymentToUpdate! );
     }
 
     async findPaymentById( id : number ) : Promise<any> {

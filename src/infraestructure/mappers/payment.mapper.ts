@@ -1,11 +1,11 @@
 import { IPaymentModel } from "../../data/mongo/models/payment.model";
-import { PaymentResponse } from "../../domain/dtos/payment/payment.response";
+import { PaymentCreatedResponseDto, PaymentResponseDto } from "../../domain/dtos/payment/payment.response";
 import { PaymentEntity } from "../../domain/entities/payment.entity";
 
 
 export class PaymentMapper {
 
-    static fromModelToEntity = ( response : IPaymentModel ) : PaymentEntity  => {
+    static fromPaymentResponseDto = ( response : IPaymentModel ) : PaymentResponseDto  => {
         return {
             id : response._id.toString(),
             id_user : response.id_user.toString(),
@@ -18,7 +18,7 @@ export class PaymentMapper {
         }
     }
 
-    static fromPaymentAdapterResponseToPaymentResponse = ( response : any ) : PaymentResponse => {
+    static fromPaymentCreatedAdapterResponseToPaymentCreatedResponse = ( response : any ) : PaymentCreatedResponseDto => {
         return {
             id : response.id,
             date_created : response.date_created,

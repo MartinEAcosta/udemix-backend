@@ -50,7 +50,8 @@ export const paymentSchema = new mongoose.Schema({
 
     status  : {
         type     : String,
-        enum     : [ 'approved' , 'in_process' ],
+        //  'authorized' 'pending' Estos aparecen en medios de pago offline como pagofacil o rapipago.
+        enum     : [ 'approved' , 'in_process' , 'rejected' ],
         required : [ true , 'Debes indicar el estado del pago.'],
     },
 

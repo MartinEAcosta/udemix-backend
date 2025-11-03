@@ -1,6 +1,3 @@
-import { stat } from "fs";
-import { ItemQuantity } from "./payment.response";
-
 export class PaymentCreateDto {
 
     constructor( 
@@ -21,7 +18,7 @@ export class PaymentCreateDto {
         if (!id_courses) return ['El id de el/los curso/s a comprar no puede estar vació.', undefined];
         if (!amount) return ['El monto final no puede estar vació.', undefined];
         if (!date) return ['La fecha de emisión del pago no puede estar vacía.']
-        if ( method != 'card' || method != 'balance' ) return ['Método de pago invalido.', undefined];
+        if ( method != 'card' && method != 'balance' ) return ['Método de pago invalido.', undefined];
         if (!status) return ['El estado del pago no puede ser nulo.' , undefined]
 
         return [undefined , new PaymentCreateDto( 

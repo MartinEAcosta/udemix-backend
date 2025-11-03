@@ -6,6 +6,7 @@ import { PaymentService } from '../../domain/services';
 import { PaymentMethodResponse } from 'mercadopago/dist/clients/order/commonTypes';
 import { PaymentRequestAdapterDto } from '../../domain/dtos/payment/payment-request-adapter.dto';
 import { PaymentMapper } from '../../infraestructure/mappers/payment.mapper';
+import { PaymentCreatedResponseDto } from '../../domain/dtos/payment/payment.response';
 
 export class MercadoPagoAdapter implements PaymentService{
 
@@ -23,7 +24,7 @@ export class MercadoPagoAdapter implements PaymentService{
         this.identificationType = new IdentificationType( this.client );
     }
 
-    async createPayment( paymentRequestAdapter : PaymentRequestAdapterDto ): Promise<any> {
+    async createPayment( paymentRequestAdapter : PaymentRequestAdapterDto ): Promise<PaymentCreatedResponseDto> {
         try{
 
             const createdPayment = await this.payment.create(
@@ -49,18 +50,18 @@ export class MercadoPagoAdapter implements PaymentService{
                                                                     throw error;
                                                                 });
                                                                 console.log(createdPayment);
-            return PaymentMapper.fromPaymentAdapterResponseToPaymentResponse( createdPayment );
+            return PaymentMapper.fromPaymentCreatedAdapterResponseToPaymentCreatedResponse( createdPayment );
         }
         catch( error ){
             throw error;
         }
     }
 
-    async findPaymentById( id : number ) : Promise<any> {
+    async findPaymentById( id : number ) : Promise<PaymentCreatedResponseDto> {
         try{
             const paymentResponse = await this.payment.get({ id });
             
-            return paymentResponse;
+            return PaymentMapper.fromPaymentCreatedAdapterResponseToPaymentCreatedResponse( paymentResponse );
         }
         catch( error ) {
             throw error;

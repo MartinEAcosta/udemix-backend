@@ -1,4 +1,15 @@
 
+export interface PaymentResponseDto{
+    id ?: string,
+    id_user : string,
+    id_courses : string[],
+    id_payment : string,
+    amount : number,
+    date : Date,
+    method : string,
+    status : string,
+}
+
 export interface WebhookPayload{
   action: string,
   api_version: string
@@ -55,7 +66,7 @@ export interface IdentificationTypesResponse{
     max_length?: number;
 }
 
-export interface PaymentResponse {
+export interface PaymentCreatedResponseDto {
     id : number,
     date_created : string,
     date_approved : string,

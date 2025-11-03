@@ -1,9 +1,10 @@
 import { PaymentDataSource } from "../../domain/datasources/payment-datasource";
-import { IdentificationTypesResponse, PaymentMethodsResponse } from "../../domain/dtos/payment/payment.response";
+import { IdentificationTypesResponse, PaymentCreatedResponseDto, PaymentMethodsResponse } from "../../domain/dtos/payment/payment.response";
 import { PaymentRepository } from "../../domain/repository/payment-repository";
 import { PaymentEntity } from "../../domain/entities/payment.entity";
 import { PaymentRequestAdapterDto } from "../../domain/dtos/payment/payment-request-adapter.dto";
 import { PaymentCreateDto } from "../../domain/dtos/payment/payment-create.dto";
+import { PaymentUpdateDto } from "../../domain/dtos/payment/payment-update.dto";
 
 export class PaymentRepositoryImpl implements PaymentRepository {
 
@@ -11,7 +12,7 @@ export class PaymentRepositoryImpl implements PaymentRepository {
         private readonly paymentDatasource : PaymentDataSource,
     ){ }
     
-    async startPayment( paymentRequest : PaymentRequestAdapterDto  ) : Promise<PaymentEntity | null> {
+    async startPayment( paymentRequest : PaymentRequestAdapterDto  ) : Promise<PaymentCreatedResponseDto | null> {
         try{
             const paymentResponse = await this.paymentDatasource.startPayment( paymentRequest );
             if ( !paymentResponse ) return null;
@@ -26,16 +27,22 @@ export class PaymentRepositoryImpl implements PaymentRepository {
     async createPayment( paymentRequest : PaymentCreateDto ) : Promise<PaymentEntity> {
         try{
             const payment = await this.paymentDatasource.createPayment( paymentRequest );
-
-            return payment;
+            return PaymentEntity.fromObject( payment );
         }
         catch( error ){
             throw error;
         }
     }
 
-    async updatePayment( paymentRequest : any ) : Promise<PaymentEntity> {
-        throw new Error("Method not implemented.");
+    async updatePayment( paymentRequest : PaymentUpdateDto ) : Promise<PaymentEntity> {
+        try{
+            const updatedPayment = await this.paymentDatasource.updatePayment( paymentRequest );
+            return PaymentEntity.fromObject( updatedPayment );
+        }
+        catch( error ){
+            throw error;
+        }
+
     }
     
     async findPaymentById( id : number ) : Promise<any> {
