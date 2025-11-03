@@ -29,6 +29,11 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
         return PaymentMapper.MapResponseToEntity( paymentToSave );
     }
     
+    async findPaymentById( id : number ) : Promise<any> {
+        const paymentResponse = await this.paymentService.findPaymentById( id );
+        return paymentResponse;
+    }
+
     async findPaymentsMethods() : Promise<PaymentMethodsResponse[]> {
         const paymentsMethods = await this.paymentService.findPaymentsMethods();
         return paymentsMethods;

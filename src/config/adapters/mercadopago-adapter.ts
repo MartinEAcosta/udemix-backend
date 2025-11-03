@@ -23,44 +23,72 @@ export class MercadoPagoAdapter implements PaymentService{
     }
 
     async createPayment( paymentRequestAdapter : PaymentCreateDto ): Promise<any> {
-        console.log(
-            paymentRequestAdapter
-        )
-        const createdPayment = await this.payment.create(
-                                                        { 
-                                                            body: { 
-                                                                    token: paymentRequestAdapter.token,
-                                                                    transaction_amount: paymentRequestAdapter.transaction_amount,
-                                                                    description: paymentRequestAdapter.description,
-                                                                    payment_method_id: paymentRequestAdapter.payment_method_id,
-                                                                    issuer_id: paymentRequestAdapter.issuer_id,
-                                                                    payer: {
-                                                                        email: paymentRequestAdapter.payer.email,
-                                                                        identification: {
-                                                                            type: paymentRequestAdapter.payer.identification.type,
-                                                                            number: paymentRequestAdapter.payer.identification.number.toString(),
+        try{
+            console.log(
+                paymentRequestAdapter
+            )
+            const createdPayment = await this.payment.create(
+                                                            { 
+                                                                body: { 
+                                                                        token: paymentRequestAdapter.token,
+                                                                        transaction_amount: paymentRequestAdapter.transaction_amount,
+                                                                        description: paymentRequestAdapter.description,
+                                                                        payment_method_id: paymentRequestAdapter.payment_method_id,
+                                                                        issuer_id: paymentRequestAdapter.issuer_id,
+                                                                        payer: {
+                                                                            email: paymentRequestAdapter.payer.email,
+                                                                            identification: {
+                                                                                type: paymentRequestAdapter.payer.identification.type,
+                                                                                number: paymentRequestAdapter.payer.identification.number.toString(),
+                                                                            },
                                                                         },
+                                                                        installments: Number(paymentRequestAdapter.installments) || 1,
+                                                                        notification_url: 'https://prerailroad-tamia-voluptuous.ngrok-free.dev/api/payments/notifications?source_news=webhooks',
                                                                     },
-                                                                    installments: Number(paymentRequestAdapter.installments) || 1,
-                                                                    notification_url: 'https://prerailroad-tamia-voluptuous.ngrok-free.dev/api/payments/notifications?source_news=webhooks',
-                                                                },
-                                                            }).catch( (error) => {
-                                                                console.log(error);
-                                                                throw error;
-                                                            });
-        return createdPayment;
+                                                                }).catch( (error) => {
+                                                                    console.log(error);
+                                                                    throw error;
+                                                                });
+            return createdPayment;
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
+    async findPaymentById( id : number ) : Promise<any> {
+        try{
+            const paymentResponse = await this.payment.get({ id });
+            
+            return paymentResponse;
+        }
+        catch( error ) {
+            throw error;
+        }
     }
 
     async findPaymentsMethods( ) : Promise<PaymentMethodResponse[]> {
-        const paymentsMethods = await this.paymentMethods.get();
+        try{
+            const paymentsMethods = await this.paymentMethods.get();
 
-        return paymentsMethods;
+            return paymentsMethods;
+        }
+        catch( error ){
+            throw error;
+        }
+
     }
     
     async findIdentificationTypes( ) : Promise<IdentificationTypeResponse[]> {
-        const identificationTypes = await this.identificationType.list();
+        try{
+            const identificationTypes = await this.identificationType.list();
+            
+            return identificationTypes;
+        }
+        catch( error ){
+            throw error;
+        }
 
-        return identificationTypes;
     }
 
 };

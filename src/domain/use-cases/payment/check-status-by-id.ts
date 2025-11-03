@@ -14,8 +14,9 @@ export class CheckStatusById implements CheckStatusByIdUseCase {
 
     async execute( action : string, id : number ) : Promise<any> {
 
-        // const notifiaction = 
+        const notification = await this.paymentRepository.findPaymentById( id );
 
-        throw new Error("Method not implemented.");
+        
+        return notification;
     }
 }

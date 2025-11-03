@@ -28,10 +28,10 @@ export class PaymentController {
         const { action , data } : WebhookPayload = req.body;
 
         if( action.includes('payment') ) {
-            // new CheckStatusById( this.paymentRepository )
-            //     .execute( action , data.id )
-            //     .then( paymentResponse => HandlerResponses.handleSuccess( res , paymentResponse , 201 ))
-            //     .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+            new CheckStatusById( this.paymentRepository )
+                .execute( action , data.id )
+                .then( paymentResponse => console.log( 200 ))
+                .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
                 
             // Llamo al caso de uso 'checkStatusById'
                 // le paso el data.id y el action en si para verificar que acción tomar

@@ -10,16 +10,26 @@ export class PaymentRepositoryImpl implements PaymentRepository {
     constructor( 
         private readonly paymentDatasource : PaymentDataSource,
     ){ }
-
+    
     async createPayment( paymentRequestDto : PaymentCreateDto , user : UserEntity ) : Promise<PaymentEntity | null> {
         try{
             const paymentResponse = await this.paymentDatasource.createPayment( paymentRequestDto , user );
             if ( !paymentResponse ) return null;
-
+            
             return paymentResponse;
         }
         catch( error ) {
             throw error;
+        }
+    }
+    
+    async findPaymentById( id : number ) : Promise<any> {
+        try{
+            const paymentResponse = await this.paymentDatasource.findPaymentById( id ); 
+            return paymentResponse;
+        }
+        catch( error ){
+            console.log(error);
         }
     }
 
