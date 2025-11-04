@@ -30,15 +30,9 @@ export class PaymentController {
         if( action.includes('payment') ) {
             new CheckStatusById( this.paymentRepository )
                 .execute( data.id )
-                .then( paymentResponse => console.log( 200 ))
+                .then( () => {} )
                 .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
-                
-            // Llamo al caso de uso 'checkStatusById'
-                // le paso el data.id y el action en si para verificar que acción tomar
-                // Hago el findById chequeo su estatus
-                // Actualizo el pago.
-        } 
-
+        }
         return HandlerResponses.handleSuccess( res , 'Se recibio la notificación correctamente', 200);
     }
 

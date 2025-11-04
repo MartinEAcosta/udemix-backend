@@ -19,10 +19,10 @@ export class CheckStatusById implements CheckStatusByIdUseCase {
 
         const notification = await this.paymentRepository.findPaymentById( id );
         const { status } = notification;
-        console.log(notification);
+
         const updatedPayment = await this.paymentRepository.updatePaymentByIdPayment(
             {
-                id_payment : 1342188729, 
+                id_payment : id, 
                 status : status
             });
         console.log(updatedPayment);
