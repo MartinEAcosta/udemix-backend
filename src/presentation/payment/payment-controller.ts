@@ -29,7 +29,7 @@ export class PaymentController {
 
         if( action.includes('payment') ) {
             new CheckStatusById( this.paymentRepository )
-                .execute( action , data.id )
+                .execute( data.id )
                 .then( paymentResponse => console.log( 200 ))
                 .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
                 

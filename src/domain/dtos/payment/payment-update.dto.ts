@@ -2,11 +2,11 @@
 export class PaymentUpdateDto {
 
     constructor(
-        public readonly id : string,
         public readonly id_payment : number,
-        public readonly date : Date,
-        public readonly method : string,
         public readonly status : string,
+        public readonly id ?: string,
+        public readonly date ?: Date,
+        public readonly method ?: string,
     ) { }
 
     static create = ( props : { [ key : string ] : any } ) : [ string?, PaymentUpdateDto? ]  => {

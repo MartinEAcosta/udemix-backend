@@ -36,6 +36,12 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
         return PaymentMapper.fromPaymentResponseDto( paymentToUpdate! );
     }
 
+    async updatePaymentByIdPayment( paymentRequest : PaymentUpdateDto ) : Promise<PaymentResponseDto> {
+        const paymentToUpdate = await PaymentModel.findOneAndUpdate({ id_payment : paymentRequest.id_payment }, paymentRequest , { new : true }).exec();
+        
+        return PaymentMapper.fromPaymentResponseDto( paymentToUpdate! );
+    }
+
     async findPaymentById( id : number ) : Promise<any> {
         const paymentResponse = await this.paymentService.findPaymentById( id );
         return paymentResponse;

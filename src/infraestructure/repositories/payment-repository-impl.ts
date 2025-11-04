@@ -42,7 +42,16 @@ export class PaymentRepositoryImpl implements PaymentRepository {
         catch( error ){
             throw error;
         }
+    }
 
+    async updatePaymentByIdPayment( paymentRequest : PaymentUpdateDto ) : Promise<PaymentEntity> {
+        try{
+            const updatedPayment = await this.paymentDatasource.updatePaymentByIdPayment( paymentRequest );
+            return PaymentEntity.fromObject( updatedPayment );
+        }
+        catch( error ){
+            throw error;
+        }
     }
     
     async findPaymentById( id : number ) : Promise<any> {
