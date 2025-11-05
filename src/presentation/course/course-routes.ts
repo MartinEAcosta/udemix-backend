@@ -45,7 +45,6 @@ export class CourseRouter {
           [
             authMiddleware.validateJWT , authMiddleware.validatePermissions(['teacher', 'admin']) ,
             authMiddleware.validateAndAssignOwner, 
-            fileMiddleware.containFiles , fileMiddleware.fileUploadPreprocessor 
           ],
           courseController.saveCourse
         );
@@ -53,8 +52,7 @@ export class CourseRouter {
         // Edit Course 
         router.put(
           '/update/:id',
-          [ authMiddleware.validateJWT , authMiddleware.validateAndAssignOwner,
-            fileMiddleware.containFiles , fileMiddleware.fileUploadPreprocessor ],
+          [ authMiddleware.validateJWT , authMiddleware.validateAndAssignOwner],
           courseController.updateCourse
         );
         

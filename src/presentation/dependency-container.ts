@@ -100,7 +100,7 @@ export class DependencyContainer {
         this.courseController     = new CourseController( this.courseRepository , this.categoryRepository , this.fileRepository );
         this.emailController      = new EmailController( this.authRepository , this.emailValidator , this.tokenManager );
         this.enrollmentController = new EnrollmentController( this.enrollmentRepository , this.authRepository , this.courseRepository , this.unitOfWork );
-        this.fileController       = new FileController( this.fileRepository , this.courseRepository );
+        this.fileController       = new FileController( this.fileRepository , this.courseRepository , this.lessonRepository );
         this.lessonController     = new LessonController( this.lessonRepository , this.moduleRepository , this.courseRepository , this.fileRepository, this.unitOfWork );
         this.moduleController     = new ModuleController( this.moduleRepository , this.courseRepository );
         this.paymentController    = new PaymentController( this.paymentRepository , this.courseRepository, this.authRepository );

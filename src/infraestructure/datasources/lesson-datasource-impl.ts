@@ -17,7 +17,7 @@ export class LessonDatasourceImpl implements LessonDatasource {
     }
     
     async updateLesson( lessonRequestDto : UpdateLessonDto) : Promise<LessonResponseDto> {
-        const { id , id_user, ...rest } = lessonRequestDto;
+        const { id , ...rest } = lessonRequestDto;
         const lessonUpdated = await LessonModel.findByIdAndUpdate(
                                                                 {
                                                                     _id : id,

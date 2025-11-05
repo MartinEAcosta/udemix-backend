@@ -6,46 +6,19 @@ import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
 export class FileMiddleware {
     // Utilizado para el estandarizado de respuesta, dado que Clodinary retorna un objeto cuando se sube un solo archivo y 
     // un array cuando se se suben varios arhivos.
-    requireFiles = ( req : Request , res: Response , next : NextFunction )  => {
+     containFiles = ( req : Request , res: Response , next : NextFunction )  => {
         if (!req.body) req.body = {};
 
+        // console.log(req.files);
+
         if( !req.files || Object.keys(req.files).length === 0 ) {
-            return HandlerResponses.handleError( CustomError.badRequest('No se han seleccionado archivos.') , res);
+            return res.status(400).json({ error: 'No se han seleccionado archivos.' });
         }
         if( !Array.isArray( req.files.file ) ){
             req.body.files = [ req.files.files ];
         }
         else {
             req.body.files = req.files.files;
-        }
-
-        next();
-    }
-
-    containFiles = ( req : Request , res: Response , next : NextFunction )  => {
-        if (!req.body) req.body = {};
-
-        if( !Array.isArray( req.files?.file ) ){
-            req.body.files = [ req.files?.files ];
-        }
-        else {
-            req.body.files = req.files.files;
-        }
-
-        next();
-    }
-
-    fileUploadPreprocessor = ( req : Request , res : Response , next : NextFunction ) => {
-        const file = req.body.files.at(0);
-        if( file ){
-            const [ error , fileToUploadDto] = UploadFileDto.create( {
-                size      : file.size,
-                data      : file.data,
-                mimetype  : file.mimetype,
-            });
-            if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ), res );
-    
-            req.body.attachedFile = fileToUploadDto;
         }
 
         next();

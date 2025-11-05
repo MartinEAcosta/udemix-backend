@@ -15,7 +15,6 @@ export class LessonRouter {
             [
                 authMiddleware.validateJWT,
                 fileMiddleware.containFiles,
-                fileMiddleware.fileUploadPreprocessor
             ],
             lessonController.createLesson
         );
@@ -25,7 +24,6 @@ export class LessonRouter {
             [
                 authMiddleware.validateJWT,
                 fileMiddleware.containFiles,
-                fileMiddleware.fileUploadPreprocessor
             ],
             lessonController.updateLesson
         );

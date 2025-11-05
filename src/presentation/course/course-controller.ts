@@ -92,7 +92,7 @@ export class CourseController {
 
         const [ errorMessage , updateCourseDto ] = UpdateCourseDto.create( id , req.body );
         if( errorMessage ) return HandlerResponses.handleError( CustomError.badRequest( errorMessage ) , res );
-
+        console.log(updateCourseDto)
         new UpdateCourse( this.courseRepository , this.fileRepository , this.categoryRepository  )
             .execute( updateCourseDto! , fileUploadDto )
             .then( courseUpdated => HandlerResponses.handleSuccess( res , courseUpdated, 200 ) )

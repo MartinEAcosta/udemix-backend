@@ -20,7 +20,6 @@ export class CourseDatasourceImpl implements CourseDatasource {
         const courses = await CourseModel.find( { _id : { $in : id_courses } } );
         if( !courses ) return [];
         
-        console.log(courses);
 
         return courses.map( CourseMapper.fromCourseResponseDto );
     }

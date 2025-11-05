@@ -29,10 +29,8 @@ export class UpdateLesson implements UpdateLessonUseCase {
         const lesson = await this.lessonRepository.findLessonById( id );
         if( !lesson ) throw CustomError.notFound("La lección que intentas actualizar no existe.");
         
-        
-        const course = await this.courseRepository.findCourseById( lessonRequestDto.id_course );
+        const course = await this.courseRepository.findCourseById( lesson.id_course );
         if( !course ) throw CustomError.notFound("El curso al que quieres asignar la lección no existe.");
-        if( course.id_owner != lessonRequestDto.id_user ) throw CustomError.unauthorized('No eres el propietario, por lo tanto no puedes modificar lecciones.');
         
         if( file ){
             

@@ -12,14 +12,13 @@ export class FileRouter {
         const { fileMiddleware , fileController } = DependencyContainer.getInstance();
 
         router.post( 
-            '/upload/single/:folder',
-            [ fileMiddleware.requireFiles , fileMiddleware.fileUploadPreprocessor ],
+            '/upload/single/:folder/:id_entity',
+            [ fileMiddleware.containFiles ],
             fileController.uploadFile
         );
 
         router.post(
             '/multiple/:folder',
-            [ fileMiddleware.requireFiles , fileMiddleware.fileUploadPreprocessor ],
             fileController.uploadMultipleFiles
         );
 

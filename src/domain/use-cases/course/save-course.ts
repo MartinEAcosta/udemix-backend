@@ -25,21 +25,21 @@ export class SaveCourse implements SaveCourseUseCase {
             if( !category ) throw CustomError.badRequest('La categoria que asignaste al curso no es valida.');
         }
         
-        if( file ){
-            const fileUploaded = await this.fileRepository.uploadFile( file , 'courses' );
-            if( !fileUploaded ) throw CustomError.internalServer('Hubo un error al subir el archivo.');
+        // if( file ){
+        //     const fileUploaded = await this.fileRepository.uploadFile( file , 'courses' );
+        //     if( !fileUploaded ) throw CustomError.internalServer('Hubo un error al subir el archivo.');
 
-            return await this.courseRepository.saveCourse( 
-                                                            { 
-                                                                ...createCourseDto , 
-                                                                id_file : fileUploaded.id.toString(),
-                                                                thumbnail_url : fileUploaded.url,
-                                                            }
-                                                        );
-        }
-        else{
+        //     return await this.courseRepository.saveCourse( 
+        //                                                     { 
+        //                                                         ...createCourseDto , 
+        //                                                         id_file : fileUploaded.id.toString(),
+        //                                                         thumbnail_url : fileUploaded.url,
+        //                                                     }
+        //                                                 );
+        // }
+        // else{
             return this.courseRepository.saveCourse( createCourseDto );
-        }
+        // }
         
     }
 

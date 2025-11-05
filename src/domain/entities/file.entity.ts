@@ -1,5 +1,7 @@
 import { ResourceValidTypes } from "../dtos/file-upload/file-upload.dto";
 
+export type Folders = 'courses' | 'lessons';
+
 interface FileEntityOptions {
     id            : string;
     public_id     : string;

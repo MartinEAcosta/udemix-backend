@@ -3,7 +3,7 @@ import { AuthRouter } from "./auth/auth-routes";
 import { CategoryRouter } from "./category/category-routes";
 import { CourseRouter } from "./course/course-routes";
 import { EnrollmentRouter } from "./enrollment/enrollment-routes";
-import { FileRouter } from "./file/file-upload-routes";
+import { FileRouter } from "./file/file-routes";
 import { LessonRouter } from "./lesson/lesson-routes";
 import { ModuleRouter } from "./module/module.routes";
 import { PaymentRouter } from "./payment/payment-routes";

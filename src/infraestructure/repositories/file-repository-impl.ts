@@ -14,10 +14,10 @@ export class FileRepositoryImpl implements FileRepository {
     
     async uploadFile( file : UploadFileDto , folder : string , ts ?: TransactionSession ) : Promise<FileResponseDto | false>  {
         try {
-            const fileUploaded = await this.fileDatasource.uploadFile( file , folder , ts );
+            const fileUploaded = await this.fileDatasource.uploadFile( file , folder );
             if( !fileUploaded ) return false;
             
-            const uploadedFileinDB = await this.fileDatasource.saveFileOnDB( fileUploaded ,ts );
+            const uploadedFileinDB = await this.fileDatasource.saveFileOnDB( fileUploaded , ts  );
             if( !uploadedFileinDB) return false;
             
             return FileMapper.fromFileResponseDto( uploadedFileinDB );
