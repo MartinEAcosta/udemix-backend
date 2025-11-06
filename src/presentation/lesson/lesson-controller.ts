@@ -46,7 +46,7 @@ export class LessonController {
     }
 
     public updateLesson = ( req : AuthenticatedRequest , res : Response ) =>{
-        const fileUploadDto = req.body.attachedFile;
+
         const { id } = req.params;
         if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id para realizar el borrado.'), res );
 
@@ -60,8 +60,8 @@ export class LessonController {
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
         
-        new UpdateLesson( this.courseRepository , this.lessonRepository , this.fileRepository )
-                .execute( lessonRequestDto!, fileUploadDto )
+        new UpdateLesson( this.courseRepository , this.lessonRepository )
+                .execute( lessonRequestDto! )
                 .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
                 .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }

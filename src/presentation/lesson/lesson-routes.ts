@@ -14,16 +14,14 @@ export class LessonRouter {
             '/new',
             [
                 authMiddleware.validateJWT,
-                fileMiddleware.containFiles,
             ],
             lessonController.createLesson
         );
 
-        router.post(
+        router.put(
             '/update/:id',
             [
                 authMiddleware.validateJWT,
-                fileMiddleware.containFiles,
             ],
             lessonController.updateLesson
         );
