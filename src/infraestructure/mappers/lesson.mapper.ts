@@ -22,10 +22,12 @@ export class LessonMapper {
         return {
             id            : lessonDoc._id.toString(),
             id_course     : lessonDoc.id_course.toString(),
-            file          : {
-                _id     : lessonDoc.id_file._id.toString(),
-                url     : lessonDoc.id_file.url,
-            },
+            file: lessonDoc.id_file
+            ? {
+                id: lessonDoc.id_file.id ? lessonDoc.id_file.id.toString() : null,
+                url: lessonDoc.id_file.url,
+                }
+            : { id: null, url: null },
             id_module     : lessonDoc.id_module.toString(),
             title         : lessonDoc.title,
             description   : lessonDoc.description,

@@ -6,8 +6,6 @@ export interface LessonResponseDto {
     id_module     : string,
     title         : string,
     description   : string,
-    // unit         ?: number,
-    // chapter      ?: number,
     lesson_number : number,
     uploaded_at   : Date,
 }
@@ -19,13 +17,11 @@ export interface LessonResponsePopulateDto {
     id_module     : string,
     title         : string,
     description   : string,
-    // unit          ?: number,
-    // chapter       ?: number,
     lesson_number : number,
     uploaded_at   : Date,
 }
 
 export interface FilePopulatedDto{
-    _id   : string,
-    url   : string,
+    id   : string | null,
+    url   : string | null,
 }
