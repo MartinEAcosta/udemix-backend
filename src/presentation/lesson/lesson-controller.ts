@@ -33,10 +33,8 @@ export class LessonController {
 
         const { user } = req;
         if( !user ) throw HandlerResponses.handleError( CustomError.unauthorized( 'Debes estar autenticado para crear una lección.' ), res );
-        const [ error, lessonRequestDto ] = CreateLessonDto.create(
-                                                                    {   
-                                                                        ...req.body,
-                                                                    });
+        console.log(req.body)
+        const [ error, lessonRequestDto ] = CreateLessonDto.create(req.body);
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
         new CreateLesson( this.lessonRepository , this.moduleRepository , this.courseRepository , this.fileRepository , this.unitOfWork )

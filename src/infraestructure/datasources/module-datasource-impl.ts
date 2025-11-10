@@ -23,7 +23,7 @@ export class ModuleDatasourceImpl implements ModuleDatasource{
     async deleteModule ( id : string ) : Promise<boolean> {
         const hasDeleted = await ModuleModel.findByIdAndDelete( id );
 
-        return true;
+        return hasDeleted ? true : false;
     }
     
     async addLessonToModule( id_lesson: string , module : ModuleEntity , ts ?: TransactionSession ) : Promise<boolean> {

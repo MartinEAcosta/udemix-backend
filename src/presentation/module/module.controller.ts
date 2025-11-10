@@ -22,15 +22,12 @@ export class ModuleController {
         private readonly courseRepository : CourseRepository,
     ){ }
 
-
     //* VERIFICAR LA FORMA EN LA QUE SE TOMA EL ROL
-
     public createModule = ( req : AuthenticatedRequest , res : Response ) => {
-
         const { user } = req;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para crear un modulo.') , res );
         if( user.role === 'student' ) return HandlerResponses.handleError( CustomError.unauthorized('No tienes los permisos suficientes para crear un modulo.') , res );
-
+        
         const [ error , createModuleDto ] = CreateModuleDto.create( req.body );
         if( error ) return HandlerResponses.handleError( CustomError.badRequest(error) , res );
 
@@ -41,7 +38,6 @@ export class ModuleController {
     }
 
     public updateModule = ( req : AuthenticatedRequest , res : Response ) => {
-
         const { user } = req;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para crear un modulo.') , res );
         

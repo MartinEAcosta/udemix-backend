@@ -30,7 +30,7 @@ export class CreateLessonDto {
 
     static create = ( props : { [ key : string ] : any } ) : [ string?, CreateLessonDto? ]  => {
         const { id_course , id_file , id_module , title , description , uploaded_at } =  props;
-        
+
         if( !id_course ) return [ 'El id del curso es obligatorio.' , undefined];
         if( !id_module ) return [ 'El id del modulo es obligatorio.' , undefined];
         if( !title ) return [ 'El curso debe de contener un titulo.' , undefined];
