@@ -4,7 +4,7 @@ import { CourseDatasource } from '../../domain/datasources/course-datasource';
 import { CourseEntity } from '../../domain/entities/course.entity';
 import { CreateCourseDto } from '../../domain/dtos/course/create-course.dto';
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
-import { PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
+import { PaginationDto, PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
 import { CourseQueryFilter } from '../../domain/helpers/course-query-builder';
 
 export class CourseRepositoryImpl implements CourseRepository{
@@ -13,10 +13,15 @@ export class CourseRepositoryImpl implements CourseRepository{
         private readonly courseDatasource : CourseDatasource, 
     ){ }
     
-    async findAllCourses( filter ?: CourseQueryFilter ) : Promise<CourseEntity[]> {
+    async findAllCourses( filter ?: CourseQueryFilter , pagination ?: PaginationDto ) : Promise<PaginationResponseDto<CourseEntity[]>> {
         try{
-            const courses = await this.courseDatasource.findAllCourses( filter );
-            return courses.map( course => CourseEntity.fromObject( course ) );
+            const info = await this.courseDatasource.findAllCourses( filter, pagination );
+            const { items , ...rest } = info;
+            
+            return {
+                ...rest,
+                items : info.items!.map( course => CourseEntity.fromObject(course) ),
+            }
         }
         catch( error ){
             throw error;
@@ -53,7 +58,7 @@ export class CourseRepositoryImpl implements CourseRepository{
             
             return {
                 ...rest,
-                items : info.items.map( course => CourseEntity.fromObject(course) ),
+                items : info.items!.map( course => CourseEntity.fromObject(course) ),
             }
         }
         catch( error ){

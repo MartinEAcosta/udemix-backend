@@ -10,8 +10,8 @@ import { CategoryRepository } from "../../domain/repository/category-repository"
 import { FileRepository } from "../../domain/repository/file-repository";
 import { CustomError } from "../../domain/errors/custom-error";
 import { FindCoursesPaginated } from "../../domain/use-cases/course/find-courses-paginated";
-import { CourseFilterRequest } from "../middlewares";
 import { FindCoursesByIds } from "../../domain/use-cases/course/find-courses-by-ids";
+import { CourseFilterRequest } from "../middlewares";
 
 
 export class CourseController {
@@ -23,9 +23,11 @@ export class CourseController {
     ){ }
 
     public findAllCourses = ( req : CourseFilterRequest , res : Response ) => {
+        
+        const { pagination } = req.body;
 
         new FindAllCourses( this.courseRepository )
-            .execute( req?.courseQuery )
+            .execute( req?.courseQuery , pagination )
             .then( courses => HandlerResponses.handleSuccess( res , courses, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ));
     }

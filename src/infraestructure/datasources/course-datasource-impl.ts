@@ -4,16 +4,30 @@ import { CourseModel } from "../../data/mongo/models/course.model";
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
 import { CourseResponseDto } from '../../domain/dtos/course/course.responses';
 import { CourseMapper } from '../mappers/course.mapper';
-import { PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
+import { PaginationDto, PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
 import { CourseQueryFilter } from '../../domain/helpers/course-query-builder';
 
 export class CourseDatasourceImpl implements CourseDatasource {
     
-    async findAllCourses( filter ?: CourseQueryFilter ): Promise<CourseResponseDto[]> {
-        const courses = await CourseModel.find( filter || {} );
-        if( !courses ) return [];
-        
-        return courses.map( CourseMapper.fromCourseResponseDto );
+    async findAllCourses( filter ?: CourseQueryFilter , pagination ?: PaginationDto): Promise<PaginationResponseDto<CourseResponseDto[]>> {
+        const [courses , total]  = await Promise.all([
+            CourseModel.find( filter || {} )
+            .skip( (pagination!.current_page - 1 ) * pagination!.limit)
+            .limit( pagination!.limit ),
+            CourseModel.countDocuments(filter || {})
+        ]);
+
+        const founded = courses.map( CourseMapper.fromCourseResponseDto );
+        console.log(filter);
+        return{
+            pages : Math.ceil(total/pagination!.limit),
+            current_page : pagination!.current_page,
+            limit : pagination!.limit,
+            total : total,
+            next  : null,
+            prev  : null,
+            items : founded,
+        };
     }
 
     async findCoursesByIds( id_courses : string[] ) : Promise<CourseResponseDto[]> {
@@ -34,8 +48,8 @@ export class CourseDatasourceImpl implements CourseDatasource {
         const founded = courses.map( CourseMapper.fromCourseResponseDto );
 
         return{
-            pages : total/limit,
-            page,
+            pages : Math.ceil(total/limit),
+            current_page : page,
             limit,
             total : total,
             next  : null,

@@ -8,9 +8,9 @@ export class PaginationMiddleware {
 
     containPageOrLimit = ( req : Request , res : Response , next : NextFunction ) => {
 
-        const { page = 1 , limit = 10 } = req.query;
+        const { current_page = 1 , limit = 10 } = req.query;
 
-        const [ error , paginationDto ] = PaginationDto.create( +page , +limit );
+        const [ error , paginationDto ] = PaginationDto.create( +current_page , +limit );
         if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
 
         req.body = req.body || {};

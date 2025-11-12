@@ -11,10 +11,9 @@ export class CourseRouter {
 
         const { courseMiddleware, courseController, paginationMiddleware, authMiddleware } = DependencyContainer.getInstance();
 
-        // GetAll Courses
         router.get(
           '/',
-          [ courseMiddleware.validateQueryParams ],
+          [ courseMiddleware.validateQueryParams , paginationMiddleware.containPageOrLimit ],
           courseController.findAllCourses
         );
 
