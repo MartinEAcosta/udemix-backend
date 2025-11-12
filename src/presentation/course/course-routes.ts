@@ -9,7 +9,7 @@ export class CourseRouter {
 
         const router = Router();
 
-        const { courseMiddleware, courseController, paginationMiddleware, authMiddleware, fileMiddleware } = DependencyContainer.getInstance();
+        const { courseMiddleware, courseController, paginationMiddleware, authMiddleware } = DependencyContainer.getInstance();
 
         // GetAll Courses
         router.get(

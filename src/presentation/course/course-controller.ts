@@ -49,7 +49,6 @@ export class CourseController {
                 .execute( pagination )
                 .then( courses => HandlerResponses.handleSuccess( res , courses , 200) )
                 .catch( error => HandlerResponses.handleError( error , res ));
-
     }
 
     public findCourseById = ( req : Request , res : Response ) => {

@@ -16,7 +16,6 @@ export class CourseRepositoryImpl implements CourseRepository{
     async findAllCourses( filter ?: CourseQueryFilter ) : Promise<CourseEntity[]> {
         try{
             const courses = await this.courseDatasource.findAllCourses( filter );
-
             return courses.map( course => CourseEntity.fromObject( course ) );
         }
         catch( error ){

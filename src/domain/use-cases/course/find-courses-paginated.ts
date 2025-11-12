@@ -16,12 +16,11 @@ export class FindCoursesPaginated implements FindCoursesPaginatedUseCase {
     async execute( paginationDto : PaginationDto ) : Promise<PaginationResponseDto<CourseEntity[]>> {
 
         const { page , limit } = paginationDto;
-
         const info = await this.courseRepository.findCoursesPaginated( page , limit );
 
         return {
             ...info,
-            next : info.total != 0 ? `/api/courses?page=${ (page+1) }&limit=${ limit }` : null,
+            next : limit * page < info.total ? `/api/courses?page=${ (page+1) }&limit=${ limit }` : null,
             prev : (page - 1) > 0   ? `/api/courses?page=${ (page-1) }&limit=${ limit }` : null, 
         };
     }
