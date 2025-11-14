@@ -8,47 +8,45 @@ export interface CourseFilterRequest extends Request {
 
 export class CourseMiddleware {
     
-    private readonly courseQueryBuilder : CourseQueryBuilder = new CourseQueryBuilder();
-
     constructor( ) { }
 
     validateQueryParams = ( req : CourseFilterRequest , res : Response , next : NextFunction ) => {
 
         const query = req.query || {};
-        console.log( query );
+        const builder = new CourseQueryBuilder();
 
         if( Object.keys(query).length === 0 ) return next();
-        console.log( query );
+
         const { category , priceMin , priceMax , title , notFullyEnrolled } = req.query;
 
         if( priceMin && priceMax ) {
             if( !isNaN( Number(priceMin) ) && !isNaN( Number(priceMax) ) ) {
-                this.courseQueryBuilder.withPriceRange( Number(priceMin) , Number(priceMax) );
+                builder.withPriceRange( Number(priceMin) , Number(priceMax) );
             }
         }
         else{
             if( priceMin && !isNaN( Number( priceMin ) ) ){
-                this.courseQueryBuilder.withPriceRange( Number(priceMin) );
+                builder.withPriceRange( Number(priceMin) );
             }
             if( priceMax && !isNaN( Number( priceMax ) ) ){
-                this.courseQueryBuilder.withPriceRange( undefined , Number(priceMax) );
+                builder.withPriceRange( undefined , Number(priceMax) );
             }
         }
         
         if( category && regularExps.isValidId.test( String(category) ) ) {
-            this.courseQueryBuilder.withCategoryId( String(category) );
+            builder.withCategoryId( String(category) );
         }
 
         if( title && typeof title === 'string' && title.trim().length > 0 ) {
-            this.courseQueryBuilder.withTitle( title );
+            builder.withTitle( title );
         }
 
         if( notFullyEnrolled && ( String( notFullyEnrolled ) === 'true' || String( notFullyEnrolled ) === 'false' ) ) {
             // Se pasa una expresión por lo tanto es valido.
-            this.courseQueryBuilder.withNotFullyEnrolled( String( notFullyEnrolled ) === 'true' );
+            builder.withNotFullyEnrolled( String( notFullyEnrolled ) === 'true' );
         }
 
-        req.courseQuery = this.courseQueryBuilder.getQuery();
+        req.courseQuery = builder.getQuery();
         next();
     }
 

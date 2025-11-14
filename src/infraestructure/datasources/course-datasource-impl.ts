@@ -18,7 +18,7 @@ export class CourseDatasourceImpl implements CourseDatasource {
         ]);
         console.log(courses)
         const founded = courses.map( CourseMapper.fromCourseResponseDto );
-        // console.log(filter);
+        console.log(filter);
         return{
             pages : Math.ceil(total/pagination!.limit),
             current_page : pagination!.current_page,
