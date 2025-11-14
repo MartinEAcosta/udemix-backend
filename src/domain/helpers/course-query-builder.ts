@@ -41,6 +41,7 @@ export class CourseQueryBuilder {
 
     public withNotFullyEnrolled( bool : boolean ) {
         if( bool ){
+            // Si la capacidad no esta definida falla.
             this.query.$expr = { $lt : [ "$current_enrolled" , "$capacity" ] };
         }
     } 
