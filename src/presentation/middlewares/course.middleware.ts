@@ -14,6 +14,11 @@ export class CourseMiddleware {
 
     validateQueryParams = ( req : CourseFilterRequest , res : Response , next : NextFunction ) => {
 
+        const query = req.query || {};
+        console.log( query );
+
+        if( Object.keys(query).length === 0 ) return next();
+        console.log( query );
         const { category , priceMin , priceMax , title , notFullyEnrolled } = req.query;
 
         if( priceMin && priceMax ) {

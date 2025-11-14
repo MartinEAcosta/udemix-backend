@@ -14,11 +14,11 @@ export class CourseDatasourceImpl implements CourseDatasource {
             CourseModel.find( filter || {} )
             .skip( (pagination!.current_page - 1 ) * pagination!.limit)
             .limit( pagination!.limit ),
-            CourseModel.countDocuments(filter || {})
+            CourseModel.countDocuments( filter || {} )
         ]);
-
+        console.log(courses)
         const founded = courses.map( CourseMapper.fromCourseResponseDto );
-        console.log(filter);
+        // console.log(filter);
         return{
             pages : Math.ceil(total/pagination!.limit),
             current_page : pagination!.current_page,

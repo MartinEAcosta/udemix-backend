@@ -25,7 +25,7 @@ export class CourseController {
     public findAllCourses = ( req : CourseFilterRequest , res : Response ) => {
         
         const { pagination } = req.body;
-
+        
         new FindAllCourses( this.courseRepository )
             .execute( req?.courseQuery , pagination )
             .then( courses => HandlerResponses.handleSuccess( res , courses, 200 ) )
