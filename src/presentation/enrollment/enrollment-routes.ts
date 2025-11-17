@@ -29,6 +29,12 @@ export class EnrollmentRouter {
         );
         
 
+        router.post(
+            '/mark-lesson-completed',
+            [ authMiddleware.validateJWT ],
+            enrollmentController.markLessonAsCompleted
+        );
+
         return router;
     }
 

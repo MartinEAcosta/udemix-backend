@@ -69,7 +69,8 @@ export class EnrollmentController{
     public markLessonAsCompleted = ( req : AuthenticatedRequest , res : Response ) => {
 
         const { user } = req;
-        if( !user ) HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para marcar una lección como completada.') , res );
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para marcar una lección como completada.') , res );
+        if( !req.body?.id_course || !req.body?.id_lesson ) return HandlerResponses.handleError( CustomError.badRequest('Chequee los campos id_course e id_lesson y vuelve a intentarlo.') , res );
         const { id_course , id_lesson } = req.body;
 
         new MarkLessonAsCompleted( this.enrollmentRepository , this.courseRepository , this.lessonRepository , 
