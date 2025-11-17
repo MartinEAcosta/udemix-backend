@@ -6,7 +6,16 @@ export interface EnrollmentResponseDto {
     id_course : string;
     purchaseDate : Date;
     progress : number | null;
-    completionDate : Date | null;
+    completed_lessons : string[];
+}
+
+export interface UpdateEnrollmentDto {
+    id : string;
+    id_user : string;
+    id_course : string;
+    purchaseDate ?: Date;
+    progress ?: number;
+    completed_lessons ?: string[];
 }
 
 export interface EnrollmentDetailedResponseDto{
@@ -15,7 +24,7 @@ export interface EnrollmentDetailedResponseDto{
     course : CoursePopulatedDto,
     purchaseDate : Date;
     progress : number | null;
-    completionDate : Date | null;
+    completed_lessons : string[];
 }
 
 export interface CoursePopulatedDto{

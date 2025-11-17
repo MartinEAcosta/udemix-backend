@@ -2,7 +2,7 @@ import { CreateEnrollmentDto } from "../../domain/dtos/enrollment/create-enrollm
 import { EnrollmentEntity } from "../../domain/entities/enrollment.entity";
 import { EnrollmentRepository } from "../../domain/repository/enrollment-repository";
 import { EnrollmentDatasource } from '../../domain/datasources/enrollment-datasource';
-import { EnrollmentDetailedResponseDto } from "../../domain/dtos/enrollment/enrollment.response.dto";
+import { EnrollmentDetailedResponseDto, UpdateEnrollmentDto } from "../../domain/dtos/enrollment/enrollment.response.dto";
 
 
 export class EnrollmentRepositoryImpl implements EnrollmentRepository {
@@ -12,30 +12,65 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
     ){ }
     
     async findAllEnrollments( ) : Promise<EnrollmentEntity[]> {
-        const enrollments = await this.enrollmentDatasource.findAllEnrollments();
-        
-        return enrollments.map( enrollment => EnrollmentEntity.fromObject( enrollment ));
+        try{
+
+            const enrollments = await this.enrollmentDatasource.findAllEnrollments();
+            
+            return enrollments.map( enrollment => EnrollmentEntity.fromObject( enrollment ));
+        }
+        catch( error ){
+            throw error;
+        }
     }
 
     async findEnrollmentsByUserId( uid : string ) : Promise<EnrollmentDetailedResponseDto[]> {
-        const enrollments = await this.enrollmentDatasource.findEnrollmentsByUserId( uid );
-        if( !enrollments ) return [];
+        try{
 
-        return enrollments;
+            const enrollments = await this.enrollmentDatasource.findEnrollmentsByUserId( uid );
+            if( !enrollments ) return [];
+            
+            return enrollments;
+        }
+        catch( error ){
+            throw error;
+        }
     }
     
     async saveEnrollment( enrollmentDto : CreateEnrollmentDto ) : Promise<EnrollmentEntity> {
-        const savedEnrollment = await this.enrollmentDatasource.saveEnrollment( enrollmentDto );
+        try{
 
-        return EnrollmentEntity.fromObject( savedEnrollment );
+            const savedEnrollment = await this.enrollmentDatasource.saveEnrollment( enrollmentDto );
+            
+            return EnrollmentEntity.fromObject( savedEnrollment );
+        }
+        catch( error ){
+            throw error;
+        }
     }
 
-    // Analizar quitar
-    async findEnrollmentByUserIdAndCourseId (uid: string, courseId: string): Promise<EnrollmentEntity | null> {
-        const enrollment = await this.enrollmentDatasource.findEnrollmentByUserIdAndCourseId( uid , courseId );
-        if ( !enrollment ) return null;
+    async updateEnrollment( enrollment: UpdateEnrollmentDto ): Promise<EnrollmentEntity> {
+        try{
 
-        return EnrollmentEntity.fromObject( enrollment );
+            const updatedEnrollment = await this.enrollmentDatasource.updateEnrollment( enrollment );
+            
+            return EnrollmentEntity.fromObject( updatedEnrollment );
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
+    async findEnrollmentByUserIdAndCourseId (uid: string, courseId: string): Promise<EnrollmentEntity | null> {
+        try{
+
+            const enrollment = await this.enrollmentDatasource.findEnrollmentByUserIdAndCourseId( uid , courseId );
+            if ( !enrollment ) return null;
+            
+            return EnrollmentEntity.fromObject( enrollment );
+        }
+        catch( error ){
+            throw error;
+        }
     }
     
 }

@@ -10,7 +10,7 @@ export class EnrollmentMapper {
             id_course : enrollmentDoc.id_course.toString(),
             purchaseDate : enrollmentDoc.purchaseDate,
             progress : enrollmentDoc.progress ?? 0,
-            completionDate : enrollmentDoc.completionDate ?? null,
+            completed_lessons : enrollmentDoc.completed_lessons.map( id_lesson => id_lesson.toString() ) ?? [],
         }
     }
 
@@ -26,7 +26,7 @@ export class EnrollmentMapper {
             },
             purchaseDate : enrollmentDoc.purchaseDate,
             progress : enrollmentDoc.progress ?? 0,
-            completionDate : enrollmentDoc.completionDate ?? null,
+            completed_lessons : enrollmentDoc.completed_lessons.map( id_lesson => id_lesson.toString() ) ?? [],
         }
     }
 }

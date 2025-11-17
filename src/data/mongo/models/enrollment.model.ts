@@ -7,7 +7,7 @@ export interface IEnrollmentModel{
     id_course      :   Types.ObjectId;
     purchaseDate   :   Date;
     progress       ?:  number;
-    completionDate ?:  Date | undefined;
+    completed_lessons : Types.ObjectId[];
 }
 
 
@@ -17,7 +17,7 @@ export interface IEnrollmentDetailedModel {
     id_course      :   CoursePopulatedDto;
     purchaseDate   :   Date;
     progress       ?:  number;
-    completionDate ?:  Date | undefined; 
+    completed_lessons : Types.ObjectId[];
 }
 
 const enrollmentSchema = new mongoose.Schema({
@@ -44,9 +44,10 @@ const enrollmentSchema = new mongoose.Schema({
         default : 0,
     },
 
-    completionDate : {
-        type    : Date,
-        default : null,
+    completed_lessons : {
+        type    : [Schema.Types.ObjectId],
+        ref     : 'Lesson',
+        default : [],
     },
 
 });

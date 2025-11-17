@@ -10,6 +10,8 @@ import { CourseRepository } from "../../domain/repository/course-repository";
 import { FindAllEnrollments } from "../../domain/use-cases/enrollment/find-all-enrollments";
 import { FindEnrollmentsByUserId } from "../../domain/use-cases/enrollment/find-enrollments-by-user-id";
 import { UnitOfWork } from "../../domain/services/UnitOfWork";
+import { MarkLessonAsCompleted } from "../../domain/use-cases/enrollment/mark-lesson-as-completed";
+import { LessonRepository, ModuleRepository } from "../../domain/repository";
 
 
 export class EnrollmentController{
@@ -18,6 +20,8 @@ export class EnrollmentController{
         private readonly enrollmentRepository : EnrollmentRepository,
         private readonly authRepository       : AuthRepository,
         private readonly courseRepository     : CourseRepository,
+        private readonly lessonRepository     : LessonRepository,
+        private readonly moduleRepository     : ModuleRepository,
         private readonly unitOfWork           : UnitOfWork,
     ) { }
 
@@ -60,8 +64,21 @@ export class EnrollmentController{
             .execute( createEnrollmentDto! )
             .then( enrollmentCreated => HandlerResponses.handleSuccess( res , enrollmentCreated, 201 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
-
     }
+
+    public markLessonAsCompleted = ( req : AuthenticatedRequest , res : Response ) => {
+
+        const { user } = req;
+        if( !user ) HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para marcar una lección como completada.') , res );
+        const { id_course , id_lesson } = req.body;
+
+        new MarkLessonAsCompleted( this.enrollmentRepository , this.courseRepository , this.lessonRepository , 
+                                    this.moduleRepository , this.authRepository )
+            .execute( id_course , id_lesson , user!.id )
+            .then( enrollment => HandlerResponses.handleSuccess( res , enrollment, 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
+    }
+
 
     
 }

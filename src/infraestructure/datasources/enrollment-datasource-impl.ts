@@ -2,7 +2,7 @@ import { EnrollmentModel } from "../../data";
 import { EnrollmentDatasource } from "../../domain/datasources/enrollment-datasource";
 import { CreateEnrollmentDto } from "../../domain/dtos/enrollment/create-enrollment.dto";
 import { EnrollmentMapper } from "../mappers/enrollment.mapper";
-import { EnrollmentDetailedResponseDto, EnrollmentResponseDto } from '../../domain/dtos/enrollment/enrollment.response.dto';
+import { EnrollmentDetailedResponseDto, EnrollmentResponseDto, UpdateEnrollmentDto } from '../../domain/dtos/enrollment/enrollment.response.dto';
 import { IEnrollmentDetailedModel } from '../../data/mongo/models/enrollment.model';
 
 export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
@@ -22,10 +22,17 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
     }
 
     saveEnrollment = async(enrollmentDto: CreateEnrollmentDto) : Promise<EnrollmentResponseDto> => {
-        const savedEnrollment= await EnrollmentModel.create( enrollmentDto );
-        if( !savedEnrollment ) throw 'Hubo un error al registrar el usuario.';
+        const savedEnrollment = await EnrollmentModel.create( enrollmentDto );
+        if( !savedEnrollment ) throw 'Hubo un error al registrar la inscripción.';
             
         return EnrollmentMapper.fromEnrollmentDto( savedEnrollment );
+    }
+
+    updateEnrollment = async( enrollmentDto : UpdateEnrollmentDto ) : Promise<EnrollmentResponseDto> => {
+        const updatedEnrollment = await EnrollmentModel.findByIdAndUpdate( enrollmentDto.id , enrollmentDto , { new : true } );
+        if( !updatedEnrollment ) throw 'Hubo un error al actualizar la inscripción.';
+
+        return EnrollmentMapper.fromEnrollmentDto( updatedEnrollment );
     }
 
     findEnrollmentByUserIdAndCourseId = async(uid: string, courseId: string): Promise<EnrollmentResponseDto | null> => {
