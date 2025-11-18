@@ -37,7 +37,7 @@ export class EnrollmentController{
     public findEnrollmentsByUserId = ( req : AuthenticatedRequest , res : Response ) => {
         
         const { id_user } = req.params;
-        if( !id_user ) throw HandlerResponses.handleError(CustomError.badRequest('Debes indicar un id usuario válido.'), res);
+        if( !id_user ) return HandlerResponses.handleError(CustomError.badRequest('Debes indicar un id usuario válido.'), res);
 
         new FindEnrollmentsByUserId( this.enrollmentRepository )
             .execute( id_user )
@@ -58,7 +58,7 @@ export class EnrollmentController{
                                                                                         id_course :  course_id,
                                                                                     } 
                                                                                 );
-        if( errorMessage ) return res.status(400).json( { error : errorMessage });
+        if( errorMessage ) return HandlerResponses.handleError(CustomError.badRequest(errorMessage), res);
 
         new EnrollUserInCourse( this.enrollmentRepository, this.authRepository , this.courseRepository , this.unitOfWork )
             .execute( createEnrollmentDto! )

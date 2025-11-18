@@ -52,7 +52,12 @@ export class ModuleDatasourceImpl implements ModuleDatasource{
     async findModulesByCourseIdPopulated ( id_course : string ) : Promise<ModuleResponsePopulatedDto[]> {
         const modules = await ModuleModel.find({ id_course : id_course })
                                             .sort({ unit : 'asc'})
-                                            .populate<IModulePopulatedModel>('id_lessons');
+                                            .populate<IModulePopulatedModel>({
+                                                                            path : 'id_lessons',
+                                                                            options: { 
+                                                                                    sort : { 'lesson_number' : 'asc' } 
+                                                                            }
+                                            });
         console.log(modules)
         if( !modules ) return [];
 
