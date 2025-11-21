@@ -55,7 +55,7 @@ export class LessonController {
                                                                         ...req.body,
                                                                         id_user : user.id
                                                                     });
-        if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
         
         new UpdateLesson( this.courseRepository , this.lessonRepository )

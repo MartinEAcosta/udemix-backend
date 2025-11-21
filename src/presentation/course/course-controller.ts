@@ -80,8 +80,8 @@ export class CourseController {
         const [ errorMessage , createCourseDto ] = CreateCourseDto.create( req.body );
         if( errorMessage ) return HandlerResponses.handleError( CustomError.badRequest( errorMessage ) , res );
         
-        new SaveCourse( this.courseRepository , this.fileRepository , this.categoryRepository )
-            .execute( createCourseDto! , fileUploadDto )
+        new SaveCourse( this.courseRepository , this.categoryRepository )
+            .execute( createCourseDto!  )
             .then( courseCreated => HandlerResponses.handleSuccess( res, courseCreated , 201 ) )
             .catch( error => HandlerResponses.handleError( error , res ));
     }

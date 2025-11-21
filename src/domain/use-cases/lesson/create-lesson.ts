@@ -22,8 +22,7 @@ export class CreateLesson implements CreateLessonUseCase {
         private readonly unitOfWork       : UnitOfWork,
     ) { }
 
-    async execute( createLessonDto : CreateLessonDto , id_user : string , file ?: UploadFileDto ) : Promise<LessonEntity> {
-    
+    async execute( createLessonDto : CreateLessonDto , id_user : string ) : Promise<LessonEntity> {
         const { id_course } = createLessonDto;
         const course = await this.courseRepository.findCourseById( id_course );
         if( !course ) throw CustomError.notFound("El curso al que quieres asignar la lección no existe.");
@@ -40,30 +39,14 @@ export class CreateLesson implements CreateLessonUseCase {
 
         return await this.unitOfWork.startTransaction<LessonEntity>( async ( ts ) => {
 
-            let lessonResponse;
+            const lessonResponse = await this.lessonRepository.createLesson(
+                { 
+                    ...rest,
+                    lesson_number : lastLesson ? lastLesson.lesson_number+1 : 0,
+                },
+                ts 
+            );
 
-            if( file ){
-            
-                const fileUploaded = await this.fileRepository.uploadFile( file , 'lessons', ts );
-                if( !fileUploaded ) throw CustomError.internalServer( 'Hubo un error al intentar cargar el contenido a la lección.');
-                lessonResponse = await this.lessonRepository.createLesson(
-                    { 
-                        ...rest,
-                        lesson_number : lastLesson ? lastLesson.lesson_number+1 : 0,
-                        id_file : fileUploaded.id
-                    },
-                    ts 
-                );
-            }
-            else{
-                lessonResponse = await this.lessonRepository.createLesson( 
-                    {
-                        ...rest,
-                        lesson_number : lastLesson ? lastLesson.lesson_number+1 : 0,
-                    },
-                    ts
-                );
-            }
             const hasAdded = await this.moduleRepository.addLessonToModule( lessonResponse.id , module , ts );
             if( !hasAdded ) throw CustomError.internalServer('Hubo un error al intentar vincular la lección al modulo.');
             
