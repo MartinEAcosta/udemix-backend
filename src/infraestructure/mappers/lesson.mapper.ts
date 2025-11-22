@@ -26,13 +26,12 @@ export class LessonMapper {
             ? {
                 id: lessonDoc.id_file.id ? lessonDoc.id_file.id.toString() : null,
                 url: lessonDoc.id_file.url,
+                resource_type: lessonDoc.id_file.resource_type ,
                 }
-            : { id: null, url: null },
+            : { id: null, url: null , resource_type : 'image' },
             id_module     : lessonDoc.id_module.toString(),
             title         : lessonDoc.title,
             description   : lessonDoc.description,
-            // unit          : lessonDoc.unit ?? undefined,
-            // chapter       : lessonDoc.chapter ?? undefined,
             lesson_number : lessonDoc.lesson_number,
             uploaded_at   : lessonDoc.uploaded_at,
         }

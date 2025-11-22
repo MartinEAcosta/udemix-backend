@@ -48,7 +48,7 @@ export class LessonDatasourceImpl implements LessonDatasource {
     async findAllLessonsPopulatedByCourseId( id_course : string ) : Promise<LessonResponsePopulateDto[]> {
         const lessons = await LessonModel.find({ id_course : id_course })
                                         .sort({ lesson_number: 'asc'})
-                                        .populate<ILessonPopulateModel>('id_file', '_id url');
+                                        .populate<ILessonPopulateModel>('id_file', '_id url resource_type');
         return lessons.map( lesson => LessonMapper.fromLessonPopulateResponseDto( lesson ) );
     }
     
