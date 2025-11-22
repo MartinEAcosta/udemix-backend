@@ -24,7 +24,6 @@ export class LessonController {
         private readonly lessonRepository : LessonRepository,
         private readonly moduleRepository : ModuleRepository,
         private readonly courseRepository : CourseRepository,
-        private readonly fileRepository   : FileRepository,
         private readonly unitOfWork       : UnitOfWork,
     ) { }
 
@@ -37,8 +36,8 @@ export class LessonController {
         const [ error, lessonRequestDto ] = CreateLessonDto.create(req.body);
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
-        new CreateLesson( this.lessonRepository , this.moduleRepository , this.courseRepository , this.fileRepository , this.unitOfWork )
-                .execute( lessonRequestDto! , user.id , fileUploadDto  )
+        new CreateLesson( this.lessonRepository , this.moduleRepository , this.courseRepository , this.unitOfWork )
+                .execute( lessonRequestDto! , user.id  )
                 .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
                 .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }

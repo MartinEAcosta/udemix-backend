@@ -18,12 +18,12 @@ export class CreateLesson implements CreateLessonUseCase {
         private readonly lessonRepository : LessonRepository,
         private readonly moduleRepository : ModuleRepository,
         private readonly courseRepository : CourseRepository,
-        private readonly fileRepository   : FileRepository,
         private readonly unitOfWork       : UnitOfWork,
     ) { }
 
     async execute( createLessonDto : CreateLessonDto , id_user : string ) : Promise<LessonEntity> {
         const { id_course } = createLessonDto;
+        console.log(createLessonDto);
         const course = await this.courseRepository.findCourseById( id_course );
         if( !course ) throw CustomError.notFound("El curso al que quieres asignar la lección no existe.");
         
