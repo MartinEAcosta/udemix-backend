@@ -8,8 +8,8 @@ export abstract class EnrollmentRepository {
     
     abstract findAllEnrollments( ) : Promise<EnrollmentEntity[]>;
     abstract findEnrollmentsByUserId( uid : string ) : Promise<EnrollmentDetailedResponseDto[]>;
+    abstract findEnrollmentByUserIdAndCourseId( id_user : string , id_course : string ) : Promise<EnrollmentEntity | null>;
     abstract saveEnrollment( enrollmentDto : CreateEnrollmentDto , ts ?: TransactionSession ) : Promise<EnrollmentEntity>;
     abstract updateEnrollment( enrollment : UpdateEnrollmentDto ) : Promise<EnrollmentEntity>;
-    abstract findEnrollmentByUserIdAndCourseId( id_user : string , id_course : string ) : Promise<EnrollmentEntity | null>;
 
 }

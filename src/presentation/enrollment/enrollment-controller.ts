@@ -12,6 +12,7 @@ import { FindEnrollmentsByUserId } from "../../domain/use-cases/enrollment/find-
 import { UnitOfWork } from "../../domain/services/UnitOfWork";
 import { MarkLessonAsCompleted } from "../../domain/use-cases/enrollment/mark-lesson-as-completed";
 import { LessonRepository, ModuleRepository } from "../../domain/repository";
+import { FindSpecificEnrollment } from "../../domain/use-cases/enrollment/find-specific-enrollment";
 
 
 export class EnrollmentController{
@@ -41,6 +42,23 @@ export class EnrollmentController{
 
         new FindEnrollmentsByUserId( this.enrollmentRepository )
             .execute( id_user )
+            .then( enrollments => HandlerResponses.handleSuccess( res , enrollments , 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
+    }
+
+    public findEnrollmentByUserIdAndCourseId = ( req : AuthenticatedRequest , res : Response ) => {
+        
+        const { user } = req;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe encontrarse autenticado para obtener una inscripción en especifica.') , res );
+        
+        const { id_user , id_course } = req.params;
+        if( !id_user ) return HandlerResponses.handleError( CustomError.badRequest( 'Debes indicar el id del usuario al que buscas la inscripción.') , res );
+        if( !id_course ) return HandlerResponses.handleError( CustomError.badRequest( 'Debes indicar el id del curso al que buscas la inscripción.') , res );
+        console.log( id_user , user.id )
+        if( id_user != user.id ) return HandlerResponses.handleError( CustomError.unauthorized( 'No puedes buscar una inscripción que no te pertenece') , res );
+
+        new FindSpecificEnrollment( this.enrollmentRepository , this.authRepository , this.courseRepository )
+            .execute( id_user , id_course )        
             .then( enrollments => HandlerResponses.handleSuccess( res , enrollments , 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }

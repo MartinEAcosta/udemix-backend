@@ -60,10 +60,10 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
         }
     }
 
-    async findEnrollmentByUserIdAndCourseId (uid: string, courseId: string): Promise<EnrollmentEntity | null> {
+    async findEnrollmentByUserIdAndCourseId ( id_user : string, id_course : string): Promise<EnrollmentEntity | null> {
         try{
 
-            const enrollment = await this.enrollmentDatasource.findEnrollmentByUserIdAndCourseId( uid , courseId );
+            const enrollment = await this.enrollmentDatasource.findEnrollmentByUserIdAndCourseId( id_user , id_course );
             if ( !enrollment ) return null;
             
             return EnrollmentEntity.fromObject( enrollment );
