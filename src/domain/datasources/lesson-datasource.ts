@@ -6,13 +6,12 @@ import { TransactionSession } from "../services/UnitOfWork";
 
 export abstract class LessonDatasource {
 
-
     abstract createLesson( lessonRequestDto : CreateLessonDto , ts ?: TransactionSession ) : Promise<LessonResponseDto>;
     abstract updateLesson( lessonRequestDto : UpdateLessonDto ) : Promise<LessonResponseDto>;
     abstract deleteLesson( id : string ) : Promise<boolean>;
     abstract findAllLessonsByCourseId( id_course : string ) : Promise<LessonResponseDto[]>;
     abstract findAllLessonsPopulatedByCourseId( id_course : string ) : Promise<LessonResponsePopulateDto[]>;
     abstract findLessonById( id : string ) : Promise<LessonResponseDto | null>;
-
+    abstract findLessonByLessonNumber( id_course : string , lesson_number : number ) : Promise<LessonResponsePopulateDto | null>;
     
 }

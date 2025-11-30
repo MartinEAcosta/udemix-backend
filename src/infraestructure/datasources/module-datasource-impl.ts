@@ -58,7 +58,6 @@ export class ModuleDatasourceImpl implements ModuleDatasource{
                                                                                     sort : { 'lesson_number' : 'asc' } 
                                                                             }
                                             });
-        console.log(modules)
         if( !modules ) return [];
 
         return modules.map( ModuleMapper.fromModuleResponsePopulatedDto );

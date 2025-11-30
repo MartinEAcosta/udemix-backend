@@ -1,5 +1,4 @@
 
-
 interface LessonEntityOptions{
     id            : string,
     id_course     : string,

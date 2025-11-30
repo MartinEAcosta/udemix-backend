@@ -22,7 +22,9 @@ export class UpdateLesson implements UpdateLessonUseCase {
 
     async execute( lessonRequestDto : UpdateLessonDto ) : Promise<LessonEntity> {
         const { id } = lessonRequestDto;
+        console.log(lessonRequestDto.lesson_number)
         const lesson = await this.lessonRepository.findLessonById( id );
+        console.log('udate')
         if( !lesson ) throw CustomError.notFound("La lección que intentas actualizar no existe.");
         
         const course = await this.courseRepository.findCourseById( lesson.id_course );

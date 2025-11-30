@@ -80,4 +80,14 @@ export class LessonRepositoryImpl implements LessonRepository {
         }
     }
 
+    async findLessonByLessonNumber ( id_course : string , lesson_number : number ) : Promise<LessonResponsePopulateDto | null> {
+        try{
+            const lesson = await this.lessonDatasource.findLessonByLessonNumber( id_course , lesson_number );
+            return lesson ? lesson : null;
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
 }

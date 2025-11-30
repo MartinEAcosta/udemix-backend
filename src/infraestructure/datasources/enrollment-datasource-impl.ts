@@ -7,11 +7,18 @@ import { IEnrollmentDetailedModel } from '../../data/mongo/models/enrollment.mod
 
 export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
 
-    findAllEnrollments= async( ) : Promise<EnrollmentResponseDto[]> => {
+    findAllEnrollments = async( ) : Promise<EnrollmentResponseDto[]> => {
         const listOfAllEnrollments = await EnrollmentModel.find({});
 
         return listOfAllEnrollments.map( enrollment => EnrollmentMapper.fromEnrollmentDto( enrollment ) );
     }
+
+    findEnrollmentById = async( id_enrollment : string ) : Promise<EnrollmentResponseDto | null> => {
+        const enrollment = await EnrollmentModel.findById({ _id : id_enrollment });
+        if( !enrollment ) return null;
+
+        return EnrollmentMapper.fromEnrollmentDto( enrollment );
+    }  
     
     findEnrollmentsByUserId = async( uid: string ) : Promise<EnrollmentDetailedResponseDto[] | undefined>  =>{
         const listOfEnrollments = await EnrollmentModel.find({ id_user: uid })
@@ -35,7 +42,7 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
         return EnrollmentMapper.fromEnrollmentDto( updatedEnrollment );
     }
 
-    findEnrollmentByUserIdAndCourseId = async(uid: string, courseId: string): Promise<EnrollmentResponseDto | null> => {
+    findEnrollmentByUserIdAndCourseId = async( uid : string, courseId : string ) : Promise<EnrollmentResponseDto | null> => {
         const enrollment = await EnrollmentModel.findOne({ id_user: uid, id_course: courseId });
         if( !enrollment ) return null;
 

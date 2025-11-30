@@ -23,6 +23,19 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
         }
     }
 
+    async findEnrollmentById( id_enrollment : string ) : Promise<EnrollmentEntity | null>  {
+        try{
+
+            const enrollment = await this.enrollmentDatasource.findEnrollmentById( id_enrollment );
+            if( !enrollment ) return null;
+
+            return EnrollmentEntity.fromObject( enrollment );
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
     async findEnrollmentsByUserId( uid : string ) : Promise<EnrollmentDetailedResponseDto[]> {
         try{
 

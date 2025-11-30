@@ -1,5 +1,3 @@
-
-
 export interface EnrollmentResponseDto {
     id : string;
     id_user : string;
@@ -8,6 +6,16 @@ export interface EnrollmentResponseDto {
     progress : number | null;
     completed_lessons : string[];
 }
+
+// export interface NextEnrollmentResponseDto {
+//     id : string;
+//     id_user : string;
+//     id_course : string;
+//     purchaseDate : Date;
+//     progress : number | null;
+//     completed_lessons : string[];
+//     next_lesson : string;
+// }
 
 export interface UpdateEnrollmentDto {
     id : string;
