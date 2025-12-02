@@ -1,5 +1,5 @@
-import { UploadFileDto } from "../dtos/file-upload/file-upload.dto";
-import { FileStorageAdapterResponseDto } from "../dtos/file-upload/file-upload.response.dto";
+import { UploadFileDto } from "../dtos/file/file.dto";
+import { FileStorageAdapterResponseDto } from "../dtos/file/file-response.dto";
 
 
 export abstract class FileStorage {

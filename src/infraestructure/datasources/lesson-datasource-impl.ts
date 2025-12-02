@@ -63,7 +63,7 @@ export class LessonDatasourceImpl implements LessonDatasource {
 
     async findLessonByLessonNumber( id_course : string , lesson_number : number ) : Promise<LessonResponsePopulateDto | null> {
         const lesson = await LessonModel.findOne({ id_course : id_course , lesson_number : lesson_number })
-                                        .populate<ILessonPopulateModel>('id_file', '_id url resource_type');
+                                        .populate<ILessonPopulateModel>('id_file', '_id url resource_type extension');
         if( !lesson ) return null;
 
         return LessonMapper.fromLessonPopulateResponseDto( lesson );

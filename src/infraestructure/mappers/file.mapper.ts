@@ -1,4 +1,4 @@
-import { FileResponseDto } from "../../domain/dtos/file-upload/file-upload.response.dto";
+import { FileResponseDto } from "../../domain/dtos/file/file-response.dto";
 
 export class FileMapper {
 

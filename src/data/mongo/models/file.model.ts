@@ -1,5 +1,5 @@
 import mongoose, { Types } from "mongoose";
-import { ResourceValidTypes } from "../../../domain/dtos/file-upload/file-upload.dto";
+import { ResourceValidTypes } from "../../../domain/dtos/file/file.dto";
 
 export interface IFileModel {
     _id?             : Types.ObjectId; // Podría venir de la DB

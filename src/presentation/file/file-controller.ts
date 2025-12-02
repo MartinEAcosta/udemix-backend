@@ -8,7 +8,7 @@ import { UploadSingle } from "../../domain/use-cases/file/upload-single";
 import { DeleteFile } from "../../domain/use-cases/file/delete-file";
 import { FindFileById } from "../../domain/use-cases/file/find-file-by-id";
 import { DeleteCourseThumbnail } from "../../domain/use-cases/file/delete-course-thumbnail";
-import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
+import { UploadFileDto } from "../../domain/dtos/file/file.dto";
 import { LessonRepository } from "../../domain/repository";
 
 // toLowerCase aplicado a la hora de comparar.

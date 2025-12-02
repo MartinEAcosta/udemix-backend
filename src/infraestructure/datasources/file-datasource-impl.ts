@@ -1,10 +1,10 @@
 import { FileStorage } from "../../domain/services/FileStorage";
 import { CustomError } from "../../domain/errors/custom-error";
 import { FileModel } from "../../data/mongo/models/file.model";
-import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
+import { UploadFileDto } from "../../domain/dtos/file/file.dto";
 import { FileMapper } from '../mappers/file.mapper';
 import { FileDatasource } from '../../domain/datasources/file-datasource';
-import { FileResponseDto, FileStorageAdapterResponseDto } from '../../domain/dtos/file-upload/file-upload.response.dto';
+import { FileResponseDto, FileStorageAdapterResponseDto } from '../../domain/dtos/file/file-response.dto';
 import { TransactionSession } from "../../domain/services/UnitOfWork";
 
 

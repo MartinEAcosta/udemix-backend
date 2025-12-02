@@ -25,4 +25,5 @@ export interface FilePopulatedDto{
     id   : string | null,
     url   : string | null,
     resource_type : "image" | "video" | "raw" | "auto",
+    extension : string | null,
 }

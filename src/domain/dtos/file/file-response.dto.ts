@@ -1,4 +1,4 @@
-import { ResourceValidTypes } from "./file-upload.dto";
+import { ResourceValidTypes } from "./file.dto";
 
 export interface FileStorageAdapterResponseDto {
     id              ?: string;

@@ -1,4 +1,4 @@
-import { ResourceValidTypes } from "../dtos/file-upload/file-upload.dto";
+import { ResourceValidTypes } from "../dtos/file/file.dto";
 
 export type Folders = 'courses' | 'lessons';
 

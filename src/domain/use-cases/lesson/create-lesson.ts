@@ -3,7 +3,7 @@ import { LessonEntity } from "../../entities/lesson.entity";
 import { CustomError } from "../../errors/custom-error";
 import { LessonRepository } from "../../repository/lesson-repository";
 import { CourseRepository } from '../../repository/course-repository';
-import { UploadFileDto } from "../../dtos/file-upload/file-upload.dto";
+import { UploadFileDto } from "../../dtos/file/file.dto";
 import { FileRepository } from "../../repository/file-repository";
 import { ModuleRepository } from "../../repository/module-repository";
 import { UnitOfWork } from "../../services/UnitOfWork";

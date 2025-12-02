@@ -1,7 +1,7 @@
 import { FileRepository } from "../../repository/file-repository";
 import { CustomError } from "../../errors/custom-error";
-import { UploadFileDto } from "../../dtos/file-upload/file-upload.dto";
-import { FileResponseDto } from "../../dtos/file-upload/file-upload.response.dto";
+import { UploadFileDto } from "../../dtos/file/file.dto";
+import { FileResponseDto } from "../../dtos/file/file-response.dto";
 import { CourseRepository, LessonRepository } from "../../repository";
 
 export interface UploadFileUseCase {

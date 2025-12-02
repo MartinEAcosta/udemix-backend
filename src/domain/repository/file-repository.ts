@@ -1,5 +1,5 @@
-import { UploadFileDto } from "../dtos/file-upload/file-upload.dto";
-import { FileResponseDto } from "../dtos/file-upload/file-upload.response.dto";
+import { UploadFileDto } from "../dtos/file/file.dto";
+import { FileResponseDto } from "../dtos/file/file-response.dto";
 import { TransactionSession } from "../services/UnitOfWork";
 
 export abstract class FileRepository {

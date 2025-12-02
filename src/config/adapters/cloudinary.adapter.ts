@@ -2,8 +2,8 @@ import { v2 as cloudinary } from 'cloudinary';
 import { envs } from "../envs";
 
 import { FileStorage } from "../../domain/services/FileStorage";
-import { UploadFileDto, ResourceValidTypes } from '../../domain/dtos/file-upload/file-upload.dto';
-import { FileStorageAdapterResponseDto } from '../../domain/dtos/file-upload/file-upload.response.dto';
+import { UploadFileDto, ResourceValidTypes } from '../../domain/dtos/file/file.dto';
+import { FileStorageAdapterResponseDto } from '../../domain/dtos/file/file-response.dto';
 import { TransactionSession } from '../../domain/services/UnitOfWork';
 
 export class CloudinaryAdapter implements FileStorage {

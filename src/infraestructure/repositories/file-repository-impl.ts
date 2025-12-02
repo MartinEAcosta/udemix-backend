@@ -1,7 +1,7 @@
 import { FileRepository } from "../../domain/repository/file-repository";
 import { FileDatasource } from "../../domain/datasources/file-datasource";
-import { UploadFileDto } from "../../domain/dtos/file-upload/file-upload.dto";
-import { FileResponseDto } from "../../domain/dtos/file-upload/file-upload.response.dto";
+import { UploadFileDto } from "../../domain/dtos/file/file.dto";
+import { FileResponseDto } from "../../domain/dtos/file/file-response.dto";
 import { FileMapper } from "../mappers/file.mapper";
 import { FileEntity } from "../../domain/entities/file.entity";
 import { TransactionSession } from "../../domain/services/UnitOfWork";

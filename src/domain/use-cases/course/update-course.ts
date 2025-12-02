@@ -4,7 +4,7 @@ import { CourseEntity } from "../../entities/course.entity";
 import { CustomError } from "../../errors/custom-error";
 import { UpdateCourseDto } from "../../dtos/course/update-course.dto";
 import { FileRepository } from "../../repository/file-repository";
-import { UploadFileDto } from "../../dtos/file-upload/file-upload.dto";
+import { UploadFileDto } from "../../dtos/file/file.dto";
 import { CategoryRepository } from "../../repository/category-repository";
 
 export interface UpdateCourseUseCase {

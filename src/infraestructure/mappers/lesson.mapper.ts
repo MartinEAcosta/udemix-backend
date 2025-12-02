@@ -26,9 +26,10 @@ export class LessonMapper {
             ? {
                 id: lessonDoc.id_file.id ? lessonDoc.id_file.id.toString() : null,
                 url: lessonDoc.id_file.url,
-                resource_type: lessonDoc.id_file.resource_type ,
-                }
-            : { id: null, url: null , resource_type : 'image' },
+                resource_type: lessonDoc.id_file.resource_type,
+                extension : lessonDoc.id_file.extension,
+            }
+            : { id: null, url: null , resource_type : 'image' , extension : null },
             id_module     : lessonDoc.id_module.toString(),
             title         : lessonDoc.title,
             description   : lessonDoc.description,
