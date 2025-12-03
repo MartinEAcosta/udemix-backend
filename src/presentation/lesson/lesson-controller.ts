@@ -13,9 +13,10 @@ import { CourseRepository } from "../../domain/repository/course-repository";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { UpdateLessonDto } from "../../domain/dtos/lesson/update-lesson.dto";
 import { UpdateLesson } from "../../domain/use-cases/lesson/update-lesson";
-import { FileRepository } from "../../domain/repository/file-repository";
 import { ModuleRepository } from "../../domain/repository/module-repository";
 import { UnitOfWork } from "../../domain/services/UnitOfWork";
+import { FindNextLessonForEnrollment } from "../../domain/use-cases/enrollment/find-next-lesson-for-enrollment";
+import { EnrollmentRepository } from "../../domain/repository";
 
 
 export class LessonController {
@@ -24,11 +25,11 @@ export class LessonController {
         private readonly lessonRepository : LessonRepository,
         private readonly moduleRepository : ModuleRepository,
         private readonly courseRepository : CourseRepository,
+        private readonly enrollmentRepository : EnrollmentRepository,
         private readonly unitOfWork       : UnitOfWork,
     ) { }
 
     public createLesson = ( req : AuthenticatedRequest , res : Response ) => {
-        const fileUploadDto = req.body.attachedFile;
 
         const { user } = req;
         if( !user ) throw HandlerResponses.handleError( CustomError.unauthorized( 'Debes estar autenticado para crear una lección.' ), res );
@@ -97,6 +98,18 @@ export class LessonController {
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
 
+    }
+
+    public findNextLesson = ( req : AuthenticatedRequest , res : Response ) => {
+        const { user } = req;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe encontrarse autenticado para obtener una inscripción en especifica.') , res );
+        
+        const { id_enrollment } = req.params;
+        if( !id_enrollment ) return HandlerResponses.handleError( CustomError.badRequest( 'Debes de indicar el id de la inscripción la cual deseas obtener la próxima lección.' ) , res  );
+        new FindNextLessonForEnrollment( this.enrollmentRepository , this.lessonRepository )
+            .execute( id_enrollment , user.id )
+            .then( enrollments => HandlerResponses.handleSuccess( res , enrollments , 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
     }
 
 }

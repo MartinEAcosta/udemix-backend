@@ -48,6 +48,12 @@ export class LessonRouter {
             lessonController.findLessonById
         );
         
+        router.get(
+            '/next/:id_enrollment',
+            [ authMiddleware.validateJWT ],
+            lessonController.findNextLesson
+        );
+
     
         return router;
     }

@@ -24,6 +24,6 @@ export interface LessonResponsePopulateDto {
 export interface FilePopulatedDto{
     id   : string | null,
     url   : string | null,
-    resource_type : "image" | "video" | "raw" | "auto",
+    resource_type : "image" | "video" | null,
     extension : string | null,
 }

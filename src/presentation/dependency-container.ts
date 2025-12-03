@@ -71,10 +71,10 @@ export class DependencyContainer {
                                                         envs.MAILER_SECRET_KEY,
                                                         envs.WEBSERVICE_URL,
         );
-        this.encrypter = new BcryptAdapter();
-        this.fileStorage = new CloudinaryAdapter();
-        this.tokenManager = new JwtAdapter();
-        this.unitOfWork = new MongooseUnitOfWork();
+        this.encrypter      = new BcryptAdapter();
+        this.fileStorage    = new CloudinaryAdapter();
+        this.tokenManager   = new JwtAdapter();
+        this.unitOfWork     = new MongooseUnitOfWork();
         this.paymentService = new MercadoPagoAdapter(
                                                         envs.MERCADOPAGO_ACCESS_TOKEN
         );
@@ -88,10 +88,10 @@ export class DependencyContainer {
         this.moduleRepository     = new ModuleRepositoryImpl( new ModuleDatasourceImpl() );
         this.paymentRepository    = new PaymentRepositoryImpl( new PaymentDataSourceImpl( this.paymentService ) );
         
-        this.authMiddleware = new AuthMiddleware( this.tokenManager , this.authRepository);
-        this.courseMiddleware = new CourseMiddleware( );
-        this.fileMiddleware   = new FileMiddleware();
-        this.paymentMiddleware = new PaymentMiddleware();
+        this.authMiddleware       = new AuthMiddleware( this.tokenManager , this.authRepository);
+        this.courseMiddleware     = new CourseMiddleware( );
+        this.fileMiddleware       = new FileMiddleware();
+        this.paymentMiddleware    = new PaymentMiddleware();
         this.paginationMiddleware = new PaginationMiddleware();
         
 
@@ -101,7 +101,7 @@ export class DependencyContainer {
         this.emailController      = new EmailController( this.authRepository , this.emailValidator , this.tokenManager );
         this.enrollmentController = new EnrollmentController( this.enrollmentRepository , this.authRepository , this.courseRepository , this.lessonRepository , this.moduleRepository , this.unitOfWork );
         this.fileController       = new FileController( this.fileRepository , this.courseRepository , this.lessonRepository );
-        this.lessonController     = new LessonController( this.lessonRepository , this.moduleRepository , this.courseRepository , this.unitOfWork );
+        this.lessonController     = new LessonController( this.lessonRepository , this.moduleRepository , this.courseRepository , this.enrollmentRepository , this.unitOfWork );
         this.moduleController     = new ModuleController( this.moduleRepository , this.courseRepository );
         this.paymentController    = new PaymentController( this.paymentRepository , this.courseRepository, this.authRepository );
     }

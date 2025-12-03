@@ -27,18 +27,11 @@ export class EnrollmentRouter {
             enrollmentController.findEnrollmentByUserIdAndCourseId
         );
 
-        router.get(
-            '/next/:id_enrollment',
-            [ authMiddleware.validateJWT ],
-            enrollmentController.findNextLesson
-        );
-
         router.post(
             '/new',
             [ authMiddleware.validateJWT ],
             enrollmentController.enrollUserInCourse
         );
-        
 
         router.post(
             '/mark-lesson-completed',

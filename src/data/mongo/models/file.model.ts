@@ -38,13 +38,11 @@ const fileSchema = new mongoose.Schema({
 
     extension: {
         type     : String,
-        required : [true, 'La extensión del archivo es requerida.'],
     },
     
     resource_type: {
         type     : String,
-        enum     : ["image", "video", "raw", "auto"],
-        required : [true , 'El tipo de recurso es requerido.'],
+        enum     : ["image", "video"],
     },
 
 });

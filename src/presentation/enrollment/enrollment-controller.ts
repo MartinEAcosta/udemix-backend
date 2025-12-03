@@ -13,7 +13,6 @@ import { UnitOfWork } from "../../domain/services/UnitOfWork";
 import { MarkLessonAsCompleted } from "../../domain/use-cases/enrollment/mark-lesson-as-completed";
 import { LessonRepository, ModuleRepository } from "../../domain/repository";
 import { FindSpecificEnrollment } from "../../domain/use-cases/enrollment/find-specific-enrollment";
-import { FindNextLessonForEnrollment } from "../../domain/use-cases/enrollment/find-next-lesson-for-enrollment";
 
 
 export class EnrollmentController{
@@ -58,18 +57,6 @@ export class EnrollmentController{
 
         new FindSpecificEnrollment( this.enrollmentRepository , this.authRepository , this.courseRepository )
             .execute( id_user , id_course )        
-            .then( enrollments => HandlerResponses.handleSuccess( res , enrollments , 200 ) )
-            .catch( error => HandlerResponses.handleError( error , res ) );
-    }
-
-    public findNextLesson = ( req : AuthenticatedRequest , res : Response ) => {
-        const { user } = req;
-        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe encontrarse autenticado para obtener una inscripción en especifica.') , res );
-        
-        const { id_enrollment } = req.params;
-        if( !id_enrollment ) return HandlerResponses.handleError( CustomError.badRequest( 'Debes de indicar el id de la inscripción la cual deseas obtener la próxima lección.' ) , res  );
-        new FindNextLessonForEnrollment( this.enrollmentRepository , this.lessonRepository )
-            .execute( id_enrollment , user.id )
             .then( enrollments => HandlerResponses.handleSuccess( res , enrollments , 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
