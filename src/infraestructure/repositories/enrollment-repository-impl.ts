@@ -36,6 +36,18 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
         }
     }
 
+    async findEnrollmentPopulatedById( id_enrollment : string) : Promise<EnrollmentDetailedResponseDto | null> {
+        try{
+            const enrollment = await this.enrollmentDatasource.findEnrollmentPopulatedById( id_enrollment );
+
+            return enrollment ? enrollment : null;
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
+
     async findEnrollmentsByUserId( uid : string ) : Promise<EnrollmentDetailedResponseDto[]> {
         try{
 

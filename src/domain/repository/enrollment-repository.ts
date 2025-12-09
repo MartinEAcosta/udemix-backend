@@ -8,6 +8,7 @@ export abstract class EnrollmentRepository {
     
     abstract findAllEnrollments( ) : Promise<EnrollmentEntity[]>;
     abstract findEnrollmentById( id_enrollment : string ) : Promise<EnrollmentEntity | null>;
+    abstract findEnrollmentPopulatedById( id_enrollment : string ) : Promise<EnrollmentDetailedResponseDto | null>;
     abstract findEnrollmentsByUserId( uid : string ) : Promise<EnrollmentDetailedResponseDto[]>;
     abstract findEnrollmentByUserIdAndCourseId( id_user : string , id_course : string ) : Promise<EnrollmentEntity | null>;
     abstract saveEnrollment( enrollmentDto : CreateEnrollmentDto , ts ?: TransactionSession ) : Promise<EnrollmentEntity>;

@@ -13,6 +13,7 @@ import { UnitOfWork } from "../../domain/services/UnitOfWork";
 import { MarkLessonAsCompleted } from "../../domain/use-cases/enrollment/mark-lesson-as-completed";
 import { LessonRepository, ModuleRepository } from "../../domain/repository";
 import { FindSpecificEnrollment } from "../../domain/use-cases/enrollment/find-specific-enrollment";
+import { FindEnrollmentPopulatedById } from "../../domain/use-cases/enrollment/find-enrollment-populated";
 
 
 export class EnrollmentController{
@@ -34,6 +35,16 @@ export class EnrollmentController{
             .then( enrollments => HandlerResponses.handleSuccess( res , enrollments , 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
+
+    public findEnrollmentPopulatedById = ( req : Request , res : Response ) => {
+        const { id_enrollment } = req.params;
+        if( !id_enrollment ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar el id de la inscripción a buscar.'), res);
+
+        new FindEnrollmentPopulatedById( this.enrollmentRepository )
+            .execute( id_enrollment )
+            .then( enrollment => HandlerResponses.handleSuccess( res , enrollment , 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
+    } 
 
     public findEnrollmentsByUserId = ( req : AuthenticatedRequest , res : Response ) => {
         

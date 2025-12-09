@@ -17,7 +17,12 @@ export class EnrollmentRouter {
         );
 
         router.get(
-            '/:id_user',
+            '/:id_enrollment',
+            enrollmentController.findEnrollmentPopulatedById
+        );
+
+        router.get(
+            '/user/:id_user',
             enrollmentController.findEnrollmentsByUserId
         );
 

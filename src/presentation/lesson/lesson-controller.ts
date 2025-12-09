@@ -30,10 +30,8 @@ export class LessonController {
     ) { }
 
     public createLesson = ( req : AuthenticatedRequest , res : Response ) => {
-
         const { user } = req;
         if( !user ) throw HandlerResponses.handleError( CustomError.unauthorized( 'Debes estar autenticado para crear una lección.' ), res );
-        console.log(req.body)
         const [ error, lessonRequestDto ] = CreateLessonDto.create(req.body);
         if( error ) throw HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
@@ -44,7 +42,6 @@ export class LessonController {
     }
 
     public updateLesson = ( req : AuthenticatedRequest , res : Response ) =>{
-
         const { id } = req.params;
         if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id para realizar el borrado.'), res );
 
@@ -65,7 +62,6 @@ export class LessonController {
     }
 
     public deleteLesson = ( req : Request , res : Response ) => {
-
         const { id } = req.params;
         if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id para realizar el borrado.'), res );
 
@@ -77,7 +73,6 @@ export class LessonController {
     }
 
     public findAllLessonsFromCourse = ( req : Request , res : Response ) => {
-
         const { course_id } = req.params;
         if( !course_id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id de curso valido.') , res );
 
@@ -89,7 +84,6 @@ export class LessonController {
     }
 
     public findLessonById = ( req : Request , res : Response ) => {
-
         const { id } = req.params;
         if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id.'), res );
 

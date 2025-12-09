@@ -5,6 +5,7 @@ export abstract class EnrollmentDatasource {
 
     abstract findAllEnrollments() : Promise<EnrollmentResponseDto[]>;
     abstract findEnrollmentById( id_enrollment : string ) : Promise<EnrollmentResponseDto | null>;
+    abstract findEnrollmentPopulatedById( id_enrollment : string ) : Promise<EnrollmentDetailedResponseDto | null>;
     abstract findEnrollmentsByUserId( uid : string ) : Promise<EnrollmentDetailedResponseDto[] | undefined>;
     abstract findEnrollmentByUserIdAndCourseId( uid : string , courseId : string ) : Promise<EnrollmentResponseDto| null>;
     abstract saveEnrollment( enrollmentDto : CreateEnrollmentDto ) : Promise<EnrollmentResponseDto>;

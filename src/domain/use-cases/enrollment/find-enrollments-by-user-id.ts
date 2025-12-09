@@ -1,5 +1,4 @@
 import { EnrollmentDetailedResponseDto } from "../../dtos/enrollment/enrollment.response.dto";
-import { EnrollmentEntity } from "../../entities/enrollment.entity";
 import { CustomError } from "../../errors/custom-error";
 import { EnrollmentRepository } from "../../repository/enrollment-repository";
 
@@ -9,9 +8,7 @@ interface FindEnrollmentsByUserIdUseCase {
 
 export class FindEnrollmentsByUserId implements FindEnrollmentsByUserIdUseCase {
 
-    constructor( private readonly enrollmentRepository : EnrollmentRepository ) {
-
-    }
+    constructor( private readonly enrollmentRepository : EnrollmentRepository ) {  }
 
     async execute( id_user: string ) : Promise<EnrollmentDetailedResponseDto[]> {
         

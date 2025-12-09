@@ -20,6 +20,13 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
         return EnrollmentMapper.fromEnrollmentDto( enrollment );
     }  
     
+    findEnrollmentPopulatedById = async( id_enrollment : string ) : Promise<EnrollmentDetailedResponseDto | null> => {
+        const enrollment = await EnrollmentModel.findById({ _id : id_enrollment })
+                                                    .populate<IEnrollmentDetailedModel>('id_course');
+
+        return enrollment ? EnrollmentMapper.fromEnrollmentWithCourseDto( enrollment ) : null;
+    }
+
     findEnrollmentsByUserId = async( uid: string ) : Promise<EnrollmentDetailedResponseDto[] | undefined>  =>{
         const listOfEnrollments = await EnrollmentModel.find({ id_user: uid })
                                                         .populate<IEnrollmentDetailedModel>( 'id_course' ); 
