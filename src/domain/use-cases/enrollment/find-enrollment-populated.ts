@@ -2,7 +2,7 @@ import { EnrollmentDetailedResponseDto } from "../../dtos/enrollment/enrollment.
 import { EnrollmentRepository } from "../../repository";
 
 interface FindEnrollmentPopulatedUseCase {
-    execute( id_enrollment : string ) : Promise<EnrollmentDetailedResponseDto>;
+    execute( id_enrollment : string ) : Promise<EnrollmentDetailedResponseDto | null>;
 }
 
 export class FindEnrollmentPopulatedById implements FindEnrollmentPopulatedUseCase {
@@ -11,11 +11,11 @@ export class FindEnrollmentPopulatedById implements FindEnrollmentPopulatedUseCa
         private readonly enrollmentRepository : EnrollmentRepository,
     ) { }
     
-    async execute( id_enrollment : string ) : Promise<EnrollmentDetailedResponseDto> {
+    async execute( id_enrollment : string ) : Promise<EnrollmentDetailedResponseDto | null> {
         
         const enrollment = await this.enrollmentRepository.findEnrollmentPopulatedById( id_enrollment )
 
-        throw new Error("Method not implemented.");
+        return enrollment ? enrollment : null;
     }
     
 }
