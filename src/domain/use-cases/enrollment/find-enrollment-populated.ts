@@ -12,8 +12,7 @@ export class FindEnrollmentPopulatedById implements FindEnrollmentPopulatedUseCa
     ) { }
     
     async execute( id_enrollment : string ) : Promise<EnrollmentDetailedResponseDto | null> {
-        
-        const enrollment = await this.enrollmentRepository.findEnrollmentPopulatedById( id_enrollment )
+        const enrollment = await this.enrollmentRepository.findEnrollmentPopulatedById( id_enrollment );
 
         return enrollment ? enrollment : null;
     }

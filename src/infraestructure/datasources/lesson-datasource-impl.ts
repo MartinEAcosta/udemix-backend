@@ -53,12 +53,18 @@ export class LessonDatasourceImpl implements LessonDatasource {
     }
     
     async findLessonById( id : string ) : Promise<LessonResponseDto | null> {
-        console.log('id' , id);
         const lesson = await LessonModel.findById({ _id : id});
-        console.log(lesson);
         if( !lesson ) return null;
 
         return LessonMapper.fromLessonResponseDto( lesson );
+    }
+
+    async findLessonPopulatedById( id : string ) : Promise<LessonResponsePopulateDto | null> {
+        const lesson = await LessonModel.findById({ _id : id})
+                                        .populate<ILessonPopulateModel>('id_file', '_id url resource_type extension');
+        if( !lesson ) return null;
+
+        return LessonMapper.fromLessonPopulateResponseDto(  lesson );
     }
 
     async findLessonByLessonNumber( id_course : string , lesson_number : number ) : Promise<LessonResponsePopulateDto | null> {

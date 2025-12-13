@@ -17,6 +17,7 @@ import { ModuleRepository } from "../../domain/repository/module-repository";
 import { UnitOfWork } from "../../domain/services/UnitOfWork";
 import { FindNextLessonForEnrollment } from "../../domain/use-cases/enrollment/find-next-lesson-for-enrollment";
 import { EnrollmentRepository } from "../../domain/repository";
+import { FindLessonPopulatedById } from "../../domain/use-cases/lesson/find-lesson-populated-by-id";
 
 
 export class LessonController {
@@ -91,7 +92,16 @@ export class LessonController {
             .execute( id )                    
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
+    }
 
+    public findLessonPopulatedById = ( req : Request , res : Response ) => {
+        const { id } = req.params;
+        if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id.'), res );
+
+        new FindLessonPopulatedById( this.lessonRepository )
+            .execute( id )                    
+            .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
+            .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
 
     public findNextLesson = ( req : AuthenticatedRequest , res : Response ) => {

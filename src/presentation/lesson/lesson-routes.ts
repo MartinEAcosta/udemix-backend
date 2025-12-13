@@ -8,7 +8,7 @@ export class LessonRouter {
 
         const router = Router();
 
-        const { lessonController , authMiddleware , fileMiddleware } = DependencyContainer.getInstance();
+        const { lessonController , authMiddleware  } = DependencyContainer.getInstance();
 
         router.post(
             '/new',
@@ -39,7 +39,7 @@ export class LessonRouter {
         );
 
         router.get(
-            '/detailed/course/:course_id',
+            '/populated/course/:course_id',
             lessonController.findAllLessonsFromCourse
         );
 
@@ -48,6 +48,12 @@ export class LessonRouter {
             lessonController.findLessonById
         );
         
+        router.get(
+            '/populated/:id',
+            lessonController.findLessonPopulatedById
+        );
+
+
         router.get(
             '/next/:id_enrollment',
             [ authMiddleware.validateJWT ],

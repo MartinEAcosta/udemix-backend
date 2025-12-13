@@ -12,6 +12,7 @@ export abstract class LessonRepository{
     abstract findAllLessonsByCourseId( course_id : string ) : Promise<LessonEntity[]>;
     abstract findAllLessonsPopulatedByCourseId( course_id : string ) : Promise<LessonResponsePopulateDto[]>;
     abstract findLessonById( id : string ) : Promise<LessonEntity | null>;
+    abstract findLessonPopulatedById( id : string ) : Promise<LessonResponsePopulateDto | null>;
     abstract findLessonByLessonNumber ( id_course : string , lesson_number : number ) : Promise<LessonResponsePopulateDto | null>;
 
     
