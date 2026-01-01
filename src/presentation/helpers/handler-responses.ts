@@ -9,6 +9,7 @@ export class HandlerResponses {
         if( error instanceof CustomError ) {
             return res.status( error.statusCode ).json({
                 ok: false,
+                status : error.statusCode,
                 error: error.message,
             });
         }

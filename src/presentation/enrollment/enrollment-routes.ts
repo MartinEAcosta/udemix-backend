@@ -2,7 +2,6 @@ import { Router } from 'express';
 
 import { DependencyContainer } from '../dependency-container';
 
-
 export class EnrollmentRouter { 
 
     static get routes() : Router {

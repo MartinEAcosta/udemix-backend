@@ -64,7 +64,7 @@ export class LessonDatasourceImpl implements LessonDatasource {
                                         .populate<ILessonPopulateModel>('id_file', '_id url resource_type extension');
         if( !lesson ) return null;
 
-        return LessonMapper.fromLessonPopulateResponseDto(  lesson );
+        return LessonMapper.fromLessonPopulateResponseDto( lesson );
     }
 
     async findLessonByLessonNumber( id_course : string , lesson_number : number ) : Promise<LessonResponsePopulateDto | null> {

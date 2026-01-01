@@ -106,7 +106,5 @@ export class EnrollmentController{
             .then( enrollment => HandlerResponses.handleSuccess( res , enrollment, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
-
-
     
 }
