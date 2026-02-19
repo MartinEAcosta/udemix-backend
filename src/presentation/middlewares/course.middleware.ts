@@ -17,7 +17,7 @@ export class CourseMiddleware {
 
         if( Object.keys(query).length === 0 ) return next();
 
-        const { category , priceMin , priceMax , title , notFullyEnrolled } = req.query;
+        const { id_category , priceMin , priceMax , title , notFullyEnrolled } = req.query;
 
         if( priceMin && priceMax ) {
             if( !isNaN( Number(priceMin) ) && !isNaN( Number(priceMax) ) ) {
@@ -33,8 +33,8 @@ export class CourseMiddleware {
             }
         }
         
-        if( category && regularExps.isValidId.test( String(category) ) ) {
-            builder.withCategoryId( String(category) );
+        if( id_category && regularExps.isValidId.test( String(id_category) ) ) {
+            builder.withCategoryId( String(id_category) );
         }
 
         if( title && typeof title === 'string' && title.trim().length > 0 ) {

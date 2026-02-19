@@ -12,6 +12,7 @@ import { CustomError } from "../../domain/errors/custom-error";
 import { FindCoursesPaginated } from "../../domain/use-cases/course/find-courses-paginated";
 import { FindCoursesByIds } from "../../domain/use-cases/course/find-courses-by-ids";
 import { CourseFilterRequest } from "../middlewares";
+import { CourseQueryBuilder } from "../../domain/helpers/course-query-builder";
 
 
 export class CourseController {
