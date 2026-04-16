@@ -10,7 +10,7 @@ export interface UserEntityOptions {
     balance ?: number,
 }
 
-export class UserEntity implements UserEntityOptions {
+export class UserEntity {
     public id : string;
     public username : string;
     public email : string;

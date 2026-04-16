@@ -5,11 +5,12 @@ export const envs = {
    
     PORT: get('PORT').required().asPortNumber(),
     DB_CON: get('DB_CON').required().asString(),
+    DB_NAME: get('DB_NAME').required().asString(),
     SECRET_JWT_SEED: get('SECRET_JWT_SEED').required().asString(),
  
     CLOUDINARY_CLOUD_NAME: get('CLOUDINARY_CLOUD_NAME').required().asString(),
     CLOUDINARY_API_KEY: get('CLOUDINARY_API_KEY').required().asString(),
-    CLODUINARY_API_SECRET: get('CLOUDINARY_API_SECRET').required().asString(),
+    CLOUDINARY_API_SECRET: get('CLOUDINARY_API_SECRET').required().asString(),
 
     MERCADOPAGO_ACCESS_TOKEN: get('MERCADOPAGO_ACCESS_TOKEN').required().asString(),
     MERCADOPAGO_WEBHOOK_SECRET_KEY: get('MERCADOPAGO_WEBHOOK_SECRET_KEY').required().asString(),

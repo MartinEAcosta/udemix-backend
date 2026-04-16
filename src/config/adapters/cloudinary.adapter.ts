@@ -12,7 +12,7 @@ export class CloudinaryAdapter implements FileStorage {
         cloudinary.config({
             cloud_name: envs.CLOUDINARY_CLOUD_NAME,
             api_key: envs.CLOUDINARY_API_KEY,
-            api_secret: envs.CLODUINARY_API_SECRET,
+            api_secret: envs.CLOUDINARY_API_SECRET,
         });    
     }
 

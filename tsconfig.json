@@ -1,4 +1,6 @@
 {
+  "include": ["src/**/*", "tests/domain/auth/register-user.test.ts"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
 

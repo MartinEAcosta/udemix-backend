@@ -9,20 +9,18 @@ export class MongoDatabase {
 
     static connection : Connection;
 
-    static async connect( options : ConnectionOptions ){
+    static async connect( options : ConnectionOptions ) : Promise<boolean> { 
         const { dbUrl , dbName } = options;
 
         try{
-
-            this.connection  = (await mongoose.connect( dbUrl )).connection;
-            
-
+            this.connection = (await mongoose.connect( dbUrl , { dbName } )).connection;
             console.log('Hemos sido conectados con éxito ;) !');
-            return this.connection;
+            return true;
         }
         catch( error ){
             console.log('Ha surgido un error al intentar conectarnos con la DB.');
             console.log(error);
+            throw error;
         }
     }
 }

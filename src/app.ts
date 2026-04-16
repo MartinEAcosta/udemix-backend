@@ -11,7 +11,7 @@ async function main () {
     
     await MongoDatabase.connect({
         dbUrl: envs.DB_CON!,
-        dbName: undefined,
+        dbName: envs.DB_NAME!,
     })
 
     const server = new Server({

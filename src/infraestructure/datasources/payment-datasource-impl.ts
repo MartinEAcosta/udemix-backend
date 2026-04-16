@@ -4,7 +4,6 @@ import { PaymentCreateDto } from '../../domain/dtos/payment/payment-create.dto';
 import { PaymentRequestAdapterDto } from '../../domain/dtos/payment/payment-request-adapter.dto';
 import { PaymentUpdateDto } from '../../domain/dtos/payment/payment-update.dto';
 import { IdentificationTypesResponse, PaymentCreatedResponseDto, PaymentMethodsResponse, PaymentResponseDto } from '../../domain/dtos/payment/payment.response';
-import { PaymentEntity } from '../../domain/entities/payment.entity';
 import { PaymentService } from '../../domain/services';
 import { PaymentMapper } from '../mappers/payment.mapper';
 
