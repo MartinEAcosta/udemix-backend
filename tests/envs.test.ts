@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from "@jest/globals";
-import { envs } from "./envs";
+import { envs } from "../src/config/envs";
 
 describe('Enviroment Variables' , () => {
 
@@ -31,7 +31,7 @@ describe('Enviroment Variables' , () => {
         process.env.PORT = 'ABC';
 
         try{
-            await import('./envs');
+            await import('../src/config/envs');
             expect(true).toBe(false);
         }
         catch( error ){
