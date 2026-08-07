@@ -64,8 +64,10 @@ export class ModuleController {
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para eliminar un modulo.') , res );
         if( user.role === 'student' ) return HandlerResponses.handleError( CustomError.unauthorized('No tienes los permisos suficientes para crear un modulo.') , res );
 
+        if( typeof req.params.id !== 'string' || !req.params.id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id para remover un modulo.') , res );
+        }
         const { id } = req.params;
-        if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id para remover un modulo.') , res );
 
         new DeleteModule( this.moduleRepository , this.courseRepository )
                 .execute( id , user.id )
@@ -88,8 +90,10 @@ export class ModuleController {
         const { user } = req;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para buscar un modulo.') , res );
         
+        if( typeof req.params.id !== 'string' || !req.params.id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id para obtener el modulo.') , res );
+        }
         const { id } = req.params;
-        if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id para obtener el modulo.') , res );
         
         new FindModuleById( this.moduleRepository )
             .execute( id )
@@ -98,9 +102,10 @@ export class ModuleController {
     }
 
     public findModulesByCourseId = ( req : Request , res : Response ) => {
-        
+        if( typeof req.params.id_course !== 'string' || !req.params.id_course ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id de curso valido.') , res );
+        }
         const { id_course } = req.params;
-        if( !id_course ) throw CustomError.badRequest('El id del curso no puede estar vació.');
 
         new FindModulesByCourseId( this.moduleRepository  , this.courseRepository )
             .execute( id_course )
@@ -110,9 +115,10 @@ export class ModuleController {
     }
 
     public findModulesByCourseIdPopulated = ( req : Request , res : Response ) => {
-        
+        if( typeof req.params.id_course !== 'string' || !req.params.id_course ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id de curso valido.') , res );
+        }
         const { id_course } = req.params;
-        if( !id_course ) throw CustomError.badRequest('El id del curso no puede estar vació.');
 
         new FindModulesByCourseIdPopulated( this.moduleRepository  , this.courseRepository )
             .execute( id_course )

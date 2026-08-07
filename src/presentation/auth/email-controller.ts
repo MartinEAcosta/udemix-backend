@@ -30,9 +30,13 @@ export class EmailController {
     }
 
     public validateEmail = ( req : AuthenticatedRequest , res : Response ) => {
-
+        if (typeof req.params.token !== 'string' || !req.params.token) {
+            return HandlerResponses.handleError(
+                CustomError.badRequest('Token inválido'), res
+            );
+        }
         const { token } = req.params;
-
+        
         new ValidateEmail( this.authRepository , this.tokenManager )
             .execute( token )
             .then( response => HandlerResponses.handleSuccess( res , { verified : response } , 200 ) )

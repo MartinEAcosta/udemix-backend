@@ -9,10 +9,7 @@ import { Server } from './presentation/server';
 
 async function main () {
     
-    await MongoDatabase.connect({
-        dbUrl: envs.DB_CON!,
-        dbName: envs.DB_NAME!,
-    })
+    await connectWithRetry();
 
     const server = new Server({
         port: envs.PORT,
@@ -21,4 +18,21 @@ async function main () {
 
     server.start();
 
+}
+
+async function connectWithRetry(retries = 5, delayMs = 2000) {
+    for (let i = 1; i <= retries; i++) {
+        try {
+            await MongoDatabase.connect({
+                dbUrl: envs.DB_CON!,
+                dbName: envs.DB_NAME!,
+            });
+            console.log('Conectado a MongoDB');
+            return;
+        } catch (error) {
+            console.log(`Intento ${i}/${retries} fallido, reintentando en ${delayMs}ms...`);
+            if (i === retries) throw error;
+            await new Promise(resolve => setTimeout(resolve, delayMs));
+        }
+    }
 }

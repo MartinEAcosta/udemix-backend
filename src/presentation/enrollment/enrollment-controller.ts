@@ -37,8 +37,10 @@ export class EnrollmentController{
     }
 
     public findEnrollmentPopulatedById = ( req : Request , res : Response ) => {
+        if( typeof req.params.id_enrollment !== 'string' || !req.params.id_enrollment ) {
+             return HandlerResponses.handleError( CustomError.badRequest('Debes indicar el id de la inscripción a buscar.'), res);
+        }
         const { id_enrollment } = req.params;
-        if( !id_enrollment ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar el id de la inscripción a buscar.'), res);
 
         new FindEnrollmentPopulatedById( this.enrollmentRepository )
             .execute( id_enrollment )
@@ -47,9 +49,10 @@ export class EnrollmentController{
     } 
 
     public findEnrollmentsByUserId = ( req : AuthenticatedRequest , res : Response ) => {
-        
+        if( typeof req.params.id_user !== 'string' || !req.params.id_user ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id usuario válido.'), res);
+        }
         const { id_user } = req.params;
-        if( !id_user ) return HandlerResponses.handleError(CustomError.badRequest('Debes indicar un id usuario válido.'), res);
 
         new FindEnrollmentsByUserId( this.enrollmentRepository )
             .execute( id_user )
@@ -61,9 +64,14 @@ export class EnrollmentController{
         const { user } = req;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe encontrarse autenticado para obtener una inscripción en especifica.') , res );
         
+        if( typeof req.params.id_user !== 'string' || !req.params.id_user ) {
+            return HandlerResponses.handleError( CustomError.badRequest( 'Debes indicar el id del usuario al que buscas la inscripción.') , res );
+        }
+        if( typeof req.params.id_course !== 'string' || !req.params.id_course ) {
+            return HandlerResponses.handleError( CustomError.badRequest( 'Debes indicar el id del curso al que buscas la inscripción.') , res );
+        }
         const { id_user , id_course } = req.params;
-        if( !id_user ) return HandlerResponses.handleError( CustomError.badRequest( 'Debes indicar el id del usuario al que buscas la inscripción.') , res );
-        if( !id_course ) return HandlerResponses.handleError( CustomError.badRequest( 'Debes indicar el id del curso al que buscas la inscripción.') , res );
+
         if( id_user != user.id ) return HandlerResponses.handleError( CustomError.unauthorized( 'No puedes buscar una inscripción que no te pertenece') , res );
 
         new FindSpecificEnrollment( this.enrollmentRepository , this.authRepository , this.courseRepository )

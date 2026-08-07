@@ -55,6 +55,10 @@ export class CourseController {
     }
 
     public findCourseById = ( req : Request , res : Response ) => {
+        
+        if( typeof req.params.id !== 'string' || !req.params.id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+        }
 
         const { id }  = req.params;
 
@@ -65,6 +69,11 @@ export class CourseController {
     }
 
     public findCoursesByCategory = ( req : Request , res : Response ) => {
+
+        if( typeof req.params.slug !== 'string' || !req.params.slug ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un slug valido.') , res );
+        }
+
         const { slug } = req.params;
         
         new FindCoursesByCategory( this.courseRepository , this.categoryRepository )
@@ -90,6 +99,9 @@ export class CourseController {
     public updateCourse = ( req : Request , res : Response ) => {
 
         const fileUploadDto = req.body.attachedFile;
+        if( typeof req.params.id !== 'string' || !req.params.id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+        }
         const { id } = req.params;
 
         const [ errorMessage , updateCourseDto ] = UpdateCourseDto.create( id , req.body );
@@ -104,6 +116,9 @@ export class CourseController {
 
     public deleteCourse = ( req : Request , res : Response ) => {
 
+        if( typeof req.params.id !== 'string' || !req.params.id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+        }
         const { id } = req.params;
 
         new DeleteCourse( this.courseRepository )

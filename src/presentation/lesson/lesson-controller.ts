@@ -63,8 +63,10 @@ export class LessonController {
     }
 
     public deleteLesson = ( req : Request , res : Response ) => {
+        if( typeof req.params.id !== 'string' || !req.params.id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+        }
         const { id } = req.params;
-        if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id para realizar el borrado.'), res );
 
         new DeleteLesson( this.lessonRepository )
             .execute( id )
@@ -74,8 +76,10 @@ export class LessonController {
     }
 
     public findAllLessonsFromCourse = ( req : Request , res : Response ) => {
+        if( typeof req.params.course_id !== 'string' || !req.params.course_id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id de curso valido.') , res );
+        }
         const { course_id } = req.params;
-        if( !course_id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id de curso valido.') , res );
 
         new FindAllLessonsFromCourse( this.courseRepository , this.lessonRepository )
             .execute( course_id )
@@ -85,8 +89,10 @@ export class LessonController {
     }
 
     public findLessonById = ( req : Request , res : Response ) => {
+        if( typeof req.params.id !== 'string' || !req.params.id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+        }
         const { id } = req.params;
-        if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id.'), res );
 
         new FindLessonById( this.lessonRepository )
             .execute( id )                    
@@ -95,8 +101,10 @@ export class LessonController {
     }
 
     public findLessonPopulatedById = ( req : Request , res : Response ) => {
+        if( typeof req.params.id !== 'string' || !req.params.id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+        }
         const { id } = req.params;
-        if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id.'), res );
 
         new FindLessonPopulatedById( this.lessonRepository )
             .execute( id )                    
@@ -108,8 +116,11 @@ export class LessonController {
         const { user } = req;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe encontrarse autenticado para obtener una inscripción en especifica.') , res );
         
+        if( typeof req.params.id_enrollment !== 'string' || !req.params.id_enrollment ) {
+            return HandlerResponses.handleError( CustomError.badRequest( 'Debes de indicar el id de la inscripción la cual deseas obtener la próxima lección.' ) , res  );
+        }
+        
         const { id_enrollment } = req.params;
-        if( !id_enrollment ) return HandlerResponses.handleError( CustomError.badRequest( 'Debes de indicar el id de la inscripción la cual deseas obtener la próxima lección.' ) , res  );
         new FindNextLessonForEnrollment( this.enrollmentRepository , this.lessonRepository )
             .execute( id_enrollment , user.id )
             .then( enrollments => HandlerResponses.handleSuccess( res , enrollments , 200 ) )

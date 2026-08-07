@@ -26,8 +26,11 @@ export class FileController {
         // Propiedad creada automaticamente por el middleware file-upload.
         // req.files;
         // El middleware ya se encargo de validar que haya un archivo existente.
+
+        if( typeof req.params.id_entity !== 'string' || !req.params.id_entity ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+        }
         const { id_entity } = req.params;
-        if( !id_entity ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
 
         const file = req.body.files.at(0);
         if( !file ) return HandlerResponses.handleError( CustomError.badRequest('Error inesperado al leer el archivo') , res );
@@ -52,7 +55,11 @@ export class FileController {
     }
 
     public obtainFolder = ( req : Request , res : Response ) : 'lessons' | 'courses' | undefined => {
-        // TODO : ¿podria llegar a ser delegado a un middleware?
+        if( typeof req.params.folder !== 'string' || !req.params.folder ) {
+            HandlerResponses.handleError( CustomError.badRequest('Debes indicar un folder valido.') , res );
+            return;
+        }
+
         const { folder } = req.params;
         const fol = folder.toLowerCase();
         if( !validFolders.includes( fol ) ){
@@ -64,9 +71,10 @@ export class FileController {
     }
 
     public deleteFile = ( req : Request , res : Response )  => {
-
+        if( typeof req.params.id !== 'string' || !req.params.id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+        }
         const { id } = req.params;
-        if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
 
         new DeleteFile( this.fileRepository )
             .execute( id )
@@ -75,8 +83,10 @@ export class FileController {
     }
 
     public deleteCourseThumbnail = ( req : Request , res : Response ) => {
+        if( typeof req.params.course_id !== 'string' || !req.params.course_id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+        }
         const { course_id } = req.params;
-        if( !course_id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
 
         new DeleteCourseThumbnail( this.fileRepository , this.courseRepository )
             .execute( course_id )
@@ -85,8 +95,10 @@ export class FileController {
     }
 
     public findFileById = ( req : Request , res : Response ) => {
+        if( typeof req.params.id !== 'string' || !req.params.id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+        }
         const { id } = req.params;
-        if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
 
         new FindFileById( this.fileRepository )
             .execute( id )

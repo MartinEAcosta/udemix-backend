@@ -26,8 +26,11 @@ export class CategoryController {
 
     public deleteCategory = ( req : Request , res : Response ) => {
 
+        if( typeof req.params.id !== 'string' || !req.params.id ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+        }
+         
         const { id } = req.params;
-        if( !id ) HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
 
         new DeleteCategory( this.categoryRepository )
             .execute( id )
