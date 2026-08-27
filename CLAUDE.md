@@ -2,20 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Commands
+## Skills
 
-```bash
-npm run dev             # start with ts-node-dev, auto-restarts on change (src/app.ts)
-npm run build            # rimraf dist + tsc compile to dist/
-npm start                # run compiled build (dist/app.js)
-
-npm test                 # run full jest suite (coverage on by default, see jest.config.ts)
-npm run test:watch       # jest --watch
-npm run test:coverage    # jest --coverage
-
-npx jest tests/domain/auth/register-user.test.ts   # run a single test file
-npx jest -t "should do X"                          # run tests matching a name
-```
+Use the /frontend-desing command when implementing changes to the user interface.
 
 Env vars are required (see `src/config/envs.ts`, validated via `env-var`, throws on startup if missing). Local dev reads `.env`; tests read `.env.test` (loaded by `setupTests.ts`, wired via `jest.config.ts` `setupFiles`). `.env.template` lists required keys: `PORT`, `DB_CON`, `DB_NAME`, `SECRET_JWT_SEED`, Cloudinary creds, MercadoPago creds, mailer creds, `WEBSERVICE_URL`.
 
