@@ -3,6 +3,7 @@ import { AuthRepository } from "../../repository/auth-repository";
 import { EmailValidator } from "../../services/EmailValidator";
 import { TokenManager } from "../../services/TokenManager";
 import { regularExps } from '../../helpers/regular.exp';
+import { buildEmailValidationHtml } from '../../helpers/email-templates';
 
 interface SendEmailValidationLinkUseCase {
     execute( email : string ) : Promise<boolean>;
@@ -27,11 +28,7 @@ export class SendEmailValidationLink implements SendEmailValidationLinkUseCase {
         if( !token ) throw CustomError.internalServer('Hubo un error al generar el token.');
 
         const link = `${ this.emailValidator.baseURL }/api/auth/validate-email/${ token }`
-        const html = `
-            <h1>¡Valida tu email para acceder a la creación de cursos!</h1>
-            <p>Clickea en el link para validar tu email.</p>
-            <a href="${ link }">Haz click aqui para validarte</a>
-        `;
+        const html = buildEmailValidationHtml( { email, link } );
 
         const options = {
             to : email ,
