@@ -47,6 +47,7 @@ export class RegisterUser implements RegisterUserUseCase {
             user: {
                 id       : newUser.id,
                 username : newUser.username,
+                isEmailVerified : newUser.isEmailVerified,
                 email    : newUser.email,                                
             },
             token: token,

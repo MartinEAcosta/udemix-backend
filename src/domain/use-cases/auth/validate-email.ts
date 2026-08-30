@@ -20,7 +20,6 @@ export class ValidateEmail implements ValidateEmailUseCase {
         const payload = await this.tokenManager.validateToken( token );
         if( !payload ) throw CustomError.unauthorized('El token no es valido.');
 
-        console.log(payload)
         const { email } = payload as { id : string , email : string };
         if( !email ) throw CustomError.internalServer('No se encontro el email en el token.');
 
@@ -30,7 +29,6 @@ export class ValidateEmail implements ValidateEmailUseCase {
         const updatedUser = await this.authRepository.updateUser({
             ...user,
             isEmailVerified : true,
-            role            : 'teacher',
         });
         if( !updatedUser ) throw CustomError.internalServer('Hubo un error inesperado al actualizar el usuario');
 

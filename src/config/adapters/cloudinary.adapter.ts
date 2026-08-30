@@ -24,6 +24,7 @@ export class CloudinaryAdapter implements FileStorage {
                                                 width: 355,
                                                 height: 240,
                                                 crop: 'fill',
+                                                moderation: 'webpurify'
                                             } ,(error , result ) => {
                 console.log("Cloudinary upload result:", result);
                 if (error) {

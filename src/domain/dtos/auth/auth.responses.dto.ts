@@ -21,6 +21,7 @@ export interface UserRequestDto {
 export interface AuthResponseDto {
     id       ?:   string,
     username : string,
+    isEmailVerified : boolean,
     email    : string,
 }
 export interface AuthSuccessResponseDto {

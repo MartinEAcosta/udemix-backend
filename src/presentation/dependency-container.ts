@@ -17,9 +17,7 @@ import { AuthDatasourceImpl, CategoryDataSourceImpl, CourseDatasourceImpl, Enrol
 import { PaymentRepository } from "../domain/repository/payment-repository";
 import { PaymentController } from "./payment/payment-controller";
 import { MercadoPagoAdapter } from "../config/adapters/mercadopago-adapter";
-import { Payment } from "mercadopago";
 import { PaymentRepositoryImpl } from '../infraestructure/repositories/payment-repository-impl';
-import { PaymentDataSource } from "../domain/datasources/payment-datasource";
 import { PaymentDataSourceImpl } from "../infraestructure/datasources/payment-datasource-impl";
 
 
@@ -69,7 +67,7 @@ export class DependencyContainer {
                                                         envs.MAILER_SERVICE,
                                                         envs.MAILER_EMAIL,
                                                         envs.MAILER_SECRET_KEY,
-                                                        envs.WEBSERVICE_URL,
+                                                        envs.FRONTEND_BASE_URL,
         );
         this.encrypter      = new BcryptAdapter();
         this.fileStorage    = new CloudinaryAdapter();

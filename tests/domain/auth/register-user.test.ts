@@ -64,6 +64,7 @@ describe('RegisterUser UseCase' , () => {
             id: 'mockedUserId',
             username: registerUserDtoTest.username,
             email: registerUserDtoTest.email,
+            isEmailVerified: false,
         });
     });
 

@@ -42,4 +42,5 @@ export class EmailController {
             .then( response => HandlerResponses.handleSuccess( res , { verified : response } , 200 ) )
             .catch( error => HandlerResponses.handleError(error,res) );  
     }
+
 }

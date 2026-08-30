@@ -27,16 +27,18 @@ export class AuthRouter {
                 authController.reloadToken
             );
 
-            router.get(
+            // Evitar el get porque el clasico prefetch de la página puede hacer que se ejecute 
+            // el endpoint sin que el usuario lo desee. Mejor usar un post con un boton de validación.
+            router.post(
                 '/send-validation-email',
                 [authMiddleware.validateJWT],
                 emailController.sendValidationEmail,
             );
 
-            router.get(
+            router.post(
                 '/validate-email/:token',
                 emailController.validateEmail
-            )
+            );
 
             return router;
         }

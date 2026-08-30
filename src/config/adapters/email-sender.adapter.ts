@@ -36,7 +36,6 @@ export class EmailSenderAdapter implements EmailValidator {
                                                         }
                                                     );
 
-            // console.log( info );
             return true;
         }
         catch( error ){

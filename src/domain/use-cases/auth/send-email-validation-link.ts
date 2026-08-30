@@ -27,7 +27,7 @@ export class SendEmailValidationLink implements SendEmailValidationLinkUseCase {
         const token = await this.tokenManager.generateToken( {email} );
         if( !token ) throw CustomError.internalServer('Hubo un error al generar el token.');
 
-        const link = `${ this.emailValidator.baseURL }/api/auth/validate-email/${ token }`
+        const link = `${ this.emailValidator.baseURL }/auth/verify-email/${ token }`;
         const html = buildEmailValidationHtml( { email, link } );
 
         const options = {
