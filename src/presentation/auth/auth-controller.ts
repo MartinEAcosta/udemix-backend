@@ -10,6 +10,8 @@ import { RegisterUserDto , LoginUserDto } from "../../domain/dtos";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { RegisterUser , LoginUser , FindUserById } from "../../domain/use-cases";
 import { ReloadToken } from "../../domain/use-cases/auth/reload-token";
+import { UpdateUser } from "../../domain/use-cases/auth/update-user";
+import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
 
 export class AuthController {
 
@@ -37,6 +39,23 @@ export class AuthController {
             .execute( loginUserDto! )
             .then( authResponse => HandlerResponses.handleAuthSuccess( res , authResponse , 200 ) )
             .catch( error => HandlerResponses.handleError(error , res ) );
+    }
+
+    public updateUser = ( req : AuthenticatedRequest , res : Response ) => {
+        const userId = req.params.id as string | undefined;
+        const user = req.user;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe esar autenticado para actualizar su perfil.') , res );
+        const targetId = userId ?? user?.id;
+
+        if( user.id !== targetId && user.role !== 'admin' ) return HandlerResponses.handleError( CustomError.forbidden('No tienes permisos para actualizar este perfil.') , res );
+
+        const [ error , userDto ] = UpdateUserDto.create( {...req.body, id: targetId} );
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
+
+        new UpdateUser( this.authRepository )
+            .execute( userDto! )
+            .then( updatedUser => HandlerResponses.handleSuccess( res , updatedUser , 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
     }
 
     public reloadToken = ( req : AuthenticatedRequest , res : Response ) => {

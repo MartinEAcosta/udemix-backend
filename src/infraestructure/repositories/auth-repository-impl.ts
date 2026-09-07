@@ -4,6 +4,7 @@ import { AuthDatasource } from "../../domain/datasources/auth-datasource";
 import { UserEntity } from "../../domain/entities/user.entity";
 import { RegisterUserDto } from "../../domain/dtos/auth/register-user.dto";
 import { UserRequestDto } from "../../domain/dtos/auth/auth.responses.dto";
+import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
 
 export class AuthRepositoryImpl implements AuthRepository {
 
@@ -11,9 +12,9 @@ export class AuthRepositoryImpl implements AuthRepository {
         private readonly authDatasource : AuthDatasource,
     ) { }
     
-    async updateUser( userRequestDto : UserRequestDto ) : Promise<UserEntity> {
+    async updateUser( userDto : UpdateUserDto ) : Promise<UserEntity> {
         try{
-            const updatedUser = await this.authDatasource.updateUser( userRequestDto );
+            const updatedUser = await this.authDatasource.updateUser( userDto );
             
             return UserEntity.fromObject( updatedUser );
         }

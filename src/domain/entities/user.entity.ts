@@ -8,6 +8,8 @@ export interface UserEntityOptions {
     role : string;
     password : string,
     balance ?: number,
+    avatar_url ?: string,
+    id_file ?: string,
 }
 
 export class UserEntity {
@@ -18,9 +20,11 @@ export class UserEntity {
     public role : string;
     public password : string;
     public balance : number;
+    public avatar_url : string;
+    public id_file : string;
 
     private constructor( options : UserEntityOptions ){
-        const { id , username , email , isEmailVerified , role , password, balance } = options;
+        const { id , username , email , isEmailVerified , role , password, balance, avatar_url, id_file } = options;
         this.id = id;
         this.username = username;
         this.email = email;
@@ -28,10 +32,12 @@ export class UserEntity {
         this.role = role ?? 'student';
         this.password = password;
         this.balance = balance ?? 0;
+        this.avatar_url = avatar_url ?? '';
+        this.id_file = id_file ?? '';
     }
 
     static fromObject( object : { [ key : string ] : any } ) {
-        const { id , username , email , isEmailVerified , role , password, balance } = object;
+        const { id , username , email , isEmailVerified , role , password, balance, avatar_url, id_file } = object;
         
         if( !username ) throw CustomError.badRequest('El nombre de usuario es requerido.'); 
         if( !email ) throw CustomError.badRequest('El email es requerido.');
@@ -46,6 +52,7 @@ export class UserEntity {
                 role,
                 password,
                 balance,
+                avatar_url
             }
         );
     }   

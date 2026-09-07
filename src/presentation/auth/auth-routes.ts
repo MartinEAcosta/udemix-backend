@@ -21,6 +21,18 @@ export class AuthRouter {
                 authController.loginUser
             );
 
+            router.put(
+                '/update/user',
+                [authMiddleware.validateJWT],
+                authController.updateUser
+            );
+
+            router.put(
+                '/update/user/:id',
+                [authMiddleware.validateJWT],
+                authController.updateUser
+            );
+
             router.get(
                 '/renew',
                 [authMiddleware.validateJWT],

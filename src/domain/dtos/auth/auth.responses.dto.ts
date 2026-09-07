@@ -10,12 +10,12 @@ export interface UserResponseDto {
 }
 
 export interface UserRequestDto {
-    id             ?: string,
-    username        : string,
-    email           : string,
-    isEmailVerified : boolean,
-    role            : string,
-    balance         : number,
+    id              ?: string,
+    username        ?: string,
+    email           ?: string,
+    isEmailVerified ?: boolean,
+    role            ?: string,
+    balance         ?: number,
 }
 
 export interface AuthResponseDto {
