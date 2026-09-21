@@ -1,19 +1,21 @@
-import { AuthResponseDto } from "../../dtos/auth/auth.responses.dto";
+import { AuthResponseDto, AuthSuccessResponseDto } from "../../dtos/auth/auth.responses.dto";
 import { UpdateUserDto } from "../../dtos/auth/update-user-dto";
 import { CustomError } from "../../errors/custom-error";
 import { AuthRepository } from "../../repository";
+import { TokenManager } from "../../services";
 
 interface UpdateUserUseCase {
-    execute( userDto : UpdateUserDto , userId : string ): Promise<AuthResponseDto>;
+    execute( userDto : UpdateUserDto ): Promise<AuthSuccessResponseDto>;
 }
 
 export class UpdateUser implements UpdateUserUseCase {
 
     constructor (
         private readonly authRepository : AuthRepository,
+        private readonly tokenManager : TokenManager,
     ) { }
 
-    async execute( userDto : UpdateUserDto ) : Promise<AuthResponseDto> {
+    async execute( userDto : UpdateUserDto ) : Promise<AuthSuccessResponseDto> {
 
         const userExists = await this.authRepository.findUserById( userDto.id );
         if( !userExists ) throw CustomError.badRequest('El usuario no existe.');
@@ -29,11 +31,20 @@ export class UpdateUser implements UpdateUserUseCase {
         const updatedUser = await this.authRepository.updateUser( updateData );
         if( !updatedUser ) throw CustomError.internalServer('Error al actualizar el usuario.');
 
+        const payload = {
+            id : updatedUser.id,
+            email : updatedUser.email,
+            isEmailVerified : updatedUser.isEmailVerified,
+            role : updatedUser.role,
+        }
+        const token = await this.tokenManager.generateToken(payload)
+        if( !token ) throw CustomError.internalServer('Error mientras se generaba el token.');
+
+        const { password : pass , ...userWithoutPass} = updatedUser;
+
         return {
-            id: updatedUser.id,
-            username: updatedUser.username,
-            email: updatedUser.email,
-            isEmailVerified: updatedUser.isEmailVerified,
+            user: userWithoutPass,
+            token: token,
         };
     }
 

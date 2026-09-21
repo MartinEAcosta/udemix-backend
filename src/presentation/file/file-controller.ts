@@ -9,17 +9,16 @@ import { DeleteFile } from "../../domain/use-cases/file/delete-file";
 import { FindFileById } from "../../domain/use-cases/file/find-file-by-id";
 import { DeleteCourseThumbnail } from "../../domain/use-cases/file/delete-course-thumbnail";
 import { UploadFileDto } from "../../domain/dtos/file/file.dto";
-import { LessonRepository } from "../../domain/repository";
-
-// toLowerCase aplicado a la hora de comparar.
-export const validFolders = [ 'user' , 'courses' , "lessons" ];
+import { AuthRepository, LessonRepository } from "../../domain/repository";
+import { Folders, isValidFolder } from "../../domain/entities/file.entity";
 
 export class FileController {
 
     constructor( 
         private readonly fileRepository : FileRepository, 
         private readonly courseRepository : CourseRepository,
-        private readonly lessonRepository : LessonRepository
+        private readonly lessonRepository : LessonRepository,
+        private readonly authRepository : AuthRepository
     ) { }
 
     public uploadFile = ( req : Request , res : Response ) => {
@@ -41,10 +40,10 @@ export class FileController {
         });
         if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
-        const folder : 'courses' | 'lessons' | undefined = this.obtainFolder( req , res );
+        const folder : Folders | undefined = this.obtainFolder( req , res );
         if( !folder ) return;
         
-        new UploadSingle( this.fileRepository , this.courseRepository , this.lessonRepository )
+        new UploadSingle( this.fileRepository , this.courseRepository , this.lessonRepository, this.authRepository )
             .execute( fileToUploadDto! , folder , id_entity )
             .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
@@ -54,7 +53,7 @@ export class FileController {
         //TODO : devtalles    
     }
 
-    public obtainFolder = ( req : Request , res : Response ) : 'lessons' | 'courses' | undefined => {
+    public obtainFolder = ( req : Request , res : Response ) : Folders | undefined=> {
         if( typeof req.params.folder !== 'string' || !req.params.folder ) {
             HandlerResponses.handleError( CustomError.badRequest('Debes indicar un folder valido.') , res );
             return;
@@ -62,12 +61,12 @@ export class FileController {
 
         const { folder } = req.params;
         const fol = folder.toLowerCase();
-        if( !validFolders.includes( fol ) ){
+        if( !isValidFolder( fol ) ){
             HandlerResponses.handleError( CustomError.notFound(`La carpeta ${folder} no es valida`), res );
             return;
         }
 
-        return fol as 'lessons' | 'courses';
+        return fol;
     }
 
     public deleteFile = ( req : Request , res : Response )  => {

@@ -2,10 +2,11 @@ import { FileRepository } from "../../repository/file-repository";
 import { CustomError } from "../../errors/custom-error";
 import { UploadFileDto } from "../../dtos/file/file.dto";
 import { FileResponseDto } from "../../dtos/file/file-response.dto";
-import { CourseRepository, LessonRepository } from "../../repository";
+import { AuthRepository, CourseRepository, LessonRepository } from "../../repository";
+import { Folders } from "../../entities/file.entity";
 
 export interface UploadFileUseCase {
-    execute( files : UploadFileDto , folder : 'courses' | 'lessons' , id_entity : string) : Promise<FileResponseDto>;
+    execute( files : UploadFileDto , folder : Folders , id_entity : string) : Promise<FileResponseDto>;
 }
 
 export class UploadSingle implements UploadFileUseCase {
@@ -14,9 +15,10 @@ export class UploadSingle implements UploadFileUseCase {
         private readonly fileRepository : FileRepository,
         private readonly courseRepository : CourseRepository,
         private readonly lessonRepository : LessonRepository,
+        private readonly authRepository : AuthRepository,
     ) { }
     
-    execute = async( file : UploadFileDto , folder : 'courses' | 'lessons'  , id_entity : string ): Promise<FileResponseDto> =>  {
+    execute = async( file : UploadFileDto , folder : Folders , id_entity : string ): Promise<FileResponseDto> =>  {
         const searchedEntity = await this.obtainSearchedEntity( folder , id_entity );
         if(!searchedEntity) throw CustomError.notFound('No puede actualizarse una entidad que no existe.');
 
@@ -40,19 +42,19 @@ export class UploadSingle implements UploadFileUseCase {
     }
 
     private readonly strategies = {
-        courses : {
+        course : {
             find : async( id : string ) => {
                 return await this.courseRepository.findCourseById(id);
             },
             update : async( id : string , newFile : FileResponseDto ) => {
-                return await this.courseRepository.updateCourse( 
+                return await this.courseRepository.updateCourse(
                     {
-                     id , id_file : newFile.id , thumbnail_url : newFile.url 
+                     id , id_file : newFile.id , thumbnail_url : newFile.url
 
                 });
             },
         },
-        lessons : {
+        lesson : {
             find : async( id : string ) => {
                 return await this.lessonRepository.findLessonById(id);
             },
@@ -64,14 +66,27 @@ export class UploadSingle implements UploadFileUseCase {
                     });
             },
         },
+        user: {
+            find : async( id : string ) => {
+                return await this.authRepository.findUserById(id);
+            },
+            update : async( id : string , newFile : FileResponseDto ) => {
+                return await this.authRepository.updateUser(
+                    {
+                        id,
+                        avatar_url : newFile.url,
+                        id_file : newFile.id,
+                    });
+            }
+        }
     }
 
-    obtainSearchedEntity = async( folder : 'courses' | 'lessons' , id_entity : string ) => {
+    obtainSearchedEntity = async( folder : Folders , id_entity : string ) => {
         let entity = this.strategies[folder];
-        return await entity.find(id_entity);        
+        return await entity.find(id_entity);
     }
 
-    assignNewIdFile = async( folder : 'courses' | 'lessons' , id_entity : string , file : FileResponseDto ) => {
+    assignNewIdFile = async( folder : Folders , id_entity : string , file : FileResponseDto ) => {
         let entityToUpdate = this.strategies[folder];
         return await entityToUpdate.update(id_entity , file);
     }

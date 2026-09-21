@@ -12,6 +12,8 @@ export class UserMapper {
             role: userDoc.role,
             password: userDoc.password,
             balance: userDoc.balance,
+            avatar_url: userDoc.avatar_url ?? null,
+            id_file: userDoc.id_file?.toString() ?? null,
         }
     }
 

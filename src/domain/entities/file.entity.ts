@@ -1,6 +1,12 @@
 import { ResourceValidTypes } from "../dtos/file/file.dto";
 
-export type Folders = 'courses' | 'lessons';
+export const FOLDERS = [ 'course', 'lesson', 'user' ] as const;
+
+export type Folders = typeof FOLDERS[number];
+
+export const isValidFolder = ( value : string ) : value is Folders => {
+    return ( FOLDERS as readonly string[] ).includes( value );
+}
 
 interface FileEntityOptions {
     id            : string;

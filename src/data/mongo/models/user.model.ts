@@ -8,6 +8,8 @@ export interface IUserModel {
   role            : string;
   password        : string;
   balance         : number;
+  avatar_url      : string | null;
+  id_file         ?: Types.ObjectId | null;
 }
 
 const userSchema = new mongoose.Schema({
@@ -44,10 +46,18 @@ const userSchema = new mongoose.Schema({
         default : 0,
     },
     
-    // avatar : {
-    //     type: String,
-    // }
+    avatar_url : {
+        type: String,
+        default : ''
+    },
+
+    id_file : {
+        type: Schema.Types.ObjectId,
+        ref: 'File',
+        deafult : null
+    }
 
 });
+
 
 export const UserModel  = mongoose.model( 'User' , userSchema );

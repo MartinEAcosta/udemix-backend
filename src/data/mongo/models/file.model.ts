@@ -1,5 +1,6 @@
 import mongoose, { Types } from "mongoose";
 import { ResourceValidTypes } from "../../../domain/dtos/file/file.dto";
+import { FOLDERS } from "../../../domain/entities/file.entity";
 
 export interface IFileModel {
     _id?             : Types.ObjectId; // Podría venir de la DB
@@ -26,7 +27,7 @@ const fileSchema = new mongoose.Schema({
 
     folder: {
         type     : String,
-        enum     : ["users" , "courses", "lessons"],
+        enum     : FOLDERS,
         required : true,
     },
 

@@ -3,7 +3,6 @@ import { UserModel } from "./../../data/mongo/models/user.model";
 import { UserMapper } from "../mappers/user.mapper";
 import { RegisterUserDto } from "../../domain/dtos/auth/register-user.dto";
 import {
-  UserRequestDto,
   UserResponseDto,
 } from "../../domain/dtos/auth/auth.responses.dto";
 import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
@@ -11,7 +10,7 @@ import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
 export class AuthDatasourceImpl implements AuthDatasource {
   async registerUser( registerUserDto: RegisterUserDto): Promise<UserResponseDto> {
     const savedUser = await UserModel.create(registerUserDto);
-
+    
     return UserMapper.fromUserResponseDto(savedUser);
   }
 

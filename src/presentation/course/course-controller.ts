@@ -91,7 +91,7 @@ export class CourseController {
         if( errorMessage ) return HandlerResponses.handleError( CustomError.badRequest( errorMessage ) , res );
         
         new SaveCourse( this.courseRepository , this.categoryRepository )
-            .execute( createCourseDto!  )
+            .execute( createCourseDto! )
             .then( courseCreated => HandlerResponses.handleSuccess( res, courseCreated , 201 ) )
             .catch( error => HandlerResponses.handleError( error , res ));
     }

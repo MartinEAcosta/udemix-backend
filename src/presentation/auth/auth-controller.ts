@@ -42,6 +42,7 @@ export class AuthController {
     }
 
     public updateUser = ( req : AuthenticatedRequest , res : Response ) => {
+        console.log('llego')
         const userId = req.params.id as string | undefined;
         const user = req.user;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe esar autenticado para actualizar su perfil.') , res );
@@ -51,10 +52,10 @@ export class AuthController {
 
         const [ error , userDto ] = UpdateUserDto.create( {...req.body, id: targetId} );
         if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
-
-        new UpdateUser( this.authRepository )
+        console.log('userDto', userDto);
+        new UpdateUser( this.authRepository , this.tokenManager )
             .execute( userDto! )
-            .then( updatedUser => HandlerResponses.handleSuccess( res , updatedUser , 200 ) )
+            .then( updatedUser => HandlerResponses.handleAuthSuccess( res , updatedUser , 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
 

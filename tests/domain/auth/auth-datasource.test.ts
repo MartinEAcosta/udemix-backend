@@ -1,6 +1,7 @@
 import { describe, expect, test } from "@jest/globals";
 import { RegisterUserDto } from "../../../src/domain/dtos/auth/register-user.dto";
 import { UserResponseDto } from '../../../src/domain/dtos/auth/auth.responses.dto';
+import { UpdateUserDto } from '../../../src/domain/dtos/auth/update-user-dto';
 import { AuthDatasource } from '../../../src/domain/datasources/auth-datasource';
 
 // TODO : FALTA EL TESTING CON EL DTO
@@ -19,8 +20,15 @@ describe( 'Auth Datasource' , () => {
             }
         }
 
-        async updateUser ( user : UserResponseDto ) : Promise<UserResponseDto> {
-            return user;
+        async updateUser ( userDto : UpdateUserDto ) : Promise<UserResponseDto> {
+            return {
+                id: userDto.id,
+                username: userDto.username ?? 'mockedUsername',
+                email: userDto.email ?? 'mocked@email.com',
+                isEmailVerified : false,
+                role : 'student',
+                balance : 0,
+            }
         }
 
         async findUserByEmail( email : string ): Promise<UserResponseDto | null> {

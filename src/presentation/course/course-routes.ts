@@ -42,7 +42,8 @@ export class CourseRouter {
         router.post(
           '/new',
           [
-            authMiddleware.validateJWT , authMiddleware.validatePermissions(['teacher', 'admin']) ,
+            authMiddleware.validateJWT , 
+            authMiddleware.validatePermissions(['teacher', 'admin']) ,
             authMiddleware.validateAndAssignOwner, 
           ],
           courseController.saveCourse
@@ -51,7 +52,11 @@ export class CourseRouter {
         // Edit Course 
         router.put(
           '/update/:id',
-          [ authMiddleware.validateJWT , authMiddleware.validateAndAssignOwner],
+          [ 
+            authMiddleware.validateJWT , 
+            authMiddleware.validatePermissions(['teacher', 'admin']) ,
+            authMiddleware.validateAndAssignOwner
+          ],
           courseController.updateCourse
         );
         

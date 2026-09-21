@@ -52,7 +52,8 @@ export class UserEntity {
                 role,
                 password,
                 balance,
-                avatar_url
+                avatar_url,
+                id_file,
             }
         );
     }   
