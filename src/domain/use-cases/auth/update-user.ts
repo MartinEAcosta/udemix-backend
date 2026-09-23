@@ -16,7 +16,6 @@ export class UpdateUser implements UpdateUserUseCase {
     ) { }
 
     async execute( userDto : UpdateUserDto ) : Promise<AuthSuccessResponseDto> {
-
         const userExists = await this.authRepository.findUserById( userDto.id );
         if( !userExists ) throw CustomError.badRequest('El usuario no existe.');
         if( userDto.email && userDto.email !== userExists.email ) {
@@ -41,7 +40,6 @@ export class UpdateUser implements UpdateUserUseCase {
         if( !token ) throw CustomError.internalServer('Error mientras se generaba el token.');
 
         const { password : pass , ...userWithoutPass} = updatedUser;
-
         return {
             user: userWithoutPass,
             token: token,

@@ -14,7 +14,7 @@ export class UpdateUserDto {
 
     
     static create ( props : { [key:string] : any } ) : [string? , UpdateUserDto?] {
-        const { id, username , email , password , isEmailVerified, avatar_url , id_file } = props;
+        const { id, username , email , password , isEmailVerified, avatar_url , id_file = null } = props;
 
         if( !id ) return ['El ID es requerido.', undefined];
         if( email && !regularExps.email.test( email ) ) return ['El email no es valido.', undefined];

@@ -18,7 +18,6 @@ export class AuthDatasourceImpl implements AuthDatasource {
     const updatedUser = await UserModel.findByIdAndUpdate(userDto.id, userDto, {
       new: true,
     });
-
     return UserMapper.fromUserResponseDto(updatedUser!);
   }
 
