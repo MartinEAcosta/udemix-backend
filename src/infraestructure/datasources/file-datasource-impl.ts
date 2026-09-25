@@ -1,7 +1,7 @@
 import { FileStorage } from "../../domain/services/FileStorage";
 import { CustomError } from "../../domain/errors/custom-error";
 import { FileModel } from "../../data/mongo/models/file.model";
-import { UploadFileDto } from "../../domain/dtos/file/file.dto";
+import { ResourceValidTypes, UploadFileDto } from "../../domain/dtos/file/file.dto";
 import { FileMapper } from '../mappers/file.mapper';
 import { FileDatasource } from '../../domain/datasources/file-datasource';
 import { FileResponseDto, FileStorageAdapterResponseDto } from '../../domain/dtos/file/file-response.dto';
@@ -38,8 +38,8 @@ export class FileDatasourceImpl implements FileDatasource {
         return FileMapper.fromFileResponseDto( fileSaved[0] );
     }
 
-    deleteFile = async( folder : string ,public_id: string) : Promise<boolean> => {
-        const fileDeleted = await this.fileStorage.deleteFile( folder, public_id );
+    deleteFile = async( folder : string ,public_id: string , resource_type : ResourceValidTypes ) : Promise<boolean> => {
+        const fileDeleted = await this.fileStorage.deleteFile( folder, public_id, resource_type );
         if( !fileDeleted ) return false;
                 
         return true;

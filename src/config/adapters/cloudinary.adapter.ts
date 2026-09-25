@@ -62,10 +62,11 @@ export class CloudinaryAdapter implements FileStorage {
         });
     }
 
-    deleteFile = ( folder : string , public_id : string ) : Promise<boolean> => {
+    deleteFile = ( folder : string , public_id : string , resource_type : ResourceValidTypes ) : Promise<boolean> => {
         const pathFile = `${folder}/${public_id}`;
         return new Promise( ( resolve , reject ) => {
-            cloudinary.uploader.destroy( pathFile , {} , ( error , result ) => {
+            // destroy() busca por defecto en 'image', los videos no se encuentran si no se indica el resource_type.
+            cloudinary.uploader.destroy( pathFile , { resource_type } , ( error , result ) => {
                 console.log( error , result)
                 if( error ) return reject( error );
 
