@@ -31,8 +31,8 @@ export class FileRepositoryImpl implements FileRepository {
         try{
             const file = await this.fileDatasource.findFileById( id );
             if( !file ) return false;
-            const { folder , public_id } = file;
-            const hasDeletedFromAdapter = await this.fileDatasource.deleteFile( folder , public_id );
+            const { folder , public_id , resource_type } = file;
+            const hasDeletedFromAdapter = await this.fileDatasource.deleteFile( folder , public_id , resource_type );
             if( !hasDeletedFromAdapter ) return false;
             
             const hasDeletedFromDB = await this.fileDatasource.deleteFileFromDB( id );
