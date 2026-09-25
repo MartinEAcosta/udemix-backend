@@ -8,6 +8,7 @@ export interface FileStorageAdapterResponseDto {
     size             : number;
     extension        : string;
     resource_type    : ResourceValidTypes;
+    duration        ?: number;
 }
 
 export interface FileResponseDto {

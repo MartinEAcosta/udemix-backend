@@ -18,12 +18,16 @@ export class CloudinaryAdapter implements FileStorage {
 
     uploadFile = ( file: UploadFileDto , folder : string  ) : Promise<FileStorageAdapterResponseDto> => {
         return new Promise((resolve , reject) => {
+            const resource_type = file.type! as ResourceValidTypes;
+            // El recorte solo aplica a imágenes (thumbnails/avatars), los videos se suben sin transformar.
+            const transformation = resource_type === 'image'
+                                        ? { width: 355, height: 240, crop: 'fill' }
+                                        : {};
+
             cloudinary.uploader.upload_stream( { 
                                                 folder: folder ,
-                                                resource_type: file.type! as ResourceValidTypes,
-                                                width: 355,
-                                                height: 240,
-                                                crop: 'fill',
+                                                resource_type: resource_type,
+                                                ...transformation,
                                             } ,(error , result ) => {
                 console.log("Cloudinary upload result:", result);
                 if (error) {
@@ -48,6 +52,8 @@ export class CloudinaryAdapter implements FileStorage {
                         size          : result.bytes,
                         extension     : result.format,
                         resource_type : result.resource_type,
+                        // Cloudinary solo devuelve duration para videos.
+                        duration      : result.duration ? Math.round(result.duration) : undefined,
                     };
 
                     return resolve(fileResponse);
@@ -63,7 +69,7 @@ export class CloudinaryAdapter implements FileStorage {
                 console.log( error , result)
                 if( error ) return reject( error );
 
-                if( result.result === 'not found' ) resolve(false);
+                if( result.result === 'not found' ) return resolve(false);
                 
                 return resolve(true);
             })
