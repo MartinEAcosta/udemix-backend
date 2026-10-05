@@ -18,13 +18,13 @@ export class CategoryRouter {
 
         router.delete(
             '/:id',
-            [ authMiddleware.validateJWT ],
+            [ authMiddleware.validateJWT, authMiddleware.validatePermissions(['admin']) ],
             categoryController.deleteCategory
         )
 
         router.post(
             '/new',
-            [ authMiddleware.validateJWT ],
+            [ authMiddleware.validateJWT, authMiddleware.validatePermissions(['admin']) ],
             categoryController.createCategory
         )
 

@@ -52,7 +52,7 @@ export class AuthController {
         const [ error , userDto ] = UpdateUserDto.create( {...req.body, id: targetId} );
         if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
 
-        new UpdateUser( this.authRepository , this.tokenManager )
+        new UpdateUser( this.authRepository , this.tokenManager, this.encrypter )
             .execute( userDto! )
             .then( updatedUser => HandlerResponses.handleAuthSuccess( res , updatedUser , 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );

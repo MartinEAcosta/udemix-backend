@@ -1,4 +1,5 @@
 import { CustomError } from '../../errors/custom-error';
+import { UpdateUserDto } from '../../dtos/auth/update-user-dto';
 import { AuthRepository } from '../../repository/auth-repository';
 import { TokenManager } from '../../services/TokenManager';
 
@@ -26,10 +27,9 @@ export class ValidateEmail implements ValidateEmailUseCase {
         const user = await this.authRepository.findUserByEmail( email );
         if( !user ) throw CustomError.badRequest('No se ha encontrado un usuario vinculado a ese email.');
 
-        const updatedUser = await this.authRepository.updateUser({
-            ...user,
-            isEmailVerified : true,
-        });
+        const updatedUser = await this.authRepository.updateUser(
+            UpdateUserDto.markEmailVerified( user.id , true )
+        );
         if( !updatedUser ) throw CustomError.internalServer('Hubo un error inesperado al actualizar el usuario');
 
 

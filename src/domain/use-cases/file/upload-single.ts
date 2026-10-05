@@ -6,7 +6,7 @@ import { AuthRepository, CourseRepository, LessonRepository } from "../../reposi
 import { Folders } from "../../entities/file.entity";
 
 export interface UploadFileUseCase {
-    execute( files : UploadFileDto , folder : Folders , id_entity : string) : Promise<FileResponseDto>;
+    execute( files : UploadFileDto , folder : Folders , id_entity : string , id_user : string , role : string ) : Promise<FileResponseDto>;
 }
 
 export class UploadSingle implements UploadFileUseCase {
@@ -17,10 +17,12 @@ export class UploadSingle implements UploadFileUseCase {
         private readonly lessonRepository : LessonRepository,
         private readonly authRepository : AuthRepository,
     ) { }
-    
-    execute = async( file : UploadFileDto , folder : Folders , id_entity : string ): Promise<FileResponseDto> =>  {
+
+    execute = async( file : UploadFileDto , folder : Folders , id_entity : string , id_user : string , role : string ): Promise<FileResponseDto> =>  {
         const searchedEntity = await this.obtainSearchedEntity( folder , id_entity );
         if(!searchedEntity) throw CustomError.notFound('No puede actualizarse una entidad que no existe.');
+
+        await this.assertOwnership( folder , searchedEntity , id_entity , id_user , role );
 
         // Transaction
         if( searchedEntity.id_file ) {
@@ -84,6 +86,27 @@ export class UploadSingle implements UploadFileUseCase {
     obtainSearchedEntity = async( folder : Folders , id_entity : string ) => {
         let entity = this.strategies[folder];
         return await entity.find(id_entity);
+    }
+
+    assertOwnership = async( folder : Folders , searchedEntity : any , id_entity : string , id_user : string , role : string ) => {
+        if( role === 'admin' ) return;
+
+        if( folder === 'user' ) {
+            if( id_entity !== id_user ) throw CustomError.unauthorized('No puedes modificar el archivo de otro usuario.');
+            return;
+        }
+
+        if( folder === 'course' ) {
+            if( searchedEntity.id_owner != id_user ) throw CustomError.unauthorized('No puedes modificar el archivo de un curso que no te pertenece.');
+            return;
+        }
+
+        if( folder === 'lesson' ) {
+            const course = await this.courseRepository.findCourseById( searchedEntity.id_course );
+            if( !course ) throw CustomError.notFound('El curso al que pertenece la lección no existe.');
+            if( course.id_owner != id_user ) throw CustomError.unauthorized('No puedes modificar el archivo de una lección de un curso que no te pertenece.');
+            return;
+        }
     }
 
     assignNewIdFile = async( folder : Folders , id_entity : string , file : FileResponseDto ) => {

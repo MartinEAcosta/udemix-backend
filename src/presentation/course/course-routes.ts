@@ -49,21 +49,23 @@ export class CourseRouter {
           courseController.saveCourse
         );
         
-        // Edit Course 
+        // Edit Course
         router.put(
           '/update/:id',
-          [ 
-            authMiddleware.validateJWT , 
+          [
+            authMiddleware.validateJWT ,
             authMiddleware.validatePermissions(['teacher', 'admin']) ,
-            authMiddleware.validateAndAssignOwner
           ],
           courseController.updateCourse
         );
-        
+
         // Delete Course
         router.delete(
           '/delete/:id',
-          authMiddleware.validateJWT,
+          [
+            authMiddleware.validateJWT,
+            authMiddleware.validatePermissions(['teacher', 'admin']),
+          ],
           courseController.deleteCourse
         );
 

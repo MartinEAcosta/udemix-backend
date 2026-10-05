@@ -96,7 +96,10 @@ export class CourseController {
             .catch( error => HandlerResponses.handleError( error , res ));
     }
 
-    public updateCourse = ( req : Request , res : Response ) => {
+    public updateCourse = ( req : AuthenticatedRequest , res : Response ) => {
+
+        const { user } = req;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para editar un curso.') , res );
 
         const fileUploadDto = req.body.attachedFile;
         if( typeof req.params.id !== 'string' || !req.params.id ) {
@@ -106,15 +109,18 @@ export class CourseController {
 
         const [ errorMessage , updateCourseDto ] = UpdateCourseDto.create( id , req.body );
         if( errorMessage ) return HandlerResponses.handleError( CustomError.badRequest( errorMessage ) , res );
-        console.log(updateCourseDto)
+
         new UpdateCourse( this.courseRepository , this.fileRepository , this.categoryRepository  )
-            .execute( updateCourseDto! , fileUploadDto )
+            .execute( updateCourseDto! , user.id , user.role , fileUploadDto )
             .then( courseUpdated => HandlerResponses.handleSuccess( res , courseUpdated, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
 
 
-    public deleteCourse = ( req : Request , res : Response ) => {
+    public deleteCourse = ( req : AuthenticatedRequest , res : Response ) => {
+
+        const { user } = req;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para eliminar un curso.') , res );
 
         if( typeof req.params.id !== 'string' || !req.params.id ) {
             return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
@@ -122,11 +128,11 @@ export class CourseController {
         const { id } = req.params;
 
         new DeleteCourse( this.courseRepository )
-            .execute( id )
-            .then( hasBeenRemoved => HandlerResponses.handleSuccess( res , 
-                                                                            { 
+            .execute( id , user.id , user.role )
+            .then( hasBeenRemoved => HandlerResponses.handleSuccess( res ,
+                                                                            {
                                                                                 removed: hasBeenRemoved
-                                                                            }, 
+                                                                            },
                                                                     200) )
             .catch( error => HandlerResponses.handleError(error , res) );
     }

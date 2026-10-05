@@ -8,7 +8,7 @@ import { UploadFileDto } from "../../dtos/file/file.dto";
 import { CategoryRepository } from "../../repository/category-repository";
 
 export interface UpdateCourseUseCase {
-    execute( updateCourseDto : UpdateCourseDto , file ?: UploadFileDto ) : Promise<CourseEntity>;
+    execute( updateCourseDto : UpdateCourseDto , id_user : string , role : string , file ?: UploadFileDto ) : Promise<CourseEntity>;
 }
 
 export class UpdateCourse implements UpdateCourseUseCase {
@@ -16,17 +16,21 @@ export class UpdateCourse implements UpdateCourseUseCase {
     constructor(
         private readonly courseRepository : CourseRepository,
         private readonly fileRepository   : FileRepository,
-        private readonly categoryRepository : CategoryRepository, 
+        private readonly categoryRepository : CategoryRepository,
     ) {}
 
-    async execute( updateCourseDto: UpdateCourseDto , file ?: UploadFileDto ) : Promise<CourseEntity> {
+    async execute( updateCourseDto: UpdateCourseDto , id_user : string , role : string , file ?: UploadFileDto ) : Promise<CourseEntity> {
         if( updateCourseDto.id_category ){
             const category = await this.categoryRepository.findCategoryById( updateCourseDto.id_category );
             if( !category ) throw CustomError.badRequest('La categoria que asignaste al curso no es valida.');
         }
-        
+
         const courseToUpdate = await this.courseRepository.findCourseById( updateCourseDto.id );
         if( !courseToUpdate ) throw CustomError.notFound(`El curso con el id: ${updateCourseDto.id}, no fue encontrado.`);
+
+        if( courseToUpdate.id_owner != id_user && role !== 'admin' ) {
+            throw CustomError.unauthorized('No puedes editar un curso que no te pertenece.');
+        }
         // if( file ){
         //     const fileUploaded = await this.fileRepository.uploadFile( file , 'courses');
         //     if( !fileUploaded ) throw CustomError.internalServer('Hubo un error al subir la portada.'); 
@@ -47,7 +51,7 @@ export class UpdateCourse implements UpdateCourseUseCase {
             // console.log(updateCourseDto)
             return await this.courseRepository.updateCourse( {
                                                                 ...updateCourseDto,
-                                                                
+                                                                id_owner : courseToUpdate.id_owner,
                                                              } );
         }
     }

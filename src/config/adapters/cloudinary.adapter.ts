@@ -4,7 +4,6 @@ import { envs } from "../envs";
 import { FileStorage } from "../../domain/services/FileStorage";
 import { UploadFileDto, ResourceValidTypes } from '../../domain/dtos/file/file.dto';
 import { FileStorageAdapterResponseDto } from '../../domain/dtos/file/file-response.dto';
-import { TransactionSession } from '../../domain/services/UnitOfWork';
 
 export class CloudinaryAdapter implements FileStorage {
 

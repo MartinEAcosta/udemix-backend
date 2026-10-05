@@ -4,7 +4,7 @@ import { TransactionSession } from "../../../src/domain/services/UnitOfWork";
 import { AuthRepository } from '../../../src/domain/repository/auth-repository';
 import { RegisterUserDto } from "../../../src/domain/dtos/auth/register-user.dto";
 import { UserEntity } from "../../../src/domain/entities/user.entity";
-import { UserRequestDto } from "../../../src/domain/dtos/auth/auth.responses.dto";
+import { UpdateUserDto } from "../../../src/domain/dtos/auth/update-user-dto";
 
 describe( 'Auth Repository', () => {
 
@@ -21,7 +21,7 @@ describe( 'Auth Repository', () => {
             return null;
         }
 
-        async updateUser ( user : UserRequestDto , ts ?: TransactionSession ) : Promise<UserEntity> {
+        async updateUser ( user : UpdateUserDto , ts ?: TransactionSession ) : Promise<UserEntity> {
             return UserEntity.fromObject(user);
         }
     }

@@ -47,67 +47,75 @@ export class LessonController {
         if( !id ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id para realizar el borrado.'), res );
 
         const { user } = req;
-        if( !user ) throw HandlerResponses.handleError( CustomError.unauthorized( 'Debes estar autenticado para crear una lección.' ), res );
-        const [ error , lessonRequestDto ] = UpdateLessonDto.create(
-                                                                    { 
-                                                                        ...req.body,
-                                                                        id_user : user.id
-                                                                    });
+        if( !user ) throw HandlerResponses.handleError( CustomError.unauthorized( 'Debes estar autenticado para actualizar una lección.' ), res );
+        const [ error , lessonRequestDto ] = UpdateLessonDto.create( req.body );
         if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
-        
+
         new UpdateLesson( this.courseRepository , this.lessonRepository )
-                .execute( lessonRequestDto! )
+                .execute( lessonRequestDto! , user.id )
                 .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
                 .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
 
-    public deleteLesson = ( req : Request , res : Response ) => {
+    public deleteLesson = ( req : AuthenticatedRequest , res : Response ) => {
+        const { user } = req;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para eliminar una lección.') , res );
+
         if( typeof req.params.id !== 'string' || !req.params.id ) {
             return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
         }
         const { id } = req.params;
 
-        new DeleteLesson( this.lessonRepository )
-            .execute( id )
+        new DeleteLesson( this.lessonRepository , this.courseRepository )
+            .execute( id , user.id )
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
 
     }
 
-    public findAllLessonsFromCourse = ( req : Request , res : Response ) => {
+    public findAllLessonsFromCourse = ( req : AuthenticatedRequest , res : Response ) => {
+        const { user } = req;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para ver las lecciones de un curso.') , res );
+
         if( typeof req.params.course_id !== 'string' || !req.params.course_id ) {
             return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id de curso valido.') , res );
         }
         const { course_id } = req.params;
 
-        new FindAllLessonsFromCourse( this.courseRepository , this.lessonRepository )
-            .execute( course_id )
+        new FindAllLessonsFromCourse( this.courseRepository , this.lessonRepository , this.enrollmentRepository )
+            .execute( course_id , user.id , user.role )
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
-        
+
     }
 
-    public findLessonById = ( req : Request , res : Response ) => {
+    public findLessonById = ( req : AuthenticatedRequest , res : Response ) => {
+        const { user } = req;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para ver esta lección.') , res );
+
         if( typeof req.params.id !== 'string' || !req.params.id ) {
             return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
         }
         const { id } = req.params;
 
-        new FindLessonById( this.lessonRepository )
-            .execute( id )                    
+        new FindLessonById( this.lessonRepository , this.courseRepository , this.enrollmentRepository )
+            .execute( id , user.id , user.role )
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
 
-    public findLessonPopulatedById = ( req : Request , res : Response ) => {
+    public findLessonPopulatedById = ( req : AuthenticatedRequest , res : Response ) => {
+        const { user } = req;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para ver esta lección.') , res );
+
         if( typeof req.params.id !== 'string' || !req.params.id ) {
             return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
         }
         const { id } = req.params;
 
-        new FindLessonPopulatedById( this.lessonRepository )
-            .execute( id )                    
+        new FindLessonPopulatedById( this.lessonRepository , this.courseRepository , this.enrollmentRepository )
+            .execute( id , user.id , user.role )
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }

@@ -12,16 +12,19 @@ export class EnrollmentRouter {
 
         router.get(
             '/',
+            [ authMiddleware.validateJWT, authMiddleware.validatePermissions(['admin']) ],
             enrollmentController.findAllEnrollments
         );
 
         router.get(
             '/:id_enrollment',
+            [ authMiddleware.validateJWT ],
             enrollmentController.findEnrollmentPopulatedById
         );
 
         router.get(
             '/user/:id_user',
+            [ authMiddleware.validateJWT ],
             enrollmentController.findEnrollmentsByUserId
         );
 

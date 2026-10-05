@@ -9,11 +9,14 @@ export class FileRouter {
 
         const router = Router();
 
-        const { fileMiddleware , fileController } = DependencyContainer.getInstance();
+        const { fileMiddleware , fileController , authMiddleware } = DependencyContainer.getInstance();
 
         router.post( 
             '/upload/single/:folder/:id_entity',
-            [ fileMiddleware.containFiles ],
+            [ 
+                fileMiddleware.containFiles,
+                authMiddleware.validateJWT,
+            ],
             fileController.uploadFile
         );
 
@@ -23,17 +26,26 @@ export class FileRouter {
         );
 
         router.delete(
-            '/:id',
+            '/:folder/:id_entity',
+            [
+                authMiddleware.validateJWT
+            ],
             fileController.deleteFile
         );
-        
+
         router.delete(
             '/course-thumbnail/:course_id',
+            [
+                authMiddleware.validateJWT
+            ],
             fileController.deleteCourseThumbnail,
         );
-        
-        router.get( 
+
+        router.get(
             '/:id',
+            [
+                authMiddleware.validateJWT
+            ],
             fileController.findFileById,
         )
 

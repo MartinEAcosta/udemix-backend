@@ -11,6 +11,7 @@ import { DeleteCourseThumbnail } from "../../domain/use-cases/file/delete-course
 import { UploadFileDto } from "../../domain/dtos/file/file.dto";
 import { AuthRepository, LessonRepository } from "../../domain/repository";
 import { Folders, isValidFolder } from "../../domain/entities/file.entity";
+import { AuthenticatedRequest } from "../middlewares";
 
 export class FileController {
 
@@ -21,7 +22,10 @@ export class FileController {
         private readonly authRepository : AuthRepository
     ) { }
 
-    public uploadFile = ( req : Request , res : Response ) => {
+    public uploadFile = ( req : AuthenticatedRequest , res : Response ) => {
+        if( !req.user ){
+            return HandlerResponses.handleError( CustomError.unauthorized('No puedes subir archivos si no estas logueado.') , res );
+        }
         // Propiedad creada automaticamente por el middleware file-upload.
         // req.files;
         // El middleware ya se encargo de validar que haya un archivo existente.
@@ -44,7 +48,7 @@ export class FileController {
         if( !folder ) return;
         
         new UploadSingle( this.fileRepository , this.courseRepository , this.lessonRepository, this.authRepository )
-            .execute( fileToUploadDto! , folder , id_entity )
+            .execute( fileToUploadDto! , folder , id_entity , req.user.id , req.user.role )
             .then( success => HandlerResponses.handleSuccess( res , success , 201 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
@@ -69,31 +73,46 @@ export class FileController {
         return fol;
     }
 
-    public deleteFile = ( req : Request , res : Response )  => {
-        if( typeof req.params.id !== 'string' || !req.params.id ) {
-            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
+    public deleteFile = ( req : AuthenticatedRequest , res : Response )  => {
+        if( !req.user ){
+            return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para borrar archivos.') , res );
         }
-        const { id } = req.params;
 
-        new DeleteFile( this.fileRepository )
-            .execute( id )
+        if( typeof req.params.id_entity !== 'string' || !req.params.id_entity ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id de entidad valido.') , res );
+        }
+
+        const folder : Folders | undefined = this.obtainFolder( req , res );
+        if( !folder ) return;
+        const { id_entity } = req.params;
+
+        new DeleteFile( this.fileRepository , this.courseRepository , this.lessonRepository , this.authRepository )
+            .execute( folder , id_entity , req.user.id , req.user.role )
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
 
-    public deleteCourseThumbnail = ( req : Request , res : Response ) => {
+    public deleteCourseThumbnail = ( req : AuthenticatedRequest , res : Response ) => {
+        if( !req.user ){
+            return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para borrar archivos.') , res );
+        }
+
         if( typeof req.params.course_id !== 'string' || !req.params.course_id ) {
             return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
         }
         const { course_id } = req.params;
 
         new DeleteCourseThumbnail( this.fileRepository , this.courseRepository )
-            .execute( course_id )
+            .execute( course_id , req.user.id , req.user.role )
             .then( success => HandlerResponses.handleSuccess( res , success , 200 ))
             .catch( error => { console.log(error); return HandlerResponses.handleError( error , res )});
     }
 
-    public findFileById = ( req : Request , res : Response ) => {
+    public findFileById = ( req : AuthenticatedRequest , res : Response ) => {
+        if( !req.user ){
+            return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para ver archivos.') , res );
+        }
+
         if( typeof req.params.id !== 'string' || !req.params.id ) {
             return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
         }

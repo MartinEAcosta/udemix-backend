@@ -2,7 +2,7 @@ import { AuthResponseDto, AuthSuccessResponseDto } from "../../dtos/auth/auth.re
 import { UpdateUserDto } from "../../dtos/auth/update-user-dto";
 import { CustomError } from "../../errors/custom-error";
 import { AuthRepository } from "../../repository";
-import { TokenManager } from "../../services";
+import { Encrypter, TokenManager } from "../../services";
 
 interface UpdateUserUseCase {
     execute( userDto : UpdateUserDto ): Promise<AuthSuccessResponseDto>;
@@ -13,6 +13,7 @@ export class UpdateUser implements UpdateUserUseCase {
     constructor (
         private readonly authRepository : AuthRepository,
         private readonly tokenManager : TokenManager,
+        private readonly encrypter : Encrypter,
     ) { }
 
     async execute( userDto : UpdateUserDto ) : Promise<AuthSuccessResponseDto> {
@@ -23,10 +24,16 @@ export class UpdateUser implements UpdateUserUseCase {
             if( emailExists ) throw CustomError.badRequest('El email ya esta en uso.');
         }
         
+        let userToSave = { ...userDto };
+        if( userDto.password ){
+            const passwordHashed = this.encrypter.hash( userDto.password );
+            userToSave.password = passwordHashed;
+        }
+
         // Si cambian el email, se marca como no verificado, sino me devuelve el dto normal.
         const updateData = userDto.email != null && userDto.email !== userExists.email
-            ? { ...userDto, isEmailVerified: false }
-            : userDto;
+            ? { ...userToSave, isEmailVerified: false }
+            : userToSave;
         const updatedUser = await this.authRepository.updateUser( updateData );
         if( !updatedUser ) throw CustomError.internalServer('Error al actualizar el usuario.');
 

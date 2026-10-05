@@ -1,18 +1,19 @@
 import { CourseRepository } from "../../repository/course-repository";
 import { FileRepository } from '../../repository/file-repository';
+import { CustomError } from "../../errors/custom-error";
 
 interface DeleteCourseThumbnailUseCase {
-    execute( id : string ) : Promise<boolean>;
+    execute( id : string , id_user : string , role : string ) : Promise<boolean>;
 }
 
 export class DeleteCourseThumbnail implements DeleteCourseThumbnailUseCase {
 
-    constructor( 
+    constructor(
         private readonly fileRepository : FileRepository,
-        private readonly courseRepository : CourseRepository 
+        private readonly courseRepository : CourseRepository
     ) { }
 
-    execute = async( id : string ) : Promise<boolean> => {
+    execute = async( id : string , id_user : string , role : string ) : Promise<boolean> => {
             // Deberia de validar si el id del curso que me pasaron por param existe.
             // Si no existe, hubo un error al borrar el thumbnail.
             // Si existe, se deberia de llamar a la logica de borrado de file, es decir el caso de uso DeleteFile.
@@ -22,6 +23,10 @@ export class DeleteCourseThumbnail implements DeleteCourseThumbnailUseCase {
             const course = await this.courseRepository.findCourseById( id );
 
             if( !course ) return false;
+
+            if( course.id_owner != id_user && role !== 'admin' ) {
+                throw CustomError.unauthorized('No puedes borrar la portada de un curso que no te pertenece.');
+            }
             const { id_file , thumbnail_url, ...rest } = course;
             if( !id_file ) return false;
 

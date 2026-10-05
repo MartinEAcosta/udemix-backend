@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { EnrollmentRepository } from "../../domain/repository/enrollment-repository";
 import { CreateEnrollmentDto } from "../../domain/dtos/enrollment/create-enrollment.dto";
 import { HandlerResponses } from "../helpers/handler-responses";
@@ -36,23 +36,33 @@ export class EnrollmentController{
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
 
-    public findEnrollmentPopulatedById = ( req : Request , res : Response ) => {
+    public findEnrollmentPopulatedById = ( req : AuthenticatedRequest , res : Response ) => {
+        const { user } = req;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe encontrarse autenticado para obtener una inscripción.') , res );
+
         if( typeof req.params.id_enrollment !== 'string' || !req.params.id_enrollment ) {
              return HandlerResponses.handleError( CustomError.badRequest('Debes indicar el id de la inscripción a buscar.'), res);
         }
         const { id_enrollment } = req.params;
 
         new FindEnrollmentPopulatedById( this.enrollmentRepository )
-            .execute( id_enrollment )
+            .execute( id_enrollment , user.id , user.role )
             .then( enrollment => HandlerResponses.handleSuccess( res , enrollment , 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
-    } 
+    }
 
     public findEnrollmentsByUserId = ( req : AuthenticatedRequest , res : Response ) => {
+        const { user } = req;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe encontrarse autenticado para obtener inscripciones.') , res );
+
         if( typeof req.params.id_user !== 'string' || !req.params.id_user ) {
             return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id usuario válido.'), res);
         }
         const { id_user } = req.params;
+
+        if( id_user != user.id && user.role !== 'admin' ) {
+            return HandlerResponses.handleError( CustomError.unauthorized('No puedes buscar inscripciones que no te pertenecen') , res );
+        }
 
         new FindEnrollmentsByUserId( this.enrollmentRepository )
             .execute( id_user )

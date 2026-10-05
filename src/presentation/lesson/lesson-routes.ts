@@ -35,21 +35,25 @@ export class LessonRouter {
         // * CHEQUEAR QUE ES EL MISMO QUE EL DETAILED
         router.get(
             '/course/:course_id',
+            [ authMiddleware.validateJWT ],
             lessonController.findAllLessonsFromCourse
         );
 
         router.get(
             '/populated/course/:course_id',
+            [ authMiddleware.validateJWT ],
             lessonController.findAllLessonsFromCourse
         );
 
         router.get(
             '/:id',
+            [ authMiddleware.validateJWT ],
             lessonController.findLessonById
         );
-        
+
         router.get(
             '/populated/:id',
+            [ authMiddleware.validateJWT ],
             lessonController.findLessonPopulatedById
         );
 
