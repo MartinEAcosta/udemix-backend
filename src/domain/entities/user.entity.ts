@@ -6,7 +6,7 @@ export interface UserEntityOptions {
     email : string,
     isEmailVerified : boolean,
     role : string;
-    password : string,
+    password ?: string | null,
     balance ?: number,
     avatar_url ?: string,
     id_file ?: string,
@@ -18,7 +18,7 @@ export class UserEntity {
     public email : string;
     public isEmailVerified : boolean;
     public role : string;
-    public password : string;
+    public password : string | null;
     public balance : number;
     public avatar_url : string;
     public id_file : string;
@@ -30,7 +30,7 @@ export class UserEntity {
         this.email = email;
         this.isEmailVerified = isEmailVerified ?? false;
         this.role = role ?? 'student';
-        this.password = password;
+        this.password = password ?? null;
         this.balance = balance ?? 0;
         this.avatar_url = avatar_url ?? '';
         this.id_file = id_file ?? '';
@@ -41,7 +41,6 @@ export class UserEntity {
         
         if( !username ) throw CustomError.badRequest('El nombre de usuario es requerido.'); 
         if( !email ) throw CustomError.badRequest('El email es requerido.');
-        if( !password ) throw CustomError.badRequest('La contraseña es requerida.');
 
         return new UserEntity(
             { 

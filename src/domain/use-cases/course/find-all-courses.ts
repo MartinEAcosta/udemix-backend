@@ -1,8 +1,6 @@
 import { CourseRepository } from "../../repository/course-repository";
 
 import { CourseEntity } from "../../entities/course.entity";
-// * VERIFICAR SI NO ROMPE ENCAPSULAMIENTO PORQUE TECNICAMENTE SE ESTA 
-// * CONECTANDO CON LA CAPA DE INFRAESTRUCTURA PERO NO SE ESTA UTILIZANDO NINGUNA DEPENDENCIA EXTERNA
 import { CourseQueryFilter } from "../../helpers/course-query-builder";
 import { PaginationDto, PaginationResponseDto } from "../../dtos/shared/pagination.dto";
 

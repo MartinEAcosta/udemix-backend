@@ -5,7 +5,7 @@ export interface UserResponseDto {
     email           : string,
     isEmailVerified : boolean,
     role            : string,
-    password       ?: string,
+    password       ?: string | null,
     balance         : number,
     avatar_url     ?: string | null,
     id_file        ?: string | null,
@@ -25,6 +25,7 @@ export interface UserRequestDto {
 export interface AuthResponseDto {
     id       ?:   string,
     username : string,
+    role    : string,
     isEmailVerified : boolean,
     email    : string,
     avatar_url ?: string,
@@ -33,4 +34,10 @@ export interface AuthResponseDto {
 export interface AuthSuccessResponseDto {
     user  : AuthResponseDto,
     token : string,
+}
+
+export interface SocialLoginResponseDto {
+    user  : AuthResponseDto,
+    token : string,
+    provider : string,
 }

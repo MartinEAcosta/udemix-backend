@@ -46,7 +46,7 @@ describe('User Model' , () => {
                         enum : ['student' , 'teacher' , 'admin' ],
                         default : 'student'
                     },
-                password : { type : String, required : [true , 'La contraseña es requerida.'] },
+                password : { type : String },
                 balance : { type : Number, default : 0},
             }
         ));

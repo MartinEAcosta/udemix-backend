@@ -21,6 +21,11 @@ export class AuthRouter {
                 authController.loginUser
             );
 
+            router.post(
+                '/login/google',
+                authController.loginWithGoogle
+            )
+
             router.put(
                 '/update/user',
                 [authMiddleware.validateJWT],

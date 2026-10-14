@@ -12,6 +12,8 @@ import { RegisterUser , LoginUser , FindUserById } from "../../domain/use-cases"
 import { ReloadToken } from "../../domain/use-cases/auth/reload-token";
 import { UpdateUser } from "../../domain/use-cases/auth/update-user";
 import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
+import { SocialLoginWithGoogle } from "../../domain/use-cases/auth/social-login-with-google";
+import { SocialAuthProvider } from "../../domain/services/SocialAuthProvider";
 
 export class AuthController {
 
@@ -19,6 +21,7 @@ export class AuthController {
         private readonly authRepository : AuthRepository,
         private readonly encrypter      : Encrypter,
         private readonly tokenManager   : TokenManager,
+        private readonly socialAuth : SocialAuthProvider,
     ){}
 
     public registerUser = ( req : Request , res : Response ) => {
@@ -37,6 +40,15 @@ export class AuthController {
 
         new LoginUser( this.authRepository , this.encrypter , this.tokenManager )
             .execute( loginUserDto! )
+            .then( authResponse => HandlerResponses.handleAuthSuccess( res , authResponse , 200 ) )
+            .catch( error => HandlerResponses.handleError(error , res ) );
+    }
+
+    public loginWithGoogle = ( req : Request , res : Response ) => {
+        const { code } = req.body;
+
+        new SocialLoginWithGoogle( this.socialAuth , this.tokenManager , this.authRepository )
+            .execute( code )
             .then( authResponse => HandlerResponses.handleAuthSuccess( res , authResponse , 200 ) )
             .catch( error => HandlerResponses.handleError(error , res ) );
     }

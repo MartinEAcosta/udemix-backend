@@ -6,7 +6,7 @@ export class UpdateUserDto {
         public readonly id : string,
         public readonly username ?: string,
         public readonly email ?: string,
-        public readonly password ?: string,
+        public readonly password ?: string | null,
         public readonly avatar_url ?: string | null,
         public readonly id_file ?: string | null,
         public readonly isEmailVerified ?: boolean,

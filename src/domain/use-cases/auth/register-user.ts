@@ -24,6 +24,7 @@ export class RegisterUser implements RegisterUserUseCase {
         if( userExists ) throw CustomError.badRequest( 'Ya existe una cuenta asociada a este email.' );
     
         const { password , ...rest } = registerUserDto;
+        if( !password ) throw CustomError.badRequest('La contraseña es requerida para el registro de un usuario.');
         const hashedPassword = this.encrypter.hash( password );
 
         const newUser = await this.authRepository.registerUser( 
@@ -48,6 +49,7 @@ export class RegisterUser implements RegisterUserUseCase {
                 id       : newUser.id,
                 username : newUser.username,
                 isEmailVerified : newUser.isEmailVerified,
+                role : newUser.role,
                 email    : newUser.email,                                
             },
             token: token,

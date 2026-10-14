@@ -6,7 +6,7 @@ export interface IUserModel {
   email           : string;
   isEmailVerified : boolean;
   role            : string;
-  password        : string;
+  password        ?: string | null;
   balance         : number;
   avatar_url      : string | null;
   id_file         ?: Types.ObjectId | null;
@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
 
     password : {
         type     : String,
-        required : [ true , 'La contraseña es requerida.'],
+        // required : [ true , 'La contraseña es requerida.'],
     },
     
     balance : {

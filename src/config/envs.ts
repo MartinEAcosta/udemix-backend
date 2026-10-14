@@ -22,6 +22,9 @@ export const envs = {
     FRONTEND_BASE_URL: get('FRONTEND_BASE_URL').required().asString(),
     WEBSERVICE_URL: get('WEBSERVICE_URL').required().asString(),
 
+    GOOGLE_AUTH_CLIENT_ID: get('GOOGLE_AUTH_CLIENT_ID').required().asString(),
+    GOOGLE_AUTH_SECRET: get('GOOGLE_AUTH_SECRET').required().asString(),
+
     // MERCADOPAGO_ACCESS_TOKEN: get('MERCADOPAGO_ACCESS_TOKEN').required().asString(),
     // MERCADOPAGO_PUBLIC_KEY: get('MERCADOPAGO_PUBLIC_KEY').required().asString(),
 }

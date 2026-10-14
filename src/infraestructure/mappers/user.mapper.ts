@@ -10,7 +10,7 @@ export class UserMapper {
             email: userDoc.email,
             isEmailVerified: userDoc.isEmailVerified,
             role: userDoc.role,
-            password: userDoc.password,
+            password: userDoc.password ?? null,
             balance: userDoc.balance,
             avatar_url: userDoc.avatar_url ?? null,
             id_file: userDoc.id_file?.toString() ?? null,

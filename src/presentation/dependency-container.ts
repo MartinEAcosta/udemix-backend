@@ -19,6 +19,8 @@ import { PaymentController } from "./payment/payment-controller";
 import { MercadoPagoAdapter } from "../config/adapters/mercadopago-adapter";
 import { PaymentRepositoryImpl } from '../infraestructure/repositories/payment-repository-impl';
 import { PaymentDataSourceImpl } from "../infraestructure/datasources/payment-datasource-impl";
+import { SocialAuthProvider } from "../domain/services/SocialAuthProvider";
+import { GoogleAdapter } from "../config/adapters/google.adapter";
 
 
 export class DependencyContainer {
@@ -60,6 +62,7 @@ export class DependencyContainer {
     readonly tokenManager : TokenManager;
     readonly unitOfWork : UnitOfWork;
     readonly paymentService : PaymentService;
+    readonly googleAuthClient : SocialAuthProvider;
     
 
     private constructor( ) {
@@ -76,6 +79,7 @@ export class DependencyContainer {
         this.paymentService = new MercadoPagoAdapter(
                                                         envs.MERCADOPAGO_ACCESS_TOKEN
         );
+        this.googleAuthClient = new GoogleAdapter( envs.GOOGLE_AUTH_CLIENT_ID );
 
         this.authRepository       = new AuthRepositoryImpl( new AuthDatasourceImpl() );
         this.categoryRepository   = new CategoryRepositoryImpl( new CategoryDataSourceImpl() );
@@ -93,7 +97,7 @@ export class DependencyContainer {
         this.paginationMiddleware = new PaginationMiddleware();
         
 
-        this.authController       = new AuthController( this.authRepository, this.encrypter , this.tokenManager );
+        this.authController       = new AuthController( this.authRepository, this.encrypter , this.tokenManager , this.googleAuthClient );
         this.categoryController   = new CategoryController( this.categoryRepository );
         this.courseController     = new CourseController( this.courseRepository , this.categoryRepository , this.fileRepository );
         this.emailController      = new EmailController( this.authRepository , this.emailValidator , this.tokenManager );
