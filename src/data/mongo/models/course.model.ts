@@ -5,6 +5,7 @@ export interface ICourseModel {
     title            : string,
     description      : string,
     id_category     ?: Types.ObjectId | null;
+    category_name   ?: string | null,
     thumbnail_url   ?: string | null,
     id_file         ?: Types.ObjectId | null,
     id_owner         : Types.ObjectId,
@@ -27,8 +28,13 @@ const courseSchema = new mongoose.Schema({
 
     id_category : {
         type     : Schema.Types.ObjectId,
-        ref      : 'Category'
-        // required : [true , 'La categoría es requerida.'],
+        ref      : 'Category',
+        required : [true , 'La categoría es requerida.'],
+    },
+
+    category_name : {
+        type    : String,
+        required : [true , 'El nombre de la categoría es requerido.'],
     },
 
     thumbnail_url : {
@@ -61,5 +67,6 @@ const courseSchema = new mongoose.Schema({
     },
 
 });
+
 
 export const CourseModel = mongoose.model( 'Course' , courseSchema );

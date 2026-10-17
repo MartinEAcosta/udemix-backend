@@ -3,6 +3,7 @@ interface CourseEntityOptions {
     title : string ;
     description : string; 
     id_category : string;
+    category_name : string;
     thumbnail_url ?: string;
     id_file ?: string;
     id_owner : string;
@@ -17,6 +18,7 @@ export class CourseEntity {
     public title : string;
     public description : string;
     public id_category : string;
+    public category_name : string;
     public thumbnail_url : string | null;
     public id_file  : string | null;
     public id_owner : string;
@@ -26,11 +28,12 @@ export class CourseEntity {
 
 
     private constructor ( options : CourseEntityOptions){
-        const { id , title , description , id_category , thumbnail_url, id_file, id_owner , price , capacity , current_enrolled } = options;
+        const { id , title , description , id_category , category_name , thumbnail_url, id_file, id_owner , price , capacity , current_enrolled } = options;
         this.id = id;       
         this.title = title;
         this.description = description;
         this.id_category = id_category;
+        this.category_name = category_name;
         this.thumbnail_url = thumbnail_url ?? null;
         this.id_file = id_file ?? null;
         this.id_owner = id_owner;
@@ -41,12 +44,14 @@ export class CourseEntity {
 
 
     static fromObject = ( object: { [ key: string ] : any } ): CourseEntity => {
-        const { id , title, description, id_category , thumbnail_url, id_file,
+        const { id , title, description, id_category, category_name, thumbnail_url, id_file,
                  id_owner , price , capacity = undefined , current_enrolled = 0 } = object;
 
         if( !title ) throw 'El titulo es requerido.';
         if( !description ) throw 'La descripción es requerida.';
         if( !id_owner ) throw 'El creador del curso es requerido.';
+        if( !id_category ) throw 'La categoría es requerida.';
+        if( !category_name ) throw 'El nombre de la categoría es requerido.';
         if( price === null || price === undefined ) throw 'El precio es requerido.';
     
         return new CourseEntity(
@@ -54,7 +59,8 @@ export class CourseEntity {
                 id ,
                 title,
                 description,
-                id_category, 
+                id_category,
+                category_name, 
                 thumbnail_url,
                 id_file, 
                 id_owner, 

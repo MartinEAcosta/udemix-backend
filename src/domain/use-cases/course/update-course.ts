@@ -20,9 +20,11 @@ export class UpdateCourse implements UpdateCourseUseCase {
     ) {}
 
     async execute( updateCourseDto: UpdateCourseDto , id_user : string , role : string , file ?: UploadFileDto ) : Promise<CourseEntity> {
+        let toUpdateDto = { ...updateCourseDto };
         if( updateCourseDto.id_category ){
             const category = await this.categoryRepository.findCategoryById( updateCourseDto.id_category );
             if( !category ) throw CustomError.badRequest('La categoria que asignaste al curso no es valida.');
+            toUpdateDto.category_name = category.name;
         }
 
         const courseToUpdate = await this.courseRepository.findCourseById( updateCourseDto.id );
@@ -31,26 +33,10 @@ export class UpdateCourse implements UpdateCourseUseCase {
         if( courseToUpdate.id_owner != id_user && role !== 'admin' ) {
             throw CustomError.unauthorized('No puedes editar un curso que no te pertenece.');
         }
-        // if( file ){
-        //     const fileUploaded = await this.fileRepository.uploadFile( file , 'courses');
-        //     if( !fileUploaded ) throw CustomError.internalServer('Hubo un error al subir la portada.'); 
 
-        //     if( courseToUpdate.id_file ){
-        //         const oldRef = await this.fileRepository.deleteFile( courseToUpdate.id_file );
-        //         if( !oldRef ) throw CustomError.internalServer('Hubo un error al borrar la referencia antigua.');
-        //     }
-        //     return await this.courseRepository.updateCourse(
-        //                                                     {
-        //                                                         ...updateCourseDto , 
-        //                                                         id_file : fileUploaded.id,
-        //                                                         thumbnail_url : fileUploaded.url,
-        //                                                     }
-        //                                                    );
-        // }
         else{
-            // console.log(updateCourseDto)
             return await this.courseRepository.updateCourse( {
-                                                                ...updateCourseDto,
+                                                                ...toUpdateDto,
                                                                 id_owner : courseToUpdate.id_owner,
                                                              } );
         }

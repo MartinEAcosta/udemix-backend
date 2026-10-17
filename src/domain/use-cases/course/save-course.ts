@@ -18,12 +18,18 @@ export class SaveCourse implements SaveCourseUseCase {
     ) {}
 
     async execute( createCourseDto : CreateCourseDto ) : Promise<CourseEntity> {
+        let category;
         if( createCourseDto.id_category ){
-            const category = await this.categoryRepository.findCategoryById( createCourseDto.id_category );
+            category = await this.categoryRepository.findCategoryById( createCourseDto.id_category );
             if( !category ) throw CustomError.badRequest('La categoria que asignaste al curso no es valida.');
         }
         
-        return this.courseRepository.saveCourse( createCourseDto );
+        return this.courseRepository.saveCourse( 
+            {
+            ...createCourseDto,
+            category_name : category?.name ?? ''
+            } 
+        );
     }
 
 }

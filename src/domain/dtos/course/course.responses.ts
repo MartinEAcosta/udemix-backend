@@ -4,6 +4,7 @@ export interface CourseResponseDto {
     title : string,
     description : string,
     id_category ?: string | null,
+    category_name ?: string | null,
     thumbnail_url ?: string | null,
     id_file  ?: string | null,
     id_owner : string,
