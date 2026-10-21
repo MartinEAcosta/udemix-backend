@@ -1,5 +1,5 @@
 import { PaymentDataSource } from "../../domain/datasources/payment-datasource";
-import { IdentificationTypesResponse, PaymentCreatedResponseDto, PaymentMethodsResponse } from "../../domain/dtos/payment/payment.response";
+import { IdentificationTypesResponse, PaymentGatewayResult, PaymentMethodsResponse } from "../../domain/dtos/payment/payment.response";
 import { PaymentRepository } from "../../domain/repository/payment-repository";
 import { PaymentEntity } from "../../domain/entities/payment.entity";
 import { PaymentRequestAdapterDto } from "../../domain/dtos/payment/payment-request-adapter.dto";
@@ -12,7 +12,7 @@ export class PaymentRepositoryImpl implements PaymentRepository {
         private readonly paymentDatasource : PaymentDataSource,
     ){ }
     
-    async startPayment( paymentRequest : PaymentRequestAdapterDto  ) : Promise<PaymentCreatedResponseDto | null> {
+    async startPayment( paymentRequest : PaymentRequestAdapterDto  ) : Promise<PaymentGatewayResult | null> {
         try{
             const paymentResponse = await this.paymentDatasource.startPayment( paymentRequest );
             if ( !paymentResponse ) return null;
@@ -54,13 +54,13 @@ export class PaymentRepositoryImpl implements PaymentRepository {
         }
     }
     
-    async findPaymentById( id : number ) : Promise<any> {
+    async findPaymentById( id : number ) : Promise<PaymentGatewayResult> {
         try{
-            const paymentResponse = await this.paymentDatasource.findPaymentById( id ); 
+            const paymentResponse = await this.paymentDatasource.findPaymentById( id );
             return paymentResponse;
         }
         catch( error ){
-            console.log(error);
+            throw error;
         }
     }
 

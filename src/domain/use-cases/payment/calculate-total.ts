@@ -3,7 +3,7 @@ import { CustomError } from "../../errors/custom-error";
 import { CourseRepository } from "../../repository";
 
 interface CalculateTotalUseCase {
-    execute( items : ItemQuantity[] , code ?: string ) : Promise<any>;
+    execute( items : ItemQuantity[] , code ?: string ) : Promise<number>;
 }
 
 export class CalculateTotal implements CalculateTotalUseCase {
@@ -13,7 +13,7 @@ export class CalculateTotal implements CalculateTotalUseCase {
     ) { }
 
 
-    async execute( items : ItemQuantity[] , code ?: string ) : Promise<any> {
+    async execute( items : ItemQuantity[] , code ?: string ) : Promise<number> {
 
         let total = 0;
         for( let item of items ){

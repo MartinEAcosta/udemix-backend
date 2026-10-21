@@ -3,18 +3,18 @@ import { PaymentDataSource } from '../../domain/datasources/payment-datasource';
 import { PaymentCreateDto } from '../../domain/dtos/payment/payment-create.dto';
 import { PaymentRequestAdapterDto } from '../../domain/dtos/payment/payment-request-adapter.dto';
 import { PaymentUpdateDto } from '../../domain/dtos/payment/payment-update.dto';
-import { IdentificationTypesResponse, PaymentCreatedResponseDto, PaymentMethodsResponse, PaymentResponseDto } from '../../domain/dtos/payment/payment.response';
+import { IdentificationTypesResponse, PaymentGatewayResult, PaymentMethodsResponse, PaymentResponseDto } from '../../domain/dtos/payment/payment.response';
 import { PaymentService } from '../../domain/services';
 import { PaymentMapper } from '../mappers/payment.mapper';
 
 
 export class PaymentDataSourceImpl implements PaymentDataSource {
 
-    constructor( 
+    constructor(
         private readonly paymentService : PaymentService
     ) { }
-    
-    async startPayment( paymentRequest : PaymentRequestAdapterDto ) : Promise<PaymentCreatedResponseDto | null> {
+
+    async startPayment( paymentRequest : PaymentRequestAdapterDto ) : Promise<PaymentGatewayResult | null> {
         const paymentResponse = await this.paymentService.createPayment( paymentRequest );
         if( !paymentResponse ) return null;
         
@@ -41,7 +41,7 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
         return PaymentMapper.fromPaymentResponseDto( paymentToUpdate! );
     }
 
-    async findPaymentById( id : number ) : Promise<any> {
+    async findPaymentById( id : number ) : Promise<PaymentGatewayResult> {
         const paymentResponse = await this.paymentService.findPaymentById( id );
         return paymentResponse;
     }

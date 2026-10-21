@@ -37,8 +37,7 @@ export class LoginUser implements LoginUserUseCase{
         const token = await this.tokenManager.generateToken( payload );
         if( !token ) throw CustomError.internalServer('Error mientras se generaba el token.');
         
-        const { password: hashedOfDB , ...userWithoutPass } = userExists;  
-        console.log(userExists);
+        const { password: hashedOfDB , ...userWithoutPass } = userExists;
 
         return {
             user : userWithoutPass,

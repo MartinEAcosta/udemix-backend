@@ -1,4 +1,5 @@
 import { PaymentRequestAdapterDto } from "../../dtos/payment/payment-request-adapter.dto";
+import { PaymentEntity } from "../../entities/payment.entity";
 import { UserEntity } from "../../entities/user.entity";
 import { CustomError } from "../../errors/custom-error";
 import { AuthRepository, CourseRepository } from "../../repository";
@@ -6,7 +7,7 @@ import { PaymentRepository } from "../../repository/payment-repository";
 import { CalculateTotal } from "./calculate-total";
 
 interface StartPaymentUseCase {
-    execute( paymentRequestDto : PaymentRequestAdapterDto , user : UserEntity ) : Promise<any>;
+    execute( paymentRequestDto : PaymentRequestAdapterDto , user : UserEntity ) : Promise<PaymentEntity>;
 }
 
 export class StartPayment implements StartPaymentUseCase {
@@ -17,7 +18,7 @@ export class StartPayment implements StartPaymentUseCase {
         private readonly authRepository    : AuthRepository,
     ) { }
 
-    async execute( paymentRequestDto : PaymentRequestAdapterDto , user : UserEntity ) : Promise<any> {
+    async execute( paymentRequestDto : PaymentRequestAdapterDto , user : UserEntity ) : Promise<PaymentEntity> {
 
         const total = await new CalculateTotal( this.courseRepository )
                             .execute( paymentRequestDto.items , paymentRequestDto.code )

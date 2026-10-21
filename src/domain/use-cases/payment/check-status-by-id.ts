@@ -1,8 +1,9 @@
+import { PaymentEntity } from "../../entities/payment.entity";
 import { CustomError } from "../../errors/custom-error";
 import { PaymentRepository } from "../../repository/payment-repository";
 
 interface CheckStatusByIdUseCase {
-    execute( id : number ) : Promise<any>;
+    execute( id : number ) : Promise<PaymentEntity>;
 }
 
 
@@ -13,7 +14,7 @@ export class CheckStatusById implements CheckStatusByIdUseCase {
     ) {}
 
 
-    async execute( id : number ) : Promise<any> {
+    async execute( id : number ) : Promise<PaymentEntity> {
 
         if( !id ) throw CustomError.badRequest('Es necesario indicar el id del pago.');
 
@@ -25,7 +26,6 @@ export class CheckStatusById implements CheckStatusByIdUseCase {
                 id_payment : id, 
                 status : status
             });
-        console.log(updatedPayment);
         return updatedPayment;
     }
 }

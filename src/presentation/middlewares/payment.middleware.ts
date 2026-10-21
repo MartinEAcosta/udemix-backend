@@ -19,8 +19,6 @@ export class PaymentMiddleware {
         const v1 = v1Parsed.split("=")[1];
         const { data } = req.body;
         const signatureTemplateParsed = `id:${data.id};request-id:${request_id};ts:${ts};`;
-        console.log(req.body);
-        console.log(signatureTemplateParsed);
 
         const cyphedSignature = crypto
             .createHmac('sha256', envs.MERCADOPAGO_WEBHOOK_SECRET_KEY)

@@ -75,22 +75,7 @@ export interface IdentificationTypesResponse{
     max_length?: number;
 }
 
-export interface PaymentCreatedResponseDto {
+export interface PaymentGatewayResult {
     id : number,
-    date_created : string,
-    date_approved : string,
-    date_last_updated : string,
-    transaction_amount : number,
-    payer: {
-        email : string,
-    },
-    cardholder : {
-        name : string,
-        identification : {
-            number :  number,
-            type   : string
-        }
-    },
     status : string,
-    status_detail : string,
 }

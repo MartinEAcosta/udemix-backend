@@ -4,7 +4,7 @@ import { PaymentMethod, Payment, IdentificationType } from 'mercadopago';
 import { PaymentService } from '../../domain/services';
 import { PaymentRequestAdapterDto } from '../../domain/dtos/payment/payment-request-adapter.dto';
 import { PaymentMapper } from '../../infraestructure/mappers/payment.mapper';
-import { PaymentCreatedResponseDto, PaymentMethodsResponse, IdentificationTypesResponse } from '../../domain/dtos/payment/payment.response';
+import { PaymentGatewayResult, PaymentMethodsResponse, IdentificationTypesResponse } from '../../domain/dtos/payment/payment.response';
 
 export class MercadoPagoAdapter implements PaymentService{
 
@@ -22,7 +22,7 @@ export class MercadoPagoAdapter implements PaymentService{
         this.identificationType = new IdentificationType( this.client );
     }
 
-    async createPayment( paymentRequestAdapter : PaymentRequestAdapterDto ): Promise<PaymentCreatedResponseDto> {
+    async createPayment( paymentRequestAdapter : PaymentRequestAdapterDto ): Promise<PaymentGatewayResult> {
         try{
 
             const createdPayment = await this.payment.create(
@@ -44,22 +44,20 @@ export class MercadoPagoAdapter implements PaymentService{
                                                                         notification_url: 'https://prerailroad-tamia-voluptuous.ngrok-free.dev/api/payments/notifications?source_news=webhooks',
                                                                     },
                                                                 }).catch( (error) => {
-                                                                    console.log(error);
                                                                     throw error;
                                                                 });
-                                                                console.log(createdPayment);
-            return PaymentMapper.fromPaymentCreatedAdapterResponseToPaymentCreatedResponse( createdPayment );
+            return PaymentMapper.fromMercadoPagoResponseToGatewayResult( createdPayment );
         }
         catch( error ){
             throw error;
         }
     }
 
-    async findPaymentById( id : number ) : Promise<PaymentCreatedResponseDto> {
+    async findPaymentById( id : number ) : Promise<PaymentGatewayResult> {
         try{
             const paymentResponse = await this.payment.get({ id });
             
-            return PaymentMapper.fromPaymentCreatedAdapterResponseToPaymentCreatedResponse( paymentResponse );
+            return PaymentMapper.fromMercadoPagoResponseToGatewayResult( paymentResponse );
         }
         catch( error ) {
             throw error;

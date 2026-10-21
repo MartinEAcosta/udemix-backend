@@ -1,9 +1,10 @@
 import { PaymentMethodResponse } from "mercadopago/dist/clients/paymentMethod/get/types";
 import { IdentificationTypeResponse } from "mercadopago/dist/clients/identificationType/list/types";
+import { PaymentResponse } from "mercadopago/dist/clients/payment/commonTypes";
 
 import { IPaymentModel } from "../../data/mongo/models/payment.model";
-import { PaymentCreatedResponseDto, PaymentResponseDto, PaymentMethodsResponse, IdentificationTypesResponse } from "../../domain/dtos/payment/payment.response";
-import { PaymentEntity } from "../../domain/entities/payment.entity";
+import { PaymentGatewayResult, PaymentResponseDto, PaymentMethodsResponse, IdentificationTypesResponse } from "../../domain/dtos/payment/payment.response";
+import { CustomError } from "../../domain/errors/custom-error";
 
 
 export class PaymentMapper {
@@ -21,25 +22,14 @@ export class PaymentMapper {
         }
     }
 
-    static fromPaymentCreatedAdapterResponseToPaymentCreatedResponse = ( response : any ) : PaymentCreatedResponseDto => {
+    static fromMercadoPagoResponseToGatewayResult = ( response : PaymentResponse ) : PaymentGatewayResult => {
+        if( response.id === undefined || response.status === undefined ) {
+            throw CustomError.internalServer('La respuesta de MercadoPago no incluye un id o status de pago válido.');
+        }
+
         return {
             id : response.id,
-            date_created : response.date_created,
-            date_approved : response.date_approved,
-            date_last_updated : response.date_last_updated,
-            transaction_amount : response.transaction_amount,
-            payer : {
-                email : response.payer.email,
-            },
-            cardholder : {
-                name : response.card.cardholder.name,
-                identification : {
-                    number : response.card.cardholder.identification.number,
-                    type : response.card.cardholder.identification.type,
-                }
-            },
             status : response.status,
-            status_detail : response.status_detail,
         };
     }
 
