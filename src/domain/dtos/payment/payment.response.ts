@@ -28,6 +28,27 @@ export interface ItemQuantity {
     quantity : number,
 }
 
+export interface PaymentMethodSettingsCardNumber {
+    length: number,
+    validation: string,
+}
+
+export interface PaymentMethodSettingsSecurityCode {
+    mode: string,
+    length: number,
+    card_location: string,
+}
+
+export interface PaymentMethodSettings {
+    card_number ?: PaymentMethodSettingsCardNumber,
+    security_code ?: PaymentMethodSettingsSecurityCode,
+}
+
+export interface PaymentMethodFinancialInstitution {
+    id ?: number,
+    description ?: string,
+}
+
 export interface PaymentMethodsResponse {
     id: string,
     name: string,
@@ -36,25 +57,13 @@ export interface PaymentMethodsResponse {
     secure_thumbnail: string,
     thumbnail: string,
     deferred_capture: string,
-    settings: {
-        card_number: {
-            length: number,
-            validation: string,
-        },
-        security_code: {
-            mode: string,
-            length: number,
-            card_location: string,
-        }
-    },
-    additional_info_needed: [
-    {}
-    ],
+    settings: PaymentMethodSettings[],
+    additional_info_needed: string[],
     min_allowed_amount: number,
     max_allowed_amount: number,
     accreditation_time: number,
-    financial_institutions: {},
-    processing_modes: string,
+    financial_institutions: PaymentMethodFinancialInstitution[],
+    processing_modes: string[],
 }
 
 

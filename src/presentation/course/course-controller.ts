@@ -12,7 +12,6 @@ import { CustomError } from "../../domain/errors/custom-error";
 import { FindCoursesPaginated } from "../../domain/use-cases/course/find-courses-paginated";
 import { FindCoursesByIds } from "../../domain/use-cases/course/find-courses-by-ids";
 import { CourseFilterRequest } from "../middlewares";
-import { CourseQueryBuilder } from "../../domain/helpers/course-query-builder";
 
 
 export class CourseController {
@@ -24,7 +23,6 @@ export class CourseController {
     ){ }
 
     public findAllCourses = ( req : CourseFilterRequest , res : Response ) => {
-        
         const { pagination } = req.body;
         
         new FindAllCourses( this.courseRepository )
@@ -34,7 +32,6 @@ export class CourseController {
     }
 
     public findCoursesByIds = ( req : Request , res : Response ) => {
-
         const { id_courses } = req.body;
         if( !id_courses ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar el id de los cursos a buscar.'), res);
 
@@ -45,7 +42,6 @@ export class CourseController {
     }
 
     public findCoursesPaginated = ( req : Request , res : Response ) => {
-
         const { pagination } = req.body;
         
         new FindCoursesPaginated( this.courseRepository )
@@ -55,7 +51,6 @@ export class CourseController {
     }
 
     public findCourseById = ( req : Request , res : Response ) => {
-        
         if( typeof req.params.id !== 'string' || !req.params.id ) {
             return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
         }
@@ -69,7 +64,6 @@ export class CourseController {
     }
 
     public findCoursesByCategory = ( req : Request , res : Response ) => {
-
         if( typeof req.params.slug !== 'string' || !req.params.slug ) {
             return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un slug valido.') , res );
         }
@@ -84,9 +78,6 @@ export class CourseController {
     }
 
     public saveCourse = ( req : AuthenticatedRequest , res : Response ) => {
-
-        const fileUploadDto = req.body.attachedFile;
-
         const [ errorMessage , createCourseDto ] = CreateCourseDto.create( req.body );
         if( errorMessage ) return HandlerResponses.handleError( CustomError.badRequest( errorMessage ) , res );
         
@@ -97,7 +88,6 @@ export class CourseController {
     }
 
     public updateCourse = ( req : AuthenticatedRequest , res : Response ) => {
-
         const { user } = req;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para editar un curso.') , res );
 
@@ -118,7 +108,6 @@ export class CourseController {
 
 
     public deleteCourse = ( req : AuthenticatedRequest , res : Response ) => {
-
         const { user } = req;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para eliminar un curso.') , res );
 

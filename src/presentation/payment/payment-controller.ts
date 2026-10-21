@@ -38,10 +38,10 @@ export class PaymentController {
 
     public startPayment = ( req : AuthenticatedRequest , res : Response ) => {
         const { user } = req;
-        if( !user ) throw HandlerResponses.handleError(CustomError.unauthorized('No hay usuario en la petición.') , res );
+        if( !user ) return HandlerResponses.handleError(CustomError.unauthorized('No hay usuario en la petición.') , res );
 
         const [ error , paymentRequestDto ] = PaymentRequestAdapterDto.create( req.body );
-        if( error ) throw HandlerResponses.handleError( CustomError.badRequest(error) , res );
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest(error) , res );
 
         new StartPayment( this.paymentRepository, this.courseRepository , this.authRepository )
             .execute( paymentRequestDto! , user )
