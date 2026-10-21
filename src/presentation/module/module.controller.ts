@@ -50,7 +50,7 @@ export class ModuleController {
                                                                         id
                                                                     }
                                                                   );
-        if( error ) HandlerResponses.handleError( CustomError.badRequest( error ) , res );
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
 
         new UpdateModule( this.moduleRepository , this.courseRepository )
             .execute( updateModuleDto! , user.id )

@@ -10,7 +10,7 @@ export class PaymentMiddleware {
         const key = req.header('x-signature');
         const request_id = req.header('x-request-id');
         if( !key ) {
-            HandlerResponses.handleError( CustomError.unauthorized('La petición fue rechazada debido a que no cuenta con la llave de acceso.' ) , res );
+            return HandlerResponses.handleError( CustomError.unauthorized('La petición fue rechazada debido a que no cuenta con la llave de acceso.' ) , res );
         }
         
         const [ tsParsed , v1Parsed ] = key!.split(',');

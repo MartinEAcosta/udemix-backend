@@ -1,12 +1,10 @@
 import MercadoPago from 'mercadopago';
 import { PaymentMethod, Payment, IdentificationType } from 'mercadopago';
-import { IdentificationTypeResponse } from 'mercadopago/dist/clients/identificationType/list/types';
 
 import { PaymentService } from '../../domain/services';
-import { PaymentMethodResponse } from 'mercadopago/dist/clients/order/commonTypes';
 import { PaymentRequestAdapterDto } from '../../domain/dtos/payment/payment-request-adapter.dto';
 import { PaymentMapper } from '../../infraestructure/mappers/payment.mapper';
-import { PaymentCreatedResponseDto } from '../../domain/dtos/payment/payment.response';
+import { PaymentCreatedResponseDto, PaymentMethodsResponse, IdentificationTypesResponse } from '../../domain/dtos/payment/payment.response';
 
 export class MercadoPagoAdapter implements PaymentService{
 
@@ -68,23 +66,23 @@ export class MercadoPagoAdapter implements PaymentService{
         }
     }
 
-    async findPaymentsMethods( ) : Promise<PaymentMethodResponse[]> {
+    async findPaymentsMethods( ) : Promise<PaymentMethodsResponse[]> {
         try{
             const paymentsMethods = await this.paymentMethods.get();
 
-            return paymentsMethods;
+            return PaymentMapper.fromPaymentMethodsAdapterResponseToPaymentMethodsResponse( paymentsMethods );
         }
         catch( error ){
             throw error;
         }
 
     }
-    
-    async findIdentificationTypes( ) : Promise<IdentificationTypeResponse[]> {
+
+    async findIdentificationTypes( ) : Promise<IdentificationTypesResponse[]> {
         try{
             const identificationTypes = await this.identificationType.list();
-            
-            return identificationTypes;
+
+            return PaymentMapper.fromIdentificationTypesAdapterResponseToIdentificationTypesResponse( identificationTypes );
         }
         catch( error ){
             throw error;

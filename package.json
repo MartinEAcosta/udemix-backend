@@ -8,7 +8,8 @@
     "test:coverage": "jest --coverage",
     "dev": "tsnd --respawn --clear src/app.ts",
     "build": "rimraf ./dist && tsc",
-    "start": "node dist/app.js"
+    "start": "node dist/app.js",
+    "seed": "ts-node src/data/mongo/seed.ts"
   },
   "keywords": [],
   "author": "",
