@@ -1,7 +1,7 @@
 
-export class CreateEnrollmentDto {
+export class CreateEnrollmentRequestDTO {
 
-    private constructor( 
+    private constructor(
         public readonly id_user : string ,
         public readonly id_course : string,
         public readonly progress ?: number,
@@ -9,13 +9,13 @@ export class CreateEnrollmentDto {
         public readonly completed_lessons ?: string[],
     ){}
 
-    static create = ( props : {[ key : string ]: any} ) : [string? , CreateEnrollmentDto?] => {
+    static create = ( props : {[ key : string ]: any} ) : [string? , CreateEnrollmentRequestDTO?] => {
         const { id_user , id_course , purchaseDate , progress , completed_lessons } = props;
 
         if( !id_user ) return ['Se necesita un usuario para asignar la inscripción.', undefined];
         if( !id_course ) return ['Se necesita un curso para asignar la inscripción.', undefined];
 
-        return [ undefined , new CreateEnrollmentDto( id_user , id_course , purchaseDate , progress , completed_lessons )];
+        return [ undefined , new CreateEnrollmentRequestDTO( id_user , id_course , purchaseDate , progress , completed_lessons )];
     }
 
 }

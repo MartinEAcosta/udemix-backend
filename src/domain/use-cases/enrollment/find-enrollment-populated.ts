@@ -1,9 +1,9 @@
 import { CustomError } from "../../errors/custom-error";
-import { EnrollmentDetailedResponseDto } from "../../dtos/enrollment/enrollment.response.dto";
+import { EnrollmentDetailedResponseDTO } from "../../dtos/enrollment/enrollment.response.dto";
 import { EnrollmentRepository } from "../../repository";
 
 interface FindEnrollmentPopulatedUseCase {
-    execute( id_enrollment : string, id_user : string, role : string ) : Promise<EnrollmentDetailedResponseDto | null>;
+    execute( id_enrollment : string, id_user : string, role : string ) : Promise<EnrollmentDetailedResponseDTO | null>;
 }
 
 export class FindEnrollmentPopulatedById implements FindEnrollmentPopulatedUseCase {
@@ -12,7 +12,7 @@ export class FindEnrollmentPopulatedById implements FindEnrollmentPopulatedUseCa
         private readonly enrollmentRepository : EnrollmentRepository,
     ) { }
 
-    async execute( id_enrollment : string, id_user : string, role : string ) : Promise<EnrollmentDetailedResponseDto | null> {
+    async execute( id_enrollment : string, id_user : string, role : string ) : Promise<EnrollmentDetailedResponseDTO | null> {
         const enrollment = await this.enrollmentRepository.findEnrollmentPopulatedById( id_enrollment );
         if( !enrollment ) return null;
 

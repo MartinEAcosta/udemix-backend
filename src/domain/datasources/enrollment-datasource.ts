@@ -1,14 +1,14 @@
-import { CreateEnrollmentDto } from "../dtos/enrollment/create-enrollment.dto";
-import { EnrollmentDetailedResponseDto, EnrollmentResponseDto, UpdateEnrollmentDto } from '../dtos/enrollment/enrollment.response.dto';
+import { CreateEnrollmentRequestDTO } from "../dtos/enrollment/create-enrollment.dto";
+import { EnrollmentDetailedResponseDTO, EnrollmentResponseDTO, UpdateEnrollmentRequestDTO } from '../dtos/enrollment/enrollment.response.dto';
 
 export abstract class EnrollmentDatasource {
 
-    abstract findAllEnrollments() : Promise<EnrollmentResponseDto[]>;
-    abstract findEnrollmentById( id_enrollment : string ) : Promise<EnrollmentResponseDto | null>;
-    abstract findEnrollmentPopulatedById( id_enrollment : string ) : Promise<EnrollmentDetailedResponseDto | null>;
-    abstract findEnrollmentsByUserId( uid : string ) : Promise<EnrollmentDetailedResponseDto[] | undefined>;
-    abstract findEnrollmentByUserIdAndCourseId( uid : string , courseId : string ) : Promise<EnrollmentResponseDto| null>;
-    abstract saveEnrollment( enrollmentDto : CreateEnrollmentDto ) : Promise<EnrollmentResponseDto>;
-    abstract updateEnrollment( enrollmentDto : UpdateEnrollmentDto ) : Promise<EnrollmentResponseDto>;
+    abstract findAllEnrollments() : Promise<EnrollmentResponseDTO[]>;
+    abstract findEnrollmentById( id_enrollment : string ) : Promise<EnrollmentResponseDTO | null>;
+    abstract findEnrollmentPopulatedById( id_enrollment : string ) : Promise<EnrollmentDetailedResponseDTO | null>;
+    abstract findEnrollmentsByUserId( uid : string ) : Promise<EnrollmentDetailedResponseDTO[] | undefined>;
+    abstract findEnrollmentByUserIdAndCourseId( uid : string , courseId : string ) : Promise<EnrollmentResponseDTO| null>;
+    abstract saveEnrollment( enrollmentRequestDTO : CreateEnrollmentRequestDTO ) : Promise<EnrollmentResponseDTO>;
+    abstract updateEnrollment( enrollmentRequestDTO : UpdateEnrollmentRequestDTO ) : Promise<EnrollmentResponseDTO>;
 
 }

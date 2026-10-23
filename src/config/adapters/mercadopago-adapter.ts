@@ -24,7 +24,6 @@ export class MercadoPagoAdapter implements PaymentService{
 
     async createPayment( paymentRequestAdapter : PaymentRequestAdapterDto ): Promise<PaymentGatewayResult> {
         try{
-
             const createdPayment = await this.payment.create(
                                                             { 
                                                                 body: { 

@@ -1,13 +1,16 @@
-export interface EnrollmentResponseDto {
+export interface EnrollmentResponseDTO {
     id : string;
     id_user : string;
     id_course : string;
     purchaseDate : Date;
     progress : number | null;
+    last_lesson : string | null;
+    last_accessed_at : Date | null;
     completed_lessons : string[];
+    completed_at : Date | null;
 }
 
-// export interface NextEnrollmentResponseDto {
+// export interface NextEnrollmentResponseDTO {
 //     id : string;
 //     id_user : string;
 //     id_course : string;
@@ -17,7 +20,7 @@ export interface EnrollmentResponseDto {
 //     next_lesson : string;
 // }
 
-export interface UpdateEnrollmentDto {
+export interface UpdateEnrollmentRequestDTO {
     id : string;
     id_user : string;
     id_course : string;
@@ -26,16 +29,16 @@ export interface UpdateEnrollmentDto {
     completed_lessons ?: string[];
 }
 
-export interface EnrollmentDetailedResponseDto{
+export interface EnrollmentDetailedResponseDTO{
     id : string;
     id_user : string;
-    course : CoursePopulatedDto,
+    course : CoursePopulatedDTO,
     purchaseDate : Date;
     progress : number | null;
     completed_lessons : string[];
 }
 
-export interface CoursePopulatedDto{
+export interface CoursePopulatedDTO{
     _id   : string,
     title : string,
     id_owner : string,

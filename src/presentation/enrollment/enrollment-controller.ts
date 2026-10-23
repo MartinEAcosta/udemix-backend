@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { EnrollmentRepository } from "../../domain/repository/enrollment-repository";
-import { CreateEnrollmentDto } from "../../domain/dtos/enrollment/create-enrollment.dto";
+import { CreateEnrollmentRequestDTO } from "../../domain/dtos/enrollment/create-enrollment.dto";
 import { HandlerResponses } from "../helpers/handler-responses";
 import { EnrollUserInCourse } from "../../domain/use-cases/enrollment/enroll-user-in-course";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
@@ -29,7 +29,6 @@ export class EnrollmentController{
 
     // Solo permitido por administradores en teoria
     public findAllEnrollments = ( req : AuthenticatedRequest , res : Response ) => {
-
         new FindAllEnrollments( this.enrollmentRepository )
             .execute()
             .then( enrollments => HandlerResponses.handleSuccess( res , enrollments , 200 ) )
@@ -92,27 +91,25 @@ export class EnrollmentController{
 
     // saveEnrollment
     public enrollUserInCourse = ( req : AuthenticatedRequest , res : Response ) => {
-
         const user = req.user;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe estar autenticado para adquirir un curso.') , res );
         
         const { course_id } = req.body;
-        const [ errorMessage , createEnrollmentDto ] = CreateEnrollmentDto.create( 
-                                                                                    { 
+        const [ errorMessage , createEnrollmentRequestDTO ] = CreateEnrollmentRequestDTO.create(
+                                                                                    {
                                                                                         id_user   : user.id ,
                                                                                         id_course :  course_id,
-                                                                                    } 
+                                                                                    }
                                                                                 );
         if( errorMessage ) return HandlerResponses.handleError(CustomError.badRequest(errorMessage), res);
 
         new EnrollUserInCourse( this.enrollmentRepository, this.authRepository , this.courseRepository , this.unitOfWork )
-            .execute( createEnrollmentDto! )
+            .execute( createEnrollmentRequestDTO! )
             .then( enrollmentCreated => HandlerResponses.handleSuccess( res , enrollmentCreated, 201 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
 
     public markLessonAsCompleted = ( req : AuthenticatedRequest , res : Response ) => {
-
         const { user } = req;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para marcar una lección como completada.') , res );
         if( !req.body?.id_course || !req.body?.id_lesson ) return HandlerResponses.handleError( CustomError.badRequest('Chequee los campos id_course e id_lesson y vuelve a intentarlo.') , res );

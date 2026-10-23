@@ -1,20 +1,23 @@
 import { IEnrollmentDetailedModel, IEnrollmentModel } from "../../data";
-import { EnrollmentDetailedResponseDto, EnrollmentResponseDto } from "../../domain/dtos/enrollment/enrollment.response.dto";
+import { EnrollmentDetailedResponseDTO, EnrollmentResponseDTO } from "../../domain/dtos/enrollment/enrollment.response.dto";
 
 export class EnrollmentMapper {
 
-    static fromEnrollmentDto = ( enrollmentDoc : IEnrollmentModel ) : EnrollmentResponseDto => {
+    static fromEnrollmentResponseDTO = ( enrollmentDoc : IEnrollmentModel ) : EnrollmentResponseDTO => {
         return {
             id : enrollmentDoc._id.toString(),
             id_user : enrollmentDoc.id_user.toString(),
             id_course : enrollmentDoc.id_course.toString(),
             purchaseDate : enrollmentDoc.purchaseDate,
             progress : enrollmentDoc.progress ?? 0,
+            last_lesson : enrollmentDoc.last_lesson ? enrollmentDoc.last_lesson.toString() : null,
+            last_accessed_at: enrollmentDoc.last_accessed_at ?? null,
             completed_lessons : enrollmentDoc.completed_lessons.map( id_lesson => id_lesson.toString() ) ?? [],
+            completed_at : enrollmentDoc.purchaseDate,
         }
     }
 
-    static fromEnrollmentWithCourseDto = ( enrollmentDoc : IEnrollmentDetailedModel ) : EnrollmentDetailedResponseDto => {
+    static fromEnrollmentDetailedResponseDTO = ( enrollmentDoc : IEnrollmentDetailedModel ) : EnrollmentDetailedResponseDTO => {
         return {
             id : enrollmentDoc._id.toString(),
             id_user : enrollmentDoc.id_user.toString(),
