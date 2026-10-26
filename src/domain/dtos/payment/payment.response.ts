@@ -3,10 +3,10 @@ export interface PaymentResponseDto{
     id ?: string,
     id_user : string,
     id_courses : string[],
-    id_payment : string,
+    id_payment : string | null,
     amount : number,
     date : Date,
-    method : string,
+    method : string | null,
     status : string,
 }
 
@@ -75,7 +75,7 @@ export interface IdentificationTypesResponse{
     max_length?: number;
 }
 
-export interface PaymentGatewayResult {
-    id : number,
+export interface OrderGatewayResult {
+    id : string,
     status : string,
 }

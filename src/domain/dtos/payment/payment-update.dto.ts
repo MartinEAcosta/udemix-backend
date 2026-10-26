@@ -2,7 +2,7 @@
 export class PaymentUpdateDto {
 
     constructor(
-        public readonly id_payment : number,
+        public readonly id_payment : string,
         public readonly status : string,
         public readonly id ?: string,
         public readonly date ?: Date,
@@ -19,11 +19,11 @@ export class PaymentUpdateDto {
         if (!status) return ['El estado del pago no puede ser nulo.' , undefined]
 
         return [ undefined , new PaymentUpdateDto(
-            id,
             id_payment,
+            status,
+            id,
             date,
             method,
-            status,
         )]
     }
 }

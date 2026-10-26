@@ -13,7 +13,8 @@ export class CalculateTotal implements CalculateTotalUseCase {
     ) { }
 
 
-    async execute( items : ItemQuantity[] , code ?: string ) : Promise<number> {
+    async execute( items : ItemQuantity[] ) : Promise<number> {
+        console.log(items)
 
         let total = 0;
         for( let item of items ){
@@ -22,10 +23,7 @@ export class CalculateTotal implements CalculateTotalUseCase {
             total += +course.price * item.quantity;
         }
 
-        if( code ){
-            // Chequear que exista el código, si esta dentro del tiempo valido designado
-            // total = total * (1-code)
-        }
+  
         return total;
     }
 

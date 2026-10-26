@@ -1,15 +1,15 @@
-import MercadoPago from 'mercadopago';
-import { PaymentMethod, Payment, IdentificationType } from 'mercadopago';
+import MercadoPago, { Order } from 'mercadopago';
+import { PaymentMethod, IdentificationType } from 'mercadopago';
 
 import { PaymentService } from '../../domain/services';
-import { PaymentRequestAdapterDto } from '../../domain/dtos/payment/payment-request-adapter.dto';
-import { PaymentMapper } from '../../infraestructure/mappers/payment.mapper';
-import { PaymentGatewayResult, PaymentMethodsResponse, IdentificationTypesResponse } from '../../domain/dtos/payment/payment.response';
+import { OrderRequestAdapterDto } from '../../domain/dtos/order/order-request-adapter.dto';
+import { OrderMapper } from '../../infraestructure/mappers/order.mapper';
+import { PaymentMethodsResponse, IdentificationTypesResponse, OrderGatewayResult } from '../../domain/dtos/payment/payment.response';
 
 export class MercadoPagoAdapter implements PaymentService{
 
     private readonly client  : MercadoPago;
-    private readonly payment : Payment;
+    private readonly order : Order;
     private readonly paymentMethods : PaymentMethod;
     private readonly identificationType : IdentificationType;
 
@@ -17,46 +17,33 @@ export class MercadoPagoAdapter implements PaymentService{
         this.client = new MercadoPago( {
             accessToken: accessToken
         } );
-        this.payment = new Payment( this.client );
+        this.order = new Order( this.client );
         this.paymentMethods = new PaymentMethod( this.client );
         this.identificationType = new IdentificationType( this.client );
     }
 
-    async createPayment( paymentRequestAdapter : PaymentRequestAdapterDto ): Promise<PaymentGatewayResult> {
+    async createOrder( orderRequestAdapter : OrderRequestAdapterDto ): Promise<OrderGatewayResult> {
         try{
-            const createdPayment = await this.payment.create(
-                                                            { 
-                                                                body: { 
-                                                                        token: paymentRequestAdapter.token,
-                                                                        transaction_amount: paymentRequestAdapter.transaction_amount,
-                                                                        description: paymentRequestAdapter.description,
-                                                                        payment_method_id: paymentRequestAdapter.payment_method_id,
-                                                                        issuer_id: paymentRequestAdapter.issuer_id,
-                                                                        payer: {
-                                                                            email: paymentRequestAdapter.payer.email,
-                                                                            identification: {
-                                                                                type: paymentRequestAdapter.payer.identification.type,
-                                                                                number: paymentRequestAdapter.payer.identification.number.toString(),
-                                                                            },
-                                                                        },
-                                                                        installments: Number(paymentRequestAdapter.installments) || 1,
-                                                                        notification_url: 'https://prerailroad-tamia-voluptuous.ngrok-free.dev/api/payments/notifications?source_news=webhooks',
-                                                                    },
-                                                                }).catch( (error) => {
-                                                                    throw error;
-                                                                });
-            return PaymentMapper.fromMercadoPagoResponseToGatewayResult( createdPayment );
+            const createdOrder = await this.order.create(
+                                                            {
+                                                                body: OrderMapper.fromOrderRequestAdapterDtoToCreateOrderRequest( orderRequestAdapter ),
+                                                            })
+                                                            .catch( (error) => {
+                                                                console.log(JSON.stringify(error, null, 2));
+                                                                throw error;
+                                                            });
+            return OrderMapper.fromMercadoPagoResponseToGatewayResult( createdOrder );
         }
         catch( error ){
             throw error;
         }
     }
 
-    async findPaymentById( id : number ) : Promise<PaymentGatewayResult> {
+    async findOrderById( id : string ) : Promise<OrderGatewayResult> {
         try{
-            const paymentResponse = await this.payment.get({ id });
+            const orderResponse = await this.order.get({ id });
             
-            return PaymentMapper.fromMercadoPagoResponseToGatewayResult( paymentResponse );
+            return OrderMapper.fromMercadoPagoResponseToGatewayResult( orderResponse );
         }
         catch( error ) {
             throw error;
@@ -67,7 +54,7 @@ export class MercadoPagoAdapter implements PaymentService{
         try{
             const paymentsMethods = await this.paymentMethods.get();
 
-            return PaymentMapper.fromPaymentMethodsAdapterResponseToPaymentMethodsResponse( paymentsMethods );
+            return OrderMapper.fromPaymentMethodsAdapterResponseToPaymentMethodsResponse( paymentsMethods );
         }
         catch( error ){
             throw error;
@@ -79,7 +66,7 @@ export class MercadoPagoAdapter implements PaymentService{
         try{
             const identificationTypes = await this.identificationType.list();
 
-            return PaymentMapper.fromIdentificationTypesAdapterResponseToIdentificationTypesResponse( identificationTypes );
+            return OrderMapper.fromIdentificationTypesAdapterResponseToIdentificationTypesResponse( identificationTypes );
         }
         catch( error ){
             throw error;

@@ -1,10 +1,10 @@
 import { PaymentMethodResponse } from "mercadopago/dist/clients/paymentMethod/get/types";
 import { IdentificationTypeResponse } from "mercadopago/dist/clients/identificationType/list/types";
-import { PaymentResponse } from "mercadopago/dist/clients/payment/commonTypes";
 
 import { IPaymentModel } from "../../data/mongo/models/payment.model";
-import { PaymentGatewayResult, PaymentResponseDto, PaymentMethodsResponse, IdentificationTypesResponse } from "../../domain/dtos/payment/payment.response";
+import { PaymentResponseDto, PaymentMethodsResponse, IdentificationTypesResponse, OrderGatewayResult } from "../../domain/dtos/payment/payment.response";
 import { CustomError } from "../../domain/errors/custom-error";
+import { OrderResponse } from "mercadopago/dist/clients/order/commonTypes";
 
 
 export class PaymentMapper {
@@ -14,24 +14,15 @@ export class PaymentMapper {
             id : response._id.toString(),
             id_user : response.id_user.toString(),
             id_courses : response.id_courses.map( course => course._id.toString()),
-            id_payment : response.id_payment,
+            id_payment : response?.id_payment ? response.id_payment : null,
             amount : response.amount,
             date : response.date,
-            method : response.method,
+            method : response?.method ? response.method : null,
             status : response.status,
         }
     }
 
-    static fromMercadoPagoResponseToGatewayResult = ( response : PaymentResponse ) : PaymentGatewayResult => {
-        if( response.id === undefined || response.status === undefined ) {
-            throw CustomError.internalServer('La respuesta de MercadoPago no incluye un id o status de pago válido.');
-        }
 
-        return {
-            id : response.id,
-            status : response.status,
-        };
-    }
 
     static fromPaymentMethodsAdapterResponseToPaymentMethodsResponse = ( response : PaymentMethodResponse[] ) : PaymentMethodsResponse[] => {
         return response.map( method => ({

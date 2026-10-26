@@ -3,10 +3,10 @@ interface PaymentEntityOptions {
     id : string;
     id_user : string;
     id_courses : string[];
-    id_payment : string;
+    id_payment : string | null;
     amount     : number;
     date       : Date;
-    method     : string;
+    method     : string | null;
     status     : string;
 }
 
@@ -16,10 +16,10 @@ export class PaymentEntity {
     public id : string;
     public id_user : string;
     public id_courses : string[];
-    public id_payment : string;
+    public id_payment : string | null;
     public amount     : number;
     public date       : Date;
-    public method     : string;
+    public method     : string | null;
     public status     : string;
 
     private constructor( options : PaymentEntityOptions ) {
@@ -39,7 +39,6 @@ export class PaymentEntity {
 
         if( !id_user ) throw 'El id_user es requerido.';
         if( !id_courses ) throw 'El id de el/los curso/s son requeridos.';
-        if( !id_payment ) throw 'El id del pago es requerido.'
         if( !amount ) throw 'El monto de la transacción es requerido.'
         if( !date ) throw 'La fecha de la transacción es requerida.'
 

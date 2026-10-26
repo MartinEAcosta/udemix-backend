@@ -7,6 +7,7 @@ import { FileRouter } from "./file/file-routes";
 import { LessonRouter } from "./lesson/lesson-routes";
 import { ModuleRouter } from "./module/module.routes";
 import { PaymentRouter } from "./payment/payment-routes";
+import { OrderRouter } from "./order/order-routes";
 
 export class AppRoutes {
 
@@ -22,6 +23,7 @@ export class AppRoutes {
         router.use( '/api/lessons' , LessonRouter.routes );
         router.use( '/api/modules' , ModuleRouter.routes );
         router.use( '/api/payments' , PaymentRouter.routes );
+        router.use( '/api/orders' , OrderRouter.routes );
 
         return router;
     }

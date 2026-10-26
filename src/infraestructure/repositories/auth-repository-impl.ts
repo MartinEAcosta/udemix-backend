@@ -3,7 +3,6 @@ import { AuthDatasource } from "../../domain/datasources/auth-datasource";
 
 import { UserEntity } from "../../domain/entities/user.entity";
 import { RegisterUserDto } from "../../domain/dtos/auth/register-user.dto";
-import { UserRequestDto } from "../../domain/dtos/auth/auth.responses.dto";
 import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
 
 export class AuthRepositoryImpl implements AuthRepository {

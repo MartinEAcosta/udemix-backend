@@ -19,6 +19,10 @@ import { PaymentController } from "./payment/payment-controller";
 import { MercadoPagoAdapter } from "../config/adapters/mercadopago-adapter";
 import { PaymentRepositoryImpl } from '../infraestructure/repositories/payment-repository-impl';
 import { PaymentDataSourceImpl } from "../infraestructure/datasources/payment-datasource-impl";
+import { OrderRepository } from "../domain/repository/order-repository";
+import { OrderController } from "./order/order-controller";
+import { OrderRepositoryImpl } from "../infraestructure/repositories/order-repository-impl";
+import { OrderDataSourceImpl } from "../infraestructure/datasources/order-datasource-impl";
 import { SocialAuthProvider } from "../domain/services/SocialAuthProvider";
 import { GoogleAdapter } from "../config/adapters/google.adapter";
 
@@ -44,6 +48,7 @@ export class DependencyContainer {
     readonly lessonController     : LessonController;
     readonly moduleController     : ModuleController;
     readonly paymentController    : PaymentController;
+    readonly orderController      : OrderController;
 
     //* Repositorios
     readonly authRepository       : AuthRepository;
@@ -54,6 +59,7 @@ export class DependencyContainer {
     readonly lessonRepository     : LessonRepository;
     readonly moduleRepository     : ModuleRepository;
     readonly paymentRepository    : PaymentRepository
+    readonly orderRepository      : OrderRepository;
 
     //* Services 
     readonly emailValidator : EmailValidator;
@@ -89,7 +95,8 @@ export class DependencyContainer {
         this.lessonRepository     = new LessonRepositoryImpl( new LessonDatasourceImpl() );
         this.moduleRepository     = new ModuleRepositoryImpl( new ModuleDatasourceImpl() );
         this.paymentRepository    = new PaymentRepositoryImpl( new PaymentDataSourceImpl( this.paymentService ) );
-        
+        this.orderRepository      = new OrderRepositoryImpl( new OrderDataSourceImpl( this.paymentService ) );
+
         this.authMiddleware       = new AuthMiddleware( this.tokenManager , this.authRepository);
         this.courseMiddleware     = new CourseMiddleware( );
         this.fileMiddleware       = new FileMiddleware();
@@ -105,7 +112,8 @@ export class DependencyContainer {
         this.fileController       = new FileController( this.fileRepository , this.courseRepository , this.lessonRepository , this.authRepository);
         this.lessonController     = new LessonController( this.lessonRepository , this.moduleRepository , this.courseRepository , this.enrollmentRepository , this.unitOfWork );
         this.moduleController     = new ModuleController( this.moduleRepository , this.courseRepository );
-        this.paymentController    = new PaymentController( this.paymentRepository , this.courseRepository, this.authRepository );
+        this.paymentController    = new PaymentController( this.paymentRepository , this.courseRepository );
+        this.orderController      = new OrderController( this.orderRepository , this.paymentRepository , this.courseRepository , this.enrollmentRepository, this.authRepository );
     }
 
     public static getInstance() : DependencyContainer {

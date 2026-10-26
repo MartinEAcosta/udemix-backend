@@ -4,12 +4,12 @@ export interface IPaymentModel {
     _id : Types.ObjectId,
     id_user : Types.ObjectId,
     id_courses : Types.ObjectId[],
-    id_payment : string,
-    amount : number, 
+    id_payment ?: string | null,
+    amount : number,
     date : Date,
-    method : string,
+    method ?: string | null,
     status : string,
-}
+};
 
 export const paymentSchema = new mongoose.Schema({
 
@@ -26,9 +26,8 @@ export const paymentSchema = new mongoose.Schema({
 
     // Este campo se encarga de almacenar el id que provee el gestor de pagos.
     id_payment : {
-        type   : String,
-        unique : true,
-        required : [ true , 'El Id del pago es requerido.'],
+        type    : String,
+        default : null,
     },
     
     amount  : {
@@ -44,14 +43,13 @@ export const paymentSchema = new mongoose.Schema({
 
     method  : {
         type     : String,
-        enum     : [ 'balance' , 'card' ],
-        required : [ true , 'El método de pago es requerido.']
+        enum     : [ 'balance' , 'credit_card' ],
     },
 
     status  : {
         type     : String,
         //  'authorized' 'pending' Estos aparecen en medios de pago offline como pagofacil o rapipago.
-        enum     : [ 'approved' , 'in_process' , 'rejected' ],
+        enum     : [  'pending' , 'in_process', 'processed' , 'rejected' ],
         required : [ true , 'Debes indicar el estado del pago.'],
     },
 

@@ -1,10 +1,9 @@
 import { PaymentDataSource } from "../../domain/datasources/payment-datasource";
-import { IdentificationTypesResponse, PaymentGatewayResult, PaymentMethodsResponse } from "../../domain/dtos/payment/payment.response";
+import { IdentificationTypesResponse, PaymentMethodsResponse } from "../../domain/dtos/payment/payment.response";
 import { PaymentRepository } from "../../domain/repository/payment-repository";
 import { PaymentEntity } from "../../domain/entities/payment.entity";
-import { PaymentRequestAdapterDto } from "../../domain/dtos/payment/payment-request-adapter.dto";
-import { PaymentCreateDto } from "../../domain/dtos/payment/payment-create.dto";
 import { PaymentUpdateDto } from "../../domain/dtos/payment/payment-update.dto";
+import { PaymentRequestDTO } from "../../domain/dtos/payment/payment-request.dto";
 
 export class PaymentRepositoryImpl implements PaymentRepository {
 
@@ -12,19 +11,7 @@ export class PaymentRepositoryImpl implements PaymentRepository {
         private readonly paymentDatasource : PaymentDataSource,
     ){ }
     
-    async startPayment( paymentRequest : PaymentRequestAdapterDto  ) : Promise<PaymentGatewayResult | null> {
-        try{
-            const paymentResponse = await this.paymentDatasource.startPayment( paymentRequest );
-            if ( !paymentResponse ) return null;
-            
-            return paymentResponse;
-        }
-        catch( error ) {
-            throw error;
-        }
-    }
-
-    async createPayment( paymentRequest : PaymentCreateDto ) : Promise<PaymentEntity> {
+    async createPayment( paymentRequest : PaymentRequestDTO  ) : Promise<PaymentEntity> {
         try{
             const payment = await this.paymentDatasource.createPayment( paymentRequest );
             return PaymentEntity.fromObject( payment );
@@ -54,16 +41,6 @@ export class PaymentRepositoryImpl implements PaymentRepository {
         }
     }
     
-    async findPaymentById( id : number ) : Promise<PaymentGatewayResult> {
-        try{
-            const paymentResponse = await this.paymentDatasource.findPaymentById( id );
-            return paymentResponse;
-        }
-        catch( error ){
-            throw error;
-        }
-    }
-
     async findPaymentsMethods() : Promise<PaymentMethodsResponse[]> {
         try{
             const paymentsMethods = await this.paymentDatasource.findPaymentsMethods();

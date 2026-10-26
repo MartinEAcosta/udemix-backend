@@ -1,10 +1,10 @@
-import { PaymentRequestAdapterDto } from "../dtos/payment/payment-request-adapter.dto";
-import { PaymentGatewayResult, PaymentMethodsResponse, IdentificationTypesResponse } from "../dtos/payment/payment.response";
+import { OrderRequestAdapterDto } from "../dtos/order/order-request-adapter.dto";
+import { PaymentMethodsResponse, IdentificationTypesResponse, OrderGatewayResult } from "../dtos/payment/payment.response";
 
 export abstract class PaymentService {
 
-    abstract createPayment( paymentRequestDto : PaymentRequestAdapterDto ) : Promise<PaymentGatewayResult>;
-    abstract findPaymentById( id : number ) : Promise<PaymentGatewayResult>;
+    abstract createOrder( orderRequestDto : OrderRequestAdapterDto ) : Promise<OrderGatewayResult>;
+    abstract findOrderById( id : string ) : Promise<OrderGatewayResult>;
     abstract findPaymentsMethods() : Promise<PaymentMethodsResponse[]>;
     abstract findIdentificationTypes() : Promise<IdentificationTypesResponse[]>;
 

@@ -1,12 +1,10 @@
 import { PaymentModel } from '../../data/mongo/models/payment.model';
 import { PaymentDataSource } from '../../domain/datasources/payment-datasource';
-import { PaymentCreateDto } from '../../domain/dtos/payment/payment-create.dto';
-import { PaymentRequestAdapterDto } from '../../domain/dtos/payment/payment-request-adapter.dto';
+import { PaymentRequestDTO } from '../../domain/dtos/payment/payment-request.dto';
 import { PaymentUpdateDto } from '../../domain/dtos/payment/payment-update.dto';
-import { IdentificationTypesResponse, PaymentGatewayResult, PaymentMethodsResponse, PaymentResponseDto } from '../../domain/dtos/payment/payment.response';
+import { IdentificationTypesResponse, PaymentMethodsResponse, PaymentResponseDto } from '../../domain/dtos/payment/payment.response';
 import { PaymentService } from '../../domain/services';
 import { PaymentMapper } from '../mappers/payment.mapper';
-
 
 export class PaymentDataSourceImpl implements PaymentDataSource {
 
@@ -14,14 +12,7 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
         private readonly paymentService : PaymentService
     ) { }
 
-    async startPayment( paymentRequest : PaymentRequestAdapterDto ) : Promise<PaymentGatewayResult | null> {
-        const paymentResponse = await this.paymentService.createPayment( paymentRequest );
-        if( !paymentResponse ) return null;
-        
-        return paymentResponse
-    }
-
-    async createPayment( paymentRequest : PaymentCreateDto ) : Promise<PaymentResponseDto> {
+    async createPayment( paymentRequest : PaymentRequestDTO ) : Promise<PaymentResponseDto> {
         const paymentToSave = await PaymentModel.create({ 
             ...paymentRequest
         });
@@ -39,11 +30,6 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
         const paymentToUpdate = await PaymentModel.findOneAndUpdate({ id_payment : paymentRequest.id_payment }, paymentRequest , { new : true }).exec();
         
         return PaymentMapper.fromPaymentResponseDto( paymentToUpdate! );
-    }
-
-    async findPaymentById( id : number ) : Promise<PaymentGatewayResult> {
-        const paymentResponse = await this.paymentService.findPaymentById( id );
-        return paymentResponse;
     }
 
     async findPaymentsMethods() : Promise<PaymentMethodsResponse[]> {

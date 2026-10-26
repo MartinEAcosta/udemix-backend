@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+
 import { TokenManager } from "../../domain/services/TokenManager";
 import { AuthRepository } from "../../domain/repository/auth-repository";
 import { UserEntity } from "../../domain/entities/user.entity";
