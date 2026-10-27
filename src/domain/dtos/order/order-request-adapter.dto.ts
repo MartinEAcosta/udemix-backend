@@ -1,6 +1,7 @@
 type PaymentMethodType = 'credit_card' | 'debit_card' | 'ticket';
 
 interface OrderItem {
+    category_id : string;
     id_course  : string;
     title      : string;
     unit_price : string;
@@ -110,6 +111,7 @@ export class OrderRequestAdapterDto {
             totalCents += priceCents * quantity;
 
             cleanItems.push({
+                category_id : item.category_id,
                 id_course  : item.id_course,
                 title      : String( item.title ),
                 unit_price : ( priceCents / 100 ).toFixed( 2 ),

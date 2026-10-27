@@ -27,7 +27,6 @@ export class OrderController {
     public webhookHandler = ( req : Request , res : Response ) => {
 
         const { action , data } : WebhookPayload = req.body;
-
         if( action.includes('order') ) {
             new FulfillPayment( this.orderRepository , this.paymentRepository , this.enrollmentRepository )
                 .execute( data.id.toString() )

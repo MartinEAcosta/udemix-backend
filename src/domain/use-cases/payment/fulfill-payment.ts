@@ -17,7 +17,7 @@ export class FulfillPayment implements FulfillPaymentUseCase {
     ){ }
 
     async execute ( id_order : string ) : Promise<PaymentEntity> {
-
+        console.log(id_order)
         if( !id_order ) throw CustomError.badRequest('Es necesario indicar el id de la orden.');
 
         const order = await this.orderRepository.findOrderById( id_order );

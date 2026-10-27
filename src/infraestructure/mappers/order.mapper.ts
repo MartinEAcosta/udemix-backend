@@ -34,10 +34,14 @@ export class OrderMapper {
                 payments : 
                     dto.transactions.payments.map( payment => ({
                     amount         : payment.amount,
-                    payment_method : { ...payment.payment_method },
+                    payment_method : { 
+                        ...payment.payment_method,
+                        statement_descriptor : 'UDEMIX - Plataforma educacional'
+                    },
                 })),
             },
             items              : dto.items.map( item => ({
+                category_id   : item.category_id,
                 title         : item.title,
                 unit_price    : item.unit_price,
                 quantity      : item.quantity,
