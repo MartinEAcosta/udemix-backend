@@ -1,4 +1,5 @@
 import { ICourseModel, ICoursePopulateOwnerModel } from '../../data';
+import { CourseEntity } from '../../domain/entities/course.entity';
 import { CoursePopulateOwnerResponseDto, CourseResponseDto } from './../../domain/dtos/course/course.responses';
 
 /** Curso poblado cuyo owner ya fue verificado como existente. */
@@ -22,8 +23,9 @@ export class CourseMapper {
             price : courseDoc.price,
             capacity : courseDoc.capacity ?? undefined,
             current_enrolled : courseDoc.current_enrolled,
+            spots_remaining : CourseEntity.calculateSpotsRemaining( courseDoc.capacity , courseDoc.current_enrolled ),
         }
-    } 
+    }
 
     static fromCoursePopulateOwnerResponseDto = ( courseDoc : CourseWithOwner ) : CoursePopulateOwnerResponseDto => {
         const owner = courseDoc.id_owner;
@@ -44,6 +46,7 @@ export class CourseMapper {
             price : courseDoc.price,
             capacity : courseDoc.capacity ?? undefined,
             current_enrolled : courseDoc.current_enrolled,
+            spots_remaining : CourseEntity.calculateSpotsRemaining( courseDoc.capacity , courseDoc.current_enrolled ),
         }
     }
 }

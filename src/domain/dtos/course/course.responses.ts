@@ -11,6 +11,7 @@ export interface CourseResponseDto {
     price : number,
     capacity ?: number | null,
     current_enrolled : number,
+    spots_remaining : number | null,
 }
 
 export interface CoursePopulateOwnerResponseDto {
@@ -30,6 +31,7 @@ export interface CoursePopulateOwnerResponseDto {
     price : number,
     capacity ?: number | null,
     current_enrolled : number,
+    spots_remaining : number | null,
 }
 
 

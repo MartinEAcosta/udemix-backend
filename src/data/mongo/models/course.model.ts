@@ -68,6 +68,8 @@ const courseSchema = new mongoose.Schema({
 
     capacity : {
         type    : Number,
+        default: null,
+        min : 0,
     },
 
     current_enrolled : {

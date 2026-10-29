@@ -3,6 +3,7 @@ import { EnrollmentEntity } from "../../domain/entities/enrollment.entity";
 import { EnrollmentRepository } from "../../domain/repository/enrollment-repository";
 import { EnrollmentDatasource } from '../../domain/datasources/enrollment-datasource';
 import { EnrollmentDetailedResponseDTO, UpdateEnrollmentRequestDTO } from "../../domain/dtos/enrollment/enrollment.response.dto";
+import { TransactionSession } from "../../domain/services/UnitOfWork";
 
 
 export class EnrollmentRepositoryImpl implements EnrollmentRepository {
@@ -61,10 +62,10 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
         }
     }
 
-    async saveEnrollment( enrollmentRequestDTO : CreateEnrollmentRequestDTO ) : Promise<EnrollmentEntity> {
+    async saveEnrollment( enrollmentRequestDTO : CreateEnrollmentRequestDTO , ts ?: TransactionSession ) : Promise<EnrollmentEntity> {
         try{
 
-            const savedEnrollment = await this.enrollmentDatasource.saveEnrollment( enrollmentRequestDTO );
+            const savedEnrollment = await this.enrollmentDatasource.saveEnrollment( enrollmentRequestDTO , ts );
 
             return EnrollmentEntity.fromObject( savedEnrollment );
         }

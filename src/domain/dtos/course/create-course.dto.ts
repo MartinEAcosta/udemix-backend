@@ -11,7 +11,7 @@ export class CreateCourseDto {
         public readonly thumbnail_url : string | null,
         public readonly id_owner : string,
         public readonly price : number,
-        public readonly capacity : number,
+        public readonly capacity ?: number | null,
     ){}
 
     // Retornaria un array con el error en caso de que haya y el dto undefined.
@@ -22,6 +22,11 @@ export class CreateCourseDto {
         if( !title ) return ['El titulo es requerido.', undefined];
         if( !description ) return ['La descripción es requerida.', undefined];
         if( !id_owner ) return ['El creador del curso es requerido.', undefined];
+
+        if( capacity !== undefined && capacity !== null ){
+            if( isNaN( capacity ) ) return ['La capacidad debe ser un número válido o nulo.', undefined];
+            if( capacity < 0 ) return ['La capacidad no puede ser negativa.', undefined];
+        }
 
         return [undefined , new CreateCourseDto( 
                                                 title ,

@@ -9,6 +9,7 @@ export class CourseFilterDto {
 
     private constructor(
         public readonly id_category      ?: string,
+        public readonly category_name    ?: string,
         public readonly title            ?: string,
         public readonly priceMin         ?: number,
         public readonly priceMax         ?: number,
@@ -16,7 +17,7 @@ export class CourseFilterDto {
     ){ }
 
     static create = ( props : { [ key : string ] : any } = {} ) : [ string? , CourseFilterDto? ] => {
-        const { id_category , title , priceMin , priceMax , notFullyEnrolled } = props;
+        const { id_category , category_name , title , priceMin , priceMax , notFullyEnrolled } = props;
 
         let parsedIdCategory : string | undefined = undefined;
         if( id_category !== undefined ){
@@ -24,6 +25,14 @@ export class CourseFilterDto {
                 return [ 'El id de la categoría no es válido.' , undefined ];
             }
             parsedIdCategory = id_category;
+        }
+
+        let parsedCategoryName : string | undefined = undefined;
+        if( category_name !== undefined ){
+            if( typeof category_name !== 'string' || category_name.trim().length === 0 ){
+                return [ 'El título a buscar no puede estar vacío.' , undefined ];
+            }
+            parsedCategoryName = category_name;
         }
 
         let parsedTitle : string | undefined = undefined;
@@ -63,6 +72,7 @@ export class CourseFilterDto {
 
         return [ undefined , new CourseFilterDto(
                                     parsedIdCategory,
+                                    parsedCategoryName,
                                     parsedTitle,
                                     parsedPriceMin,
                                     parsedPriceMax,
