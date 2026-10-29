@@ -1,9 +1,10 @@
-
 export * from './init';
+export * from './mongoose-unit-of-work';
+export * from './mongo/models/category.model';
 export * from './mongo/models/course.model';
 export * from './mongo/models/enrollment.model';
+export * from './mongo/models/file.model';
+export * from './mongo/models/lesson.model';
+export * from './mongo/models/module.model';
+export * from './mongo/models/payment.model';
 export * from './mongo/models/user.model';
-// export * from './mongoose-unit-of-work';
-
-
-

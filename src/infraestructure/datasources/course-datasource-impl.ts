@@ -1,101 +1,88 @@
-import { CreateCourseDto } from './../../domain/dtos/course/create-course.dto';
 import { CourseDatasource } from "../../domain/datasources/course-datasource";
-import { CourseModel } from "../../data/mongo/models/course.model";
-import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
-import { CourseResponseDto } from '../../domain/dtos/course/course.responses';
-import { CourseMapper } from '../mappers/course.mapper';
-import { PaginationDto, PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
-import { CourseQueryFilter } from '../../domain/helpers/course-query-builder';
+import { CourseModel, ICourseModel, ICoursePopulateOwnerModel } from "../../data/mongo/models/course.model";
+import { CourseFilterDto } from "../../domain/dtos/course/course-filter.dto";
+import { CreateCourseDto } from "../../domain/dtos/course/create-course.dto";
+import { UpdateCourseDto } from "../../domain/dtos/course/update-course.dto";
+import { CoursePopulateOwnerResponseDto, CourseResponseDto } from "../../domain/dtos/course/course.responses";
+import { CourseMapper } from "../mappers/course.mapper";
+import { PaginatedResult, PaginationDto } from "../../domain/dtos/shared/pagination.dto";
+import { CourseQueryBuilder } from "../helpers/course-query-builder";
+import { CustomError } from "../../domain/errors/custom-error";
 
 export class CourseDatasourceImpl implements CourseDatasource {
     
-    async findAllCourses( filter ?: CourseQueryFilter , pagination ?: PaginationDto): Promise<PaginationResponseDto<CourseResponseDto[]>> {
-        const [courses , total]  = await Promise.all([
-            CourseModel.find( filter || {} )
-            .skip( (pagination!.current_page - 1 ) * pagination!.limit)
-            .limit( pagination!.limit ),
-            CourseModel.countDocuments( filter || {} )
+    async findAllCourses( filter : CourseFilterDto , pagination : PaginationDto ) : Promise<PaginatedResult<CourseResponseDto[]>> {
+        const query = CourseQueryBuilder.fromFilter( filter );
+
+        const [ courses , total ] = await Promise.all([
+            CourseModel.find( query )
+                .skip( ( pagination.current_page - 1 ) * pagination.limit )
+                .limit( pagination.limit )
+                .lean<ICourseModel[]>(),
+            CourseModel.countDocuments( query ),
         ]);
-        console.log(courses)
-        const founded = courses.map( CourseMapper.fromCourseResponseDto );
-        console.log(filter);
-        return{
-            pages : Math.ceil(total/pagination!.limit),
-            current_page : pagination!.current_page,
-            limit : pagination!.limit,
-            total : total,
-            next  : null,
-            prev  : null,
-            items : founded,
+
+        return {
+            items : courses.map( CourseMapper.fromCourseResponseDto ),
+            total,
         };
     }
 
     async findCoursesByIds( id_courses : string[] ) : Promise<CourseResponseDto[]> {
-        const courses = await CourseModel.find( { _id : { $in : id_courses } } );
-        if( !courses ) return [];
-        
+        const courses = await CourseModel.find( { _id : { $in : id_courses } } ).lean<ICourseModel[]>();
 
         return courses.map( CourseMapper.fromCourseResponseDto );
     }
-    
-    async findCoursesPaginated( page : number , limit : number ) : Promise<PaginationResponseDto<CourseResponseDto[]>> {
-        const [total , courses]  = await Promise.all([
-            CourseModel.countDocuments(),
-            CourseModel.find()
-                .skip( (page - 1 ) * limit)
-                .limit( limit )]);
-
-        const founded = courses.map( CourseMapper.fromCourseResponseDto );
-
-        return{
-            pages : Math.ceil(total/limit),
-            current_page : page,
-            limit,
-            total : total,
-            next  : null,
-            prev  : null,
-            items : founded,
-        };
-    }
 
     async findCourseById( id: string ) : Promise<CourseResponseDto | null> {   
-        const course = await CourseModel.findById({ _id: id });
+        const course = await CourseModel.findById( id ).lean<ICourseModel | null>();
         if( !course ) return null;
         
         return CourseMapper.fromCourseResponseDto( course );
     }
+
+    async findCoursePopulatedById( id : string ) : Promise<CoursePopulateOwnerResponseDto | null> {
+        const course = await CourseModel.findById( id )
+                                        .populate( 'id_owner' , 'username email avatar_url' )
+                                        .lean<ICoursePopulateOwnerModel | null>();
+        if( !course ) return null;
+        if( !course.id_owner ) throw CustomError.internalServer('El curso no tiene un propietario válido.');
+
+        return CourseMapper.fromCoursePopulateOwnerResponseDto( { ...course , id_owner : course.id_owner } );
+    }
     
     async findCoursesByCategoryId( category_id : string ) : Promise<CourseResponseDto[]> {
-        const courses = await CourseModel.find({ id_category : category_id });
+        const courses = await CourseModel.find({ id_category : category_id }).lean<ICourseModel[]>();
 
-        return courses.map( course => CourseMapper.fromCourseResponseDto( course ));
+        return courses.map( CourseMapper.fromCourseResponseDto );
     }
 
-
     async saveCourse( createCourseDto : CreateCourseDto) : Promise<CourseResponseDto> {
-
         const newCourse = await CourseModel.create({
             ...createCourseDto
         });
+
         return CourseMapper.fromCourseResponseDto( newCourse );
     }
 
     async updateCourse( updateCourseDTO : UpdateCourseDto ) : Promise<CourseResponseDto> {
+        const { id , ...changes } = updateCourseDTO;
+
         const updatedCourse = await CourseModel
-                                        .findByIdAndUpdate(  
-                                            {
-                                                _id: updateCourseDTO.id 
-                                            }, 
-                                            updateCourseDTO,
-                                            { new : true } 
-                                        ).exec();
-        
-        return CourseMapper.fromCourseResponseDto(updatedCourse!);
+                                        .findByIdAndUpdate(
+                                            id,
+                                            changes,
+                                            { new : true }
+                                        )
+                                        .lean<ICourseModel | null>();
+        if( !updatedCourse ) throw CustomError.notFound('El curso que intentas actualizar no existe.');
+
+        return CourseMapper.fromCourseResponseDto( updatedCourse );
     } 
 
     async deleteCourse( id : string ) : Promise<boolean>{
         const hasRemoved = await CourseModel.deleteOne({ _id: id });
-        if( hasRemoved.deletedCount != 0 ) return true;
-        return false;
+
+        return hasRemoved.deletedCount != 0;
     }
 }

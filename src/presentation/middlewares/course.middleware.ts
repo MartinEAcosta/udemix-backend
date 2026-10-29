@@ -1,9 +1,12 @@
-import { NextFunction, Request, Response } from "express";
-import { CourseQueryBuilder, CourseQueryFilter } from "../../domain/helpers/course-query-builder";
-import { regularExps } from "../../config";
+import { NextFunction, Response } from "express";
 
-export interface CourseFilterRequest extends Request {
-    courseQuery ?: CourseQueryFilter;
+import { CourseFilterDto } from "../../domain/dtos/course/course-filter.dto";
+import { CustomError } from "../../domain/errors/custom-error";
+import { HandlerResponses } from "../helpers/handler-responses";
+import { PaginatedRequest } from "./pagination.middleware";
+
+export interface CourseFilterRequest extends PaginatedRequest {
+    courseFilter ?: CourseFilterDto;
 }
 
 export class CourseMiddleware {
@@ -12,41 +15,12 @@ export class CourseMiddleware {
 
     validateQueryParams = ( req : CourseFilterRequest , res : Response , next : NextFunction ) => {
 
-        const query = req.query || {};
-        const builder = new CourseQueryBuilder();
+        const [ error , courseFilterDto ] = CourseFilterDto.create( req.query );
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
 
-        if( Object.keys(query).length === 0 ) return next();
+        // Siempre se asigna: sin query params el filtro queda vacío, no undefined.
+        req.courseFilter = courseFilterDto;
 
-        const { id_category , priceMin , priceMax , title , notFullyEnrolled } = req.query;
-
-        if( priceMin && priceMax ) {
-            if( !isNaN( Number(priceMin) ) && !isNaN( Number(priceMax) ) ) {
-                builder.withPriceRange( Number(priceMin) , Number(priceMax) );
-            }
-        }
-        else{
-            if( priceMin && !isNaN( Number( priceMin ) ) ){
-                builder.withPriceRange( Number(priceMin) );
-            }
-            if( priceMax && !isNaN( Number( priceMax ) ) ){
-                builder.withPriceRange( undefined , Number(priceMax) );
-            }
-        }
-        
-        if( id_category && regularExps.isValidId.test( String(id_category) ) ) {
-            builder.withCategoryId( String(id_category) );
-        }
-
-        if( title && typeof title === 'string' && title.trim().length > 0 ) {
-            builder.withTitle( title );
-        }
-
-        if( notFullyEnrolled && ( String( notFullyEnrolled ) === 'true' || String( notFullyEnrolled ) === 'false' ) ) {
-            // Se pasa una expresión por lo tanto es valido.
-            builder.withNotFullyEnrolled( String( notFullyEnrolled ) === 'true' );
-        }
-
-        req.courseQuery = builder.getQuery();
         next();
     }
 

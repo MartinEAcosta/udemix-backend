@@ -3,18 +3,20 @@ import { PaginationDto } from "../../domain/dtos/shared/pagination.dto";
 import { HandlerResponses } from "../helpers/handler-responses";
 import { CustomError } from "../../domain/errors/custom-error";
 
+export interface PaginatedRequest extends Request {
+    pagination ?: PaginationDto;
+}
 
 export class PaginationMiddleware {
 
-    containPageOrLimit = ( req : Request , res : Response , next : NextFunction ) => {
+    containPageOrLimit = ( req : PaginatedRequest , res : Response , next : NextFunction ) => {
 
         const { current_page = 1 , limit = 10 } = req.query;
 
         const [ error , paginationDto ] = PaginationDto.create( +current_page , +limit );
         if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
 
-        req.body = req.body || {};
-        req.body.pagination = paginationDto;
+        req.pagination = paginationDto;
 
         next();
     }

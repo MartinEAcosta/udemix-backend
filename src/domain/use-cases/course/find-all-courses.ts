@@ -1,26 +1,19 @@
 import { CourseRepository } from "../../repository/course-repository";
 
 import { CourseEntity } from "../../entities/course.entity";
-import { CourseQueryFilter } from "../../helpers/course-query-builder";
-import { PaginationDto, PaginationResponseDto } from "../../dtos/shared/pagination.dto";
+import { CourseFilterDto } from "../../dtos/course/course-filter.dto";
+import { PaginatedResult, PaginationDto } from "../../dtos/shared/pagination.dto";
 
 export interface FindAllCourseUseCase {
-    execute ( filter ?: CourseQueryFilter ) : Promise<PaginationResponseDto<CourseEntity[]>>
+    execute ( filter : CourseFilterDto , pagination : PaginationDto ) : Promise<PaginatedResult<CourseEntity[]>>
 }
 
 export class FindAllCourses implements FindAllCourseUseCase {
 
     constructor( private readonly courseRepository : CourseRepository) { }
 
-    async execute ( filter ?: CourseQueryFilter , pagination ?: PaginationDto ) : Promise<PaginationResponseDto<CourseEntity[]>> {
-
-        const info = await this.courseRepository.findAllCourses( filter , pagination );
-
-        return {
-            ...info,
-            next : pagination!.limit * pagination!.current_page < info.total! ? `/api/courses?current_page=${ (pagination!.current_page+1) }&limit=${ pagination!.limit }` : null,
-            prev : (pagination!.current_page - 1) > 0   ? `/api/courses?current_page=${ (pagination!.current_page-1) }&limit=${ pagination!.limit }` : null, 
-        };
+    async execute ( filter : CourseFilterDto , pagination : PaginationDto ) : Promise<PaginatedResult<CourseEntity[]>> {
+        return await this.courseRepository.findAllCourses( filter , pagination );
     }
 
 }

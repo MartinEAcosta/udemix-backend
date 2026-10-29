@@ -5,3 +5,5 @@ export * from './enrollment-repository';
 export * from './file-repository';
 export * from './lesson-repository';
 export * from './module-repository';
+export * from './order-repository';
+export * from './payment-repository';

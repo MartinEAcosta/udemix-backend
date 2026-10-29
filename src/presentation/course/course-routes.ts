@@ -21,12 +21,6 @@ export class CourseRouter {
           '/bulk',
           courseController.findCoursesByIds
         );
-        
-        router.get(
-          '/paginated',
-          [ paginationMiddleware.containPageOrLimit ],
-          courseController.findCoursesPaginated
-        );
 
         router.get(
           '/:id',

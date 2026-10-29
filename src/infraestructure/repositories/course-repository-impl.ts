@@ -2,10 +2,10 @@ import { CourseRepository } from '../../domain/repository/course-repository';
 import { CourseDatasource } from '../../domain/datasources/course-datasource';
 
 import { CourseEntity } from '../../domain/entities/course.entity';
+import { CourseFilterDto } from '../../domain/dtos/course/course-filter.dto';
 import { CreateCourseDto } from '../../domain/dtos/course/create-course.dto';
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
-import { PaginationDto, PaginationResponseDto } from '../../domain/dtos/shared/pagination.dto';
-import { CourseQueryFilter } from '../../domain/helpers/course-query-builder';
+import { PaginatedResult, PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 
 export class CourseRepositoryImpl implements CourseRepository{
 
@@ -13,14 +13,13 @@ export class CourseRepositoryImpl implements CourseRepository{
         private readonly courseDatasource : CourseDatasource, 
     ){ }
     
-    async findAllCourses( filter ?: CourseQueryFilter , pagination ?: PaginationDto ) : Promise<PaginationResponseDto<CourseEntity[]>> {
+    async findAllCourses( filter : CourseFilterDto , pagination : PaginationDto ) : Promise<PaginatedResult<CourseEntity[]>> {
         try{
-            const info = await this.courseDatasource.findAllCourses( filter, pagination );
-            const { items , ...rest } = info;
-            
+            const { items , total } = await this.courseDatasource.findAllCourses( filter , pagination );
+
             return {
-                ...rest,
-                items : info.items!.map( course => CourseEntity.fromObject(course) ),
+                items : items.map( course => CourseEntity.fromObject( course ) ),
+                total,
             }
         }
         catch( error ){
@@ -50,22 +49,6 @@ export class CourseRepositoryImpl implements CourseRepository{
         }
     }
 
-
-    async findCoursesPaginated( page : number , limit : number ) : Promise<PaginationResponseDto<CourseEntity[]>> {
-        try{
-            const info = await this.courseDatasource.findCoursesPaginated( page , limit );
-            const { items , ...rest } = info;
-            
-            return {
-                ...rest,
-                items : info.items!.map( course => CourseEntity.fromObject(course) ),
-            }
-        }
-        catch( error ){
-            throw error;
-        }
-    }
-
     async findCourseById( id: string ) : Promise<CourseEntity | null> {
         try{
             const course = await this.courseDatasource.findCourseById(id);
@@ -82,7 +65,6 @@ export class CourseRepositoryImpl implements CourseRepository{
             return CourseEntity.fromObject( courseSaved );
         }
         catch( error ){
-            console.log(error);
             throw error;
         }
             

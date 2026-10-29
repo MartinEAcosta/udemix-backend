@@ -1,15 +1,15 @@
-import { CourseQueryFilter } from "../helpers/course-query-builder";
-import { CourseResponseDto } from "../dtos/course/course.responses";
+import { CourseFilterDto } from "../dtos/course/course-filter.dto";
+import { CoursePopulateOwnerResponseDto, CourseResponseDto } from "../dtos/course/course.responses";
 import { CreateCourseDto } from "../dtos/course/create-course.dto";
 import { UpdateCourseDto } from "../dtos/course/update-course.dto";
-import { PaginationDto, PaginationResponseDto } from "../dtos/shared/pagination.dto";
+import { PaginatedResult, PaginationDto } from "../dtos/shared/pagination.dto";
 
 export abstract class CourseDatasource {
 
-    abstract findAllCourses( filter ?: CourseQueryFilter , pagination ?: PaginationDto ) : Promise<PaginationResponseDto<CourseResponseDto[]>>;
+    abstract findAllCourses( filter : CourseFilterDto , pagination : PaginationDto ) : Promise<PaginatedResult<CourseResponseDto[]>>;
     abstract findCoursesByIds( id_courses : string[] ) : Promise<CourseResponseDto[]>;
-    abstract findCoursesPaginated( page : number , limit : number ) : Promise<PaginationResponseDto<CourseResponseDto[]>>;
     abstract findCourseById( id : string ) : Promise<CourseResponseDto | null>;
+    abstract findCoursePopulatedById( id : string ) : Promise<CoursePopulateOwnerResponseDto | null>;
     abstract findCoursesByCategoryId ( category_id : string ) : Promise<CourseResponseDto[]>;
     abstract saveCourse( createCourseDto : CreateCourseDto ) : Promise<CourseResponseDto>;
     abstract updateCourse( updateCourseDto : UpdateCourseDto ) : Promise<CourseResponseDto>;

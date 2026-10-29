@@ -3,16 +3,18 @@ import { Request, Response } from "express";
 import { CourseRepository } from "../../domain/repository/course-repository";
 import { DeleteCourse, FindAllCourses, FindCourseById, SaveCourse, UpdateCourse } from '../../domain/use-cases';
 import { CreateCourseDto , UpdateCourseDto } from "../../domain/dtos";
+import { buildPaginationResponse } from "../../domain/dtos/shared/pagination.dto";
 import { HandlerResponses } from '../helpers/handler-responses';
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { FindCoursesByCategory } from "../../domain/use-cases/course/find-courses-by-category";
 import { CategoryRepository } from "../../domain/repository/category-repository";
 import { FileRepository } from "../../domain/repository/file-repository";
 import { CustomError } from "../../domain/errors/custom-error";
-import { FindCoursesPaginated } from "../../domain/use-cases/course/find-courses-paginated";
+import { regularExps } from "../../domain/helpers/regular.exp";
 import { FindCoursesByIds } from "../../domain/use-cases/course/find-courses-by-ids";
 import { CourseFilterRequest } from "../middlewares";
 
+const COURSES_BASE_PATH = '/api/courses';
 
 export class CourseController {
 
@@ -23,31 +25,46 @@ export class CourseController {
     ){ }
 
     public findAllCourses = ( req : CourseFilterRequest , res : Response ) => {
-        const { pagination } = req.body;
-        
+        const { courseFilter , pagination } = req;
+        if( !courseFilter || !pagination ) {
+            return HandlerResponses.handleError(
+                CustomError.internalServer('La ruta debe incluir los middlewares de filtros y paginación.') , res );
+        }
+
         new FindAllCourses( this.courseRepository )
-            .execute( req?.courseQuery , pagination )
-            .then( courses => HandlerResponses.handleSuccess( res , courses, 200 ) )
+            .execute( courseFilter , pagination )
+            .then( ({ items , total }) => HandlerResponses.handleSuccess(
+                                                res,
+                                                buildPaginationResponse({
+                                                    items,
+                                                    total,
+                                                    pagination,
+                                                    basePath : COURSES_BASE_PATH,
+                                                }),
+                                                200 ) )
             .catch( error => HandlerResponses.handleError( error , res ));
     }
 
     public findCoursesByIds = ( req : Request , res : Response ) => {
-        const { id_courses } = req.body;
-        if( !id_courses ) return HandlerResponses.handleError( CustomError.badRequest('Debes indicar el id de los cursos a buscar.'), res);
+        const { ids } = req.query;
+        if( typeof ids !== 'string' || ids.trim().length === 0 ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar los ids de los cursos a buscar en el parámetro "ids".'), res);
+        }
+
+        const id_courses = ids.split(',').map( id => id.trim() ).filter( id => id.length > 0 );
+        if( id_courses.length === 0 ) {
+            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar al menos un id de curso.'), res);
+        }
+
+        const invalidIds = id_courses.filter( id => !regularExps.isValidId.test( id ) );
+        if( invalidIds.length > 0 ) {
+            return HandlerResponses.handleError( CustomError.badRequest(`Los siguientes ids no son válidos: ${ invalidIds.join(', ') }.`), res);
+        }
 
         new FindCoursesByIds( this.courseRepository )
             .execute( id_courses )
             .then( courses => HandlerResponses.handleSuccess( res , courses , 200) )
             .catch( error => HandlerResponses.handleError( error , res ));
-    }
-
-    public findCoursesPaginated = ( req : Request , res : Response ) => {
-        const { pagination } = req.body;
-        
-        new FindCoursesPaginated( this.courseRepository )
-                .execute( pagination )
-                .then( courses => HandlerResponses.handleSuccess( res , courses , 200) )
-                .catch( error => HandlerResponses.handleError( error , res ));
     }
 
     public findCourseById = ( req : Request , res : Response ) => {
@@ -69,7 +86,7 @@ export class CourseController {
         }
 
         const { slug } = req.params;
-        
+
         new FindCoursesByCategory( this.courseRepository , this.categoryRepository )
             .execute( slug )
             .then( course => HandlerResponses.handleSuccess( res, course, 200 ) )
@@ -80,7 +97,7 @@ export class CourseController {
     public saveCourse = ( req : AuthenticatedRequest , res : Response ) => {
         const [ errorMessage , createCourseDto ] = CreateCourseDto.create( req.body );
         if( errorMessage ) return HandlerResponses.handleError( CustomError.badRequest( errorMessage ) , res );
-        
+
         new SaveCourse( this.courseRepository , this.categoryRepository )
             .execute( createCourseDto! )
             .then( courseCreated => HandlerResponses.handleSuccess( res, courseCreated , 201 ) )

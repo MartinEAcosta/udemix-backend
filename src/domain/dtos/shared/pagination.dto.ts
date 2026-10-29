@@ -8,6 +8,12 @@ export interface PaginationResponseDto<T> {
     items         : T,
 }
 
+/** Lo que devuelven datasources y repositorios: la página cruda, sin envoltorio HTTP. */
+export interface PaginatedResult<T> {
+    items : T,
+    total : number,
+}
+
 export class PaginationDto {
 
     private constructor (
@@ -24,3 +30,32 @@ export class PaginationDto {
         return [undefined , new PaginationDto( current_page , limit )];
     }
 }
+
+interface BuildPaginationResponseOptions<T> {
+    items      : T,
+    total      : number,
+    pagination : PaginationDto,
+    /** Ruta sobre la que se construyen los links next/prev, p. ej. '/api/courses'. */
+    basePath   : string,
+}
+
+/** Único lugar donde se arma el envoltorio paginado: páginas y links next/prev. */
+export const buildPaginationResponse = <T>(
+    { items , total , pagination , basePath } : BuildPaginationResponseOptions<T>
+) : PaginationResponseDto<T> => {
+
+    const { current_page , limit } = pagination;
+    const pages = Math.ceil( total / limit );
+
+    const linkTo = ( page : number ) => `${ basePath }?current_page=${ page }&limit=${ limit }`;
+
+    return {
+        pages,
+        current_page,
+        limit,
+        total,
+        next  : current_page < pages ? linkTo( current_page + 1 ) : null,
+        prev  : current_page > 1     ? linkTo( current_page - 1 ) : null,
+        items,
+    };
+};
