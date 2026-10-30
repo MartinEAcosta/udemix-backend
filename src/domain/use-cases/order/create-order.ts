@@ -31,6 +31,9 @@ export class CreateOrder implements CreateOrderUseCase {
         for( let item of orderRequestDto.items ){
             const course = await this.courseRepository.findCourseById( item.id_course! );
             if( !course ) throw CustomError.notFound('No se ha encontrado un curso del carrito.');
+            if( course.spots_remaining === 0 ){
+                throw CustomError.badRequest( `El curso "${ course.title }" no tiene cupos disponibles.` );
+            }
             total_amount += course.price;
             coursesToBuy.push( course.id );
         }
@@ -57,7 +60,7 @@ export class CreateOrder implements CreateOrderUseCase {
         if( gatewayResponse.status === 'processed'){
             let enroll;
             for( let course_id of coursesToBuy ){
-                enroll = this.enrollmentRepository.saveEnrollment(
+                enroll = await this.enrollmentRepository.saveEnrollment(
                     {
                         id_user : userLogged.id,
                         id_course : course_id,

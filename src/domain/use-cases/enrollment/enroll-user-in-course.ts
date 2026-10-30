@@ -31,6 +31,8 @@ export class EnrollUserInCourse implements EnrollUserInCourseUseCase {
         const alreadyEnrolled = await this.enrollmentRepository.findEnrollmentByUserIdAndCourseId( enrollmentRequestDTO.id_user , enrollmentRequestDTO.id_course );
         if( alreadyEnrolled ) throw CustomError.badRequest("El usuario ya se encuentra inscripto en este curso.");
 
+        if( course.spots_remaining === 0 ) throw CustomError.badRequest('El curso no tiene cupos disponibles.');
+
         if( user.balance < course.price ) throw CustomError.badRequest("El usuario no tiene el saldo suficiente para adquirir el curso");
 
         let enrollmentCreated : EnrollmentEntity | null = null;

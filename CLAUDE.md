@@ -12,6 +12,21 @@ Note: `.env.template` is out of date — it is missing `DB_NAME`, `GOOGLE_AUTH_C
 
 Docker build is a two-stage build (`Dockerfile`): builder stage runs `npm run build`, runner stage copies `dist/` only and runs as non-root `node` user on port 4201.
 
+## Working agreement: resolve open questions before building on them
+
+Do not keep building work that a later answer could invalidate. When something is unresolved — an ambiguous requirement, a missing decision, a half-finished piece of work, an assumption you cannot verify in the code — stop at that point and either:
+
+1. **Hand it over.** Deliver what is already complete and usable, and state plainly what is unfinished and why.
+2. **Interview me.** Ask the specific question(s) needed to unblock, one decision at a time, with the options and the trade-off for each.
+
+Rules:
+
+- Never silently pick an interpretation and build a large amount of code on top of it. Small, reversible judgment calls are fine — state the assumption and move on.
+- If different readings of the request would produce materially different code, that is a blocking question: ask before writing the code, not after.
+- Finish every part of the task that does **not** depend on the open question first. Only the dependent part waits.
+- When reporting back, be explicit: what is done, what is blocked, what question unblocks it.
+- Partial work that is about to be thrown away is worse than no work. Prefer asking.
+
 ## Architecture
 
 Clean/hexagonal architecture with strict layering. Dependencies point inward — `presentation` → `domain` ← `infraestructure`/`data`. Domain layer has zero framework/DB imports.

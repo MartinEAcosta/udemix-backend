@@ -1,9 +1,11 @@
-import { EnrollmentModel } from "../../data";
+import { CourseModel, EnrollmentModel } from "../../data";
 import { EnrollmentDatasource } from "../../domain/datasources/enrollment-datasource";
 import { CreateEnrollmentRequestDTO } from "../../domain/dtos/enrollment/create-enrollment.dto";
 import { EnrollmentMapper } from "../mappers/enrollment.mapper";
 import { EnrollmentDetailedResponseDTO, EnrollmentResponseDTO, UpdateEnrollmentRequestDTO } from '../../domain/dtos/enrollment/enrollment.response.dto';
 import { IEnrollmentDetailedModel } from '../../data/mongo/models/enrollment.model';
+import { CustomError } from "../../domain/errors/custom-error";
+import { TransactionSession } from "../../domain/services/UnitOfWork";
 
 export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
 
@@ -35,8 +37,28 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
         return listOfEnrollments.map( enrollment => EnrollmentMapper.fromEnrollmentDetailedResponseDTO( enrollment ) );
     }
 
-    saveEnrollment = async(enrollmentRequestDTO: CreateEnrollmentRequestDTO) : Promise<EnrollmentResponseDTO> => {
-        const savedEnrollment = await EnrollmentModel.create( enrollmentRequestDTO );
+    saveEnrollment = async( enrollmentRequestDTO : CreateEnrollmentRequestDTO , ts ?: TransactionSession ) : Promise<EnrollmentResponseDTO> => {
+        const session = ts?.getSession();
+
+        // Guard de cupo + incremento en una sola operación atómica: es la única defensa real contra
+        // la carrera entre inscripciones concurrentes. El $or cubre los cursos de cupo ilimitado
+        // (capacity null) y los creados antes de que el campo existiera (sin la clave).
+        const course = await CourseModel.findOneAndUpdate(
+            {
+                _id : enrollmentRequestDTO.id_course,
+                $or : [
+                    { capacity : { $exists : false } },
+                    { capacity : null },
+                    { $expr : { $lt : [ { $ifNull : [ "$current_enrolled" , 0 ] } , "$capacity" ] } },
+                ],
+            },
+            { $inc : { current_enrolled : 1 } },
+            { new : true , session },
+        );
+        if( !course ) throw CustomError.badRequest('El curso no existe o ya no tiene cupos disponibles.');
+
+        // Mongoose ignora las options si el documento no va en un array.
+        const [ savedEnrollment ] = await EnrollmentModel.create( [ enrollmentRequestDTO ] , { session } );
         if( !savedEnrollment ) throw 'Hubo un error al registrar la inscripción.';
 
         return EnrollmentMapper.fromEnrollmentResponseDTO( savedEnrollment );

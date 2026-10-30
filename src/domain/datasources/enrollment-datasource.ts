@@ -1,5 +1,6 @@
 import { CreateEnrollmentRequestDTO } from "../dtos/enrollment/create-enrollment.dto";
 import { EnrollmentDetailedResponseDTO, EnrollmentResponseDTO, UpdateEnrollmentRequestDTO } from '../dtos/enrollment/enrollment.response.dto';
+import { TransactionSession } from "../services/UnitOfWork";
 
 export abstract class EnrollmentDatasource {
 
@@ -8,7 +9,7 @@ export abstract class EnrollmentDatasource {
     abstract findEnrollmentPopulatedById( id_enrollment : string ) : Promise<EnrollmentDetailedResponseDTO | null>;
     abstract findEnrollmentsByUserId( uid : string ) : Promise<EnrollmentDetailedResponseDTO[] | undefined>;
     abstract findEnrollmentByUserIdAndCourseId( uid : string , courseId : string ) : Promise<EnrollmentResponseDTO| null>;
-    abstract saveEnrollment( enrollmentRequestDTO : CreateEnrollmentRequestDTO ) : Promise<EnrollmentResponseDTO>;
+    abstract saveEnrollment( enrollmentRequestDTO : CreateEnrollmentRequestDTO , ts ?: TransactionSession ) : Promise<EnrollmentResponseDTO>;
     abstract updateEnrollment( enrollmentRequestDTO : UpdateEnrollmentRequestDTO ) : Promise<EnrollmentResponseDTO>;
 
 }

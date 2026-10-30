@@ -25,6 +25,14 @@ export class CourseEntity {
     public price : number;
     public capacity ?: number;
     public current_enrolled : number;
+    public spots_remaining : number | null;
+
+
+    /** Cupo disponible. null = ilimitado. Nunca se persiste: se deriva de capacity y current_enrolled. */
+    static calculateSpotsRemaining = ( capacity ?: number | null , current_enrolled ?: number | null ) : number | null => {
+        if( capacity === null || capacity === undefined ) return null;
+        return Math.max( 0 , capacity - ( current_enrolled ?? 0 ) );
+    }
 
 
     private constructor ( options : CourseEntityOptions){
@@ -40,6 +48,7 @@ export class CourseEntity {
         this.price = price;
         this.capacity = capacity;
         this.current_enrolled = current_enrolled ?? 0;
+        this.spots_remaining = CourseEntity.calculateSpotsRemaining( this.capacity , this.current_enrolled );
     }
 
 
