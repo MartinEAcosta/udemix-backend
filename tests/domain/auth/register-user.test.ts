@@ -51,7 +51,6 @@ describe('RegisterUser UseCase' , () => {
             isEmailVerified : false,
             role : 'student',
             balance : 0,
-            avatar_url : '',
             id_file : '',
         });
 
@@ -86,7 +85,6 @@ describe('RegisterUser UseCase' , () => {
                 isEmailVerified : false,
                 role : 'student',
                 balance : 0,
-                avatar_url : '',
                 id_file : '',
             });
             await registerUserUseCase.execute( registerUserDto );

@@ -41,7 +41,6 @@ export class CourseMapper {
                 id : owner._id.toString(),
                 username : owner.username,
                 email : owner.email,
-                avatar_url : owner.avatar_url,
             },
             price : courseDoc.price,
             capacity : courseDoc.capacity ?? undefined,

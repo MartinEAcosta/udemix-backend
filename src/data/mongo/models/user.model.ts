@@ -8,8 +8,15 @@ export interface IUserModel {
   role            : string;
   password        ?: string | null;
   balance         : number;
-  avatar_url      : string | null;
   id_file         ?: Types.ObjectId | null;
+}
+
+/**
+ * Mismo documento pero con `id_file` poblado: es el campo que .populate('id_file') reemplaza.
+ * Usado exclusivamente para derivar el avatar_url en el login (ver LoginUser) — nunca se persiste.
+ */
+export interface IUserPopulateModel extends Omit<IUserModel , 'id_file'> {
+  id_file : { _id : Types.ObjectId; url : string | null } | null;
 }
 
 const userSchema = new mongoose.Schema({
@@ -46,11 +53,6 @@ const userSchema = new mongoose.Schema({
         default : 0,
     },
     
-    avatar_url : {
-        type: String,
-        default : ''
-    },
-
     id_file : {
         type: Schema.Types.ObjectId,
         ref: 'File',

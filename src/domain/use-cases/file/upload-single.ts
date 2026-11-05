@@ -76,7 +76,6 @@ export class UploadSingle implements UploadFileUseCase {
                 return await this.authRepository.updateUser(
                     {
                         id,
-                        avatar_url : newFile.url,
                         id_file : newFile.id,
                     });
             }

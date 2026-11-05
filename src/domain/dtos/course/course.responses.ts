@@ -26,7 +26,6 @@ export interface CoursePopulateOwnerResponseDto {
         id : string,
         username : string,
         email : string,
-        avatar_url : string | null,
     },
     price : number,
     capacity ?: number | null,
