@@ -26,7 +26,8 @@ export class SocialLoginWithGoogle implements SocialLoginWithGoogleUseCase {
         let userExists = await this.authRepository.findUserByEmail( socialResponseData.user.email );
         if( !userExists ) {
             const [ error , userDto ] = RegisterUserDto.create({
-                username : socialResponseData.user.username,
+                first_name : socialResponseData.user.first_name,
+                last_name : socialResponseData.user.last_name,
                 email : socialResponseData.user.email,
                 isEmailVerified : socialResponseData.user.isEmailVerified,
             });
@@ -49,7 +50,8 @@ export class SocialLoginWithGoogle implements SocialLoginWithGoogleUseCase {
         return {
             user : {
                 id : userExists?.id || '',
-                username : userExists?.username || '',
+                first_name : userExists?.first_name || '',
+                last_name : userExists?.last_name || '',
                 email : userExists?.email || '',
                 role : userExists?.role || 'student',
                 isEmailVerified : userExists?.isEmailVerified || false,

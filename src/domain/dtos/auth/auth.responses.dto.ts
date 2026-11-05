@@ -1,7 +1,8 @@
 
 export interface UserResponseDto {
     id             ?:   string,
-    username        : string,
+    first_name      : string,
+    last_name       : string,
     email           : string,
     isEmailVerified : boolean,
     role            : string,
@@ -13,7 +14,8 @@ export interface UserResponseDto {
 
 export interface UserRequestDto {
     id              ?: string,
-    username        ?: string,
+    first_name      ?: string,
+    last_name       ?: string,
     email           ?: string,
     isEmailVerified ?: boolean,
     role            ?: string,
@@ -24,7 +26,8 @@ export interface UserRequestDto {
 
 export interface AuthResponseDto {
     id       ?:   string,
-    username : string,
+    first_name : string,
+    last_name : string,
     role    : string,
     isEmailVerified : boolean,
     email    : string,

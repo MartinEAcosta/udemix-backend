@@ -29,7 +29,8 @@ export class GoogleAdapter implements SocialAuthProvider {
             console.log(payload)
             return { 
                 user: {
-                    username: payload.name ?? '',
+                    first_name: payload.given_name ?? '',
+                    last_name: payload.family_name ?? '',
                     email: payload.email ?? '',
                     isEmailVerified: payload.email_verified ?? false,
                     role:   'student'

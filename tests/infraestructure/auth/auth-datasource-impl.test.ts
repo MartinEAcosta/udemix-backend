@@ -26,10 +26,11 @@ describe('Auth Datasource Implementation' , () => {
     const authDatasource = new AuthDatasourceImpl();
 
     const [ error , registerUserDto ] = RegisterUserDto.create({
-        username : 'testuser',
+        first_name : 'Test',
+        last_name : 'User',
         password : 'testpassword',
         email : 'testuser@example.com'
-    });  
+    });
 
 
     test('should create a new user' , async() => {

@@ -24,7 +24,8 @@ export interface CoursePopulateOwnerResponseDto {
     id_file  ?: string | null,
     owner : {
         id : string,
-        username : string,
+        first_name : string,
+        last_name : string,
         email : string,
         avatar_url : string | null,
     },

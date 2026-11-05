@@ -2,7 +2,8 @@ import mongoose, { Schema, Types } from 'mongoose';
 
 export interface IUserModel {
   _id             : Types.ObjectId; // Podría venir de la DB
-  username        : string;
+  first_name      : string;
+  last_name       : string;
   email           : string;
   isEmailVerified : boolean;
   role            : string;
@@ -14,9 +15,14 @@ export interface IUserModel {
 
 const userSchema = new mongoose.Schema({
 
-    username : {
+    first_name : {
         type     : String,
-        required : [ true , 'El nombre de usuario es requerido.'],
+        required : [ true , 'El nombre es requerido.'],
+    },
+
+    last_name : {
+        type     : String,
+        required : [ true , 'El apellido es requerido.'],
     },
 
     email : {

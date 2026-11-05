@@ -39,7 +39,8 @@ export class CourseMapper {
             id_file : courseDoc.id_file?.toString() ?? null,
             owner : {
                 id : owner._id.toString(),
-                username : owner.username,
+                first_name : owner.first_name,
+                last_name : owner.last_name,
                 email : owner.email,
                 avatar_url : owner.avatar_url,
             },

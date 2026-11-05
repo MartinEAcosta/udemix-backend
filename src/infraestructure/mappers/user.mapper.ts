@@ -6,7 +6,8 @@ export class UserMapper {
     static fromUserResponseDto ( userDoc : IUserModel ) : UserResponseDto{
         return {
             id: userDoc._id.toString(),
-            username: userDoc.username,
+            first_name: userDoc.first_name,
+            last_name: userDoc.last_name,
             email: userDoc.email,
             isEmailVerified: userDoc.isEmailVerified,
             role: userDoc.role,
