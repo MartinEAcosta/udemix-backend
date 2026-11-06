@@ -1,8 +1,9 @@
 import { AuthDatasource } from "../../domain/datasources/auth-datasource";
-import { UserModel } from "./../../data/mongo/models/user.model";
+import { IUserPopulateModel, UserModel } from "./../../data/mongo/models/user.model";
 import { UserMapper } from "../mappers/user.mapper";
 import { RegisterUserDto } from "../../domain/dtos/auth/register-user.dto";
 import {
+  UserLoginResponseDto,
   UserResponseDto,
 } from "../../domain/dtos/auth/auth.responses.dto";
 import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
@@ -33,5 +34,13 @@ export class AuthDatasourceImpl implements AuthDatasource {
     if (!user) return null;
 
     return UserMapper.fromUserResponseDto(user);
+  }
+
+  async findUserByEmailForLogin(email: string): Promise<UserLoginResponseDto | null> {
+    const userExists = await UserModel.findOne({ email: email })
+      .populate<IUserPopulateModel>('id_file', 'url');
+    if (!userExists) return null;
+
+    return UserMapper.fromLoginResponseDto(userExists);
   }
 }

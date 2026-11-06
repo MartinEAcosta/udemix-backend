@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { envs } from '../../../src/config/envs';
 import { MongoDatabase } from '../../../src/data/init';
 import { UserModel } from '../../../src/data';
+import { FileModel } from '../../../src/data/mongo/models/file.model';
 import { AuthDatasourceImpl } from '../../../src/infraestructure/datasources/auth-datasource-impl';
 import { RegisterUserDto } from '../../../src/domain/dtos/auth/register-user.dto';
 
@@ -17,6 +18,7 @@ describe('Auth Datasource Implementation' , () => {
 
     beforeEach( async() => {
         await UserModel.deleteMany({});
+        await FileModel.deleteMany({});
     });
 
     afterAll(async() => {
@@ -58,6 +60,37 @@ describe('Auth Datasource Implementation' , () => {
 
         expect( foundUser ).not.toBeNull();
         expect( foundUser!.id ).toBe( createdUser.id );
+    });
+
+    test('should derive avatar_url from the populated file on login lookup' , async() => {
+        const createdUser = await authDatasource.registerUser(registerUserDto!);
+
+        const avatarFile = await FileModel.create({
+            public_id : 'test/avatar-1',
+            url : 'https://example.test/avatar-1.jpg',
+            folder : 'user',
+            size : 1024,
+            extension : 'jpg',
+            resource_type : 'image',
+        });
+
+        await UserModel.findByIdAndUpdate( createdUser.id , { id_file : avatarFile._id } );
+
+        const loginUser = await authDatasource.findUserByEmailForLogin( createdUser.email );
+
+        expect( loginUser ).not.toBeNull();
+        expect( loginUser!.avatar_url ).toBe( avatarFile.url );
+        expect( loginUser!.id_file ).toBe( avatarFile._id.toString() );
+    });
+
+    test('should return a null avatar_url when the user has no linked file' , async() => {
+        const createdUser = await authDatasource.registerUser(registerUserDto!);
+
+        const loginUser = await authDatasource.findUserByEmailForLogin( createdUser.email );
+
+        expect( loginUser ).not.toBeNull();
+        expect( loginUser!.avatar_url ).toBeNull();
+        expect( loginUser!.id_file ).toBeNull();
     });
 
 });

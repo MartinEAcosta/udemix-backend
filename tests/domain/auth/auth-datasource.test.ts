@@ -1,6 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
 import { RegisterUserDto } from "../../../src/domain/dtos/auth/register-user.dto";
-import { UserResponseDto } from '../../../src/domain/dtos/auth/auth.responses.dto';
+import { UserLoginResponseDto, UserResponseDto } from '../../../src/domain/dtos/auth/auth.responses.dto';
 import { UpdateUserDto } from '../../../src/domain/dtos/auth/update-user-dto';
 import { AuthDatasource } from '../../../src/domain/datasources/auth-datasource';
 
@@ -41,6 +41,10 @@ describe( 'Auth Datasource' , () => {
             return Promise.resolve(null);
         }
 
+        async findUserByEmailForLogin( email : string ): Promise<UserLoginResponseDto | null> {
+            return Promise.resolve(null);
+        }
+
     }
 
     const mockAuthDatasource = new MockAuthDatasource();
@@ -58,6 +62,7 @@ describe( 'Auth Datasource' , () => {
         expect( typeof mockAuthDatasource.updateUser ).toBe( 'function' );
         expect( typeof mockAuthDatasource.findUserByEmail ).toBe( 'function' );
         expect( typeof mockAuthDatasource.findUserById ).toBe( 'function' );
+        expect( typeof mockAuthDatasource.findUserByEmailForLogin ).toBe( 'function' );
 
         const user = await mockAuthDatasource.findUserByEmail( registerUserDTO.email );
         expect( user ).toBeNull();

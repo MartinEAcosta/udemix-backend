@@ -20,7 +20,7 @@ export interface ICourseModel {
  * Puede ser null: si el usuario referenciado ya no existe, populate deja el campo en null.
  */
 export interface ICoursePopulateOwnerModel extends Omit<ICourseModel , 'id_owner'> {
-    id_owner : Pick<IUserModel , '_id' | 'first_name' | 'last_name' | 'email' | 'avatar_url'> | null,
+    id_owner : Pick<IUserModel , '_id' | 'first_name' | 'last_name' | 'email'> | null,
 }
 
 const courseSchema = new mongoose.Schema({

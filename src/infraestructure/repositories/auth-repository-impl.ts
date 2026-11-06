@@ -4,6 +4,7 @@ import { AuthDatasource } from "../../domain/datasources/auth-datasource";
 import { UserEntity } from "../../domain/entities/user.entity";
 import { RegisterUserDto } from "../../domain/dtos/auth/register-user.dto";
 import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
+import { UserLoginResponseDto } from "../../domain/dtos/auth/auth.responses.dto";
 
 export class AuthRepositoryImpl implements AuthRepository {
 
@@ -52,5 +53,16 @@ export class AuthRepositoryImpl implements AuthRepository {
             throw error;
         }
     }
-    
+
+    // No pasa por UserEntity.fromObject a propósito: avatar_url es derivado (nunca persistido) y
+    // no pertenece a la entidad de dominio. Ver comentario en AuthRepository.
+    async findUserByEmailForLogin( email : string ) : Promise<UserLoginResponseDto | null> {
+        try{
+            return await this.authDatasource.findUserByEmailForLogin( email );
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
 }
