@@ -10,6 +10,7 @@ export interface UserEntityOptions {
     password ?: string | null,
     balance ?: number,
     id_file ?: string,
+    avatar_url ?: string | null,
 }
 
 export class UserEntity {
@@ -22,9 +23,10 @@ export class UserEntity {
     public password : string | null;
     public balance : number;
     public id_file : string;
+    public avatar_url : string | null;
 
     private constructor( options : UserEntityOptions ){
-        const { id , first_name , last_name , email , isEmailVerified , role , password, balance, id_file } = options;
+        const { id , first_name , last_name , email , isEmailVerified , role , password, balance, id_file, avatar_url } = options;
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -34,10 +36,11 @@ export class UserEntity {
         this.password = password ?? null;
         this.balance = balance ?? 0;
         this.id_file = id_file ?? '';
+        this.avatar_url = avatar_url ?? null;
     }
 
     static fromObject( object : { [ key : string ] : any } ) {
-        const { id , first_name , last_name , email , isEmailVerified , role , password, balance, id_file } = object;
+        const { id , first_name , last_name , email , isEmailVerified , role , password, balance, id_file, avatar_url } = object;
 
         if( !first_name ) throw CustomError.badRequest('El nombre es requerido.');
         if( !last_name ) throw CustomError.badRequest('El apellido es requerido.');
@@ -54,6 +57,7 @@ export class UserEntity {
                 password,
                 balance,
                 id_file,
+                avatar_url,
             }
         );
     }

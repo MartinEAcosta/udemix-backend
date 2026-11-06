@@ -5,7 +5,6 @@ import { AuthRepository } from '../../../src/domain/repository/auth-repository';
 import { RegisterUserDto } from "../../../src/domain/dtos/auth/register-user.dto";
 import { UserEntity } from "../../../src/domain/entities/user.entity";
 import { UpdateUserDto } from "../../../src/domain/dtos/auth/update-user-dto";
-import { UserLoginResponseDto } from "../../../src/domain/dtos/auth/auth.responses.dto";
 
 describe( 'Auth Repository', () => {
 
@@ -25,10 +24,6 @@ describe( 'Auth Repository', () => {
         async updateUser ( user : UpdateUserDto , ts ?: TransactionSession ) : Promise<UserEntity> {
             return UserEntity.fromObject(user);
         }
-
-        async findUserByEmailForLogin( email : string ) : Promise<UserLoginResponseDto | null> {
-            return null;
-        }
     }
 
     test('should test the abstract class', async() => {
@@ -40,7 +35,6 @@ describe( 'Auth Repository', () => {
         expect( typeof mockAuthRepository.findUserByEmail ).toBe( 'function' );
         expect( typeof mockAuthRepository.findUserById ).toBe( 'function' );
         expect( typeof mockAuthRepository.updateUser ).toBe( 'function' );
-        expect( typeof mockAuthRepository.findUserByEmailForLogin ).toBe( 'function' );
 
         const [ error , registerUserDto ] = RegisterUserDto.create({
             first_name : 'Test',

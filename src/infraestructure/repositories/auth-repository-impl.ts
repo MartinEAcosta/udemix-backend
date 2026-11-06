@@ -4,36 +4,35 @@ import { AuthDatasource } from "../../domain/datasources/auth-datasource";
 import { UserEntity } from "../../domain/entities/user.entity";
 import { RegisterUserDto } from "../../domain/dtos/auth/register-user.dto";
 import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
-import { UserLoginResponseDto } from "../../domain/dtos/auth/auth.responses.dto";
 
 export class AuthRepositoryImpl implements AuthRepository {
 
     constructor(
         private readonly authDatasource : AuthDatasource,
     ) { }
-    
+
     async updateUser( userDto : UpdateUserDto ) : Promise<UserEntity> {
         try{
             const updatedUser = await this.authDatasource.updateUser( userDto );
-            
+
             return UserEntity.fromObject( updatedUser );
         }
         catch( error ){
             throw error;
         }
     }
-    
+
     async registerUser( registerUserDto: RegisterUserDto ) : Promise<UserEntity> {
         try{
             const savedUser = await this.authDatasource.registerUser( registerUserDto );
-            
+
             return UserEntity.fromObject( savedUser );
         }
         catch( error ){
             throw error;
         }
     }
-    
+
     async findUserByEmail( email : string ) : Promise<UserEntity | null> {
         try{
             const matchUser = await this.authDatasource.findUserByEmail( email );
@@ -43,22 +42,11 @@ export class AuthRepositoryImpl implements AuthRepository {
             throw error;
         }
     }
-    
+
     async findUserById( id: string ) : Promise<UserEntity | null> {
         try{
             const user = await this.authDatasource.findUserById(id);
             return user != null ? UserEntity.fromObject(user) : null;
-        }
-        catch( error ){
-            throw error;
-        }
-    }
-
-    // No pasa por UserEntity.fromObject a propósito: avatar_url es derivado (nunca persistido) y
-    // no pertenece a la entidad de dominio. Ver comentario en AuthRepository.
-    async findUserByEmailForLogin( email : string ) : Promise<UserLoginResponseDto | null> {
-        try{
-            return await this.authDatasource.findUserByEmailForLogin( email );
         }
         catch( error ){
             throw error;

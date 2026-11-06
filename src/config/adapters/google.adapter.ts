@@ -33,7 +33,8 @@ export class GoogleAdapter implements SocialAuthProvider {
                     last_name: payload.family_name ?? '',
                     email: payload.email ?? '',
                     isEmailVerified: payload.email_verified ?? false,
-                    role:   'student'
+                    role:   'student',
+                    avatar_url: null,
                 },
                 token: tokens.id_token ?? '',
                 provider: 'google'

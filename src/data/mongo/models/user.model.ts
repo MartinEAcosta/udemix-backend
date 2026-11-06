@@ -14,7 +14,8 @@ export interface IUserModel {
 
 /**
  * Mismo documento pero con `id_file` poblado: es el campo que .populate('id_file') reemplaza.
- * Usado exclusivamente para derivar el avatar_url en el login (ver LoginUser) — nunca se persiste.
+ * Usado por todos los métodos de AuthDatasource que devuelven un usuario, para derivar
+ * avatar_url en caliente a partir del File relacionado — nunca se persiste.
  */
 export interface IUserPopulateModel extends Omit<IUserModel , 'id_file'> {
   id_file : { _id : Types.ObjectId; url : string | null } | null;

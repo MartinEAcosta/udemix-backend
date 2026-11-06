@@ -55,6 +55,7 @@ export class SocialLoginWithGoogle implements SocialLoginWithGoogleUseCase {
                 email : userExists?.email || '',
                 role : userExists?.role || 'student',
                 isEmailVerified : userExists?.isEmailVerified || false,
+                avatar_url : userExists?.avatar_url ?? null,
             },
             token : x_token,
             provider : 'google',

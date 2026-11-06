@@ -54,6 +54,7 @@ describe('RegisterUser UseCase' , () => {
             role : 'student',
             balance : 0,
             id_file : '',
+            avatar_url : null,
         });
 
         mockTokenManager.generateToken?.mockResolvedValue( 'mockedToken' );
@@ -69,6 +70,7 @@ describe('RegisterUser UseCase' , () => {
             last_name: registerUserDtoTest.last_name,
             email: registerUserDtoTest.email,
             isEmailVerified: false,
+            avatar_url: null,
         });
     });
 
@@ -91,6 +93,7 @@ describe('RegisterUser UseCase' , () => {
                 role : 'student',
                 balance : 0,
                 id_file : '',
+                avatar_url : null,
             });
             await registerUserUseCase.execute( registerUserDto );
             expect(true).toBe(false);

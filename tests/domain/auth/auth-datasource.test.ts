@@ -1,6 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
 import { RegisterUserDto } from "../../../src/domain/dtos/auth/register-user.dto";
-import { UserLoginResponseDto, UserResponseDto } from '../../../src/domain/dtos/auth/auth.responses.dto';
+import { UserResponseDto } from '../../../src/domain/dtos/auth/auth.responses.dto';
 import { UpdateUserDto } from '../../../src/domain/dtos/auth/update-user-dto';
 import { AuthDatasource } from '../../../src/domain/datasources/auth-datasource';
 
@@ -18,6 +18,8 @@ describe( 'Auth Datasource' , () => {
                 isEmailVerified : false,
                 role : 'student',
                 balance : 0,
+                id_file : null,
+                avatar_url : null,
             }
         }
 
@@ -30,6 +32,8 @@ describe( 'Auth Datasource' , () => {
                 isEmailVerified : false,
                 role : 'student',
                 balance : 0,
+                id_file : null,
+                avatar_url : null,
             }
         }
 
@@ -38,10 +42,6 @@ describe( 'Auth Datasource' , () => {
         }
 
         async findUserById( id : string ): Promise<UserResponseDto | null> {
-            return Promise.resolve(null);
-        }
-
-        async findUserByEmailForLogin( email : string ): Promise<UserLoginResponseDto | null> {
             return Promise.resolve(null);
         }
 
@@ -62,7 +62,6 @@ describe( 'Auth Datasource' , () => {
         expect( typeof mockAuthDatasource.updateUser ).toBe( 'function' );
         expect( typeof mockAuthDatasource.findUserByEmail ).toBe( 'function' );
         expect( typeof mockAuthDatasource.findUserById ).toBe( 'function' );
-        expect( typeof mockAuthDatasource.findUserByEmailForLogin ).toBe( 'function' );
 
         const user = await mockAuthDatasource.findUserByEmail( registerUserDTO.email );
         expect( user ).toBeNull();
@@ -75,6 +74,8 @@ describe( 'Auth Datasource' , () => {
             isEmailVerified : false,
             role : 'student',
             balance : 0,
+            id_file : null,
+            avatar_url : null,
         });
     });
 
