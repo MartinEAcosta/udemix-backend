@@ -43,7 +43,7 @@ export class CourseDatasourceImpl implements CourseDatasource {
 
     async findCoursePopulatedById( id : string ) : Promise<CoursePopulateOwnerResponseDto | null> {
         const course = await CourseModel.findById( id )
-                                        .populate( 'id_owner' , 'username email avatar_url' )
+                                        .populate( 'id_owner' , 'first_name last_name email' )
                                         .lean<ICoursePopulateOwnerModel | null>();
         if( !course ) return null;
         if( !course.id_owner ) throw CustomError.internalServer('El curso no tiene un propietario válido.');

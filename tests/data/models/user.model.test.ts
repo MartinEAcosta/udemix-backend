@@ -15,7 +15,8 @@ describe('User Model' , () => {
 
     test('should create a user' , async() => {
         const user = {
-            username : 'John Doe',
+            first_name : 'John',
+            last_name : 'Doe',
             email : 'johndoe@gmail.com',
             password : 'smartpassword',
         };
@@ -39,7 +40,8 @@ describe('User Model' , () => {
 
         expect(schema).toEqual( expect.objectContaining(
             {
-                username : { type : String, required : [ true , "El nombre de usuario es requerido."] },
+                first_name : { type : String, required : [ true , 'El nombre es requerido.'] },
+                last_name : { type : String, required : [ true , 'El apellido es requerido.'] },
                 email : { type : String, required : [ true , 'El email es requerido.'], unique : true },
                 isEmailVerified : { type : Boolean, default : false },
                 role : { type : String,

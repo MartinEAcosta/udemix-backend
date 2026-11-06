@@ -2,58 +2,63 @@ import { CustomError } from "../errors/custom-error";
 
 export interface UserEntityOptions {
     id : string,
-    username : string,
+    first_name : string,
+    last_name : string,
     email : string,
     isEmailVerified : boolean,
     role : string;
     password ?: string | null,
     balance ?: number,
-    avatar_url ?: string,
     id_file ?: string,
+    avatar_url ?: string | null,
 }
 
 export class UserEntity {
     public id : string;
-    public username : string;
+    public first_name : string;
+    public last_name : string;
     public email : string;
     public isEmailVerified : boolean;
     public role : string;
     public password : string | null;
     public balance : number;
-    public avatar_url : string;
     public id_file : string;
+    public avatar_url : string | null;
 
     private constructor( options : UserEntityOptions ){
-        const { id , username , email , isEmailVerified , role , password, balance, avatar_url, id_file } = options;
+        const { id , first_name , last_name , email , isEmailVerified , role , password, balance, id_file, avatar_url } = options;
         this.id = id;
-        this.username = username;
+        this.first_name = first_name;
+        this.last_name = last_name;
         this.email = email;
         this.isEmailVerified = isEmailVerified ?? false;
         this.role = role ?? 'student';
         this.password = password ?? null;
         this.balance = balance ?? 0;
-        this.avatar_url = avatar_url ?? '';
         this.id_file = id_file ?? '';
+        this.avatar_url = avatar_url ?? null;
     }
 
     static fromObject( object : { [ key : string ] : any } ) {
-        const { id , username , email , isEmailVerified , role , password, balance, avatar_url, id_file } = object;
-        
-        if( !username ) throw CustomError.badRequest('El nombre de usuario es requerido.'); 
+        const { id , first_name , last_name , email , isEmailVerified , role , password, balance, id_file, avatar_url } = object;
+
+        if( !first_name ) throw CustomError.badRequest('El nombre es requerido.');
+        if( !last_name ) throw CustomError.badRequest('El apellido es requerido.');
         if( !email ) throw CustomError.badRequest('El email es requerido.');
 
         return new UserEntity(
-            { 
-                id: id, 
-                username, 
-                email, 
+            {
+                id: id,
+                first_name,
+                last_name,
+                email,
                 isEmailVerified,
                 role,
                 password,
                 balance,
-                avatar_url,
                 id_file,
+                avatar_url,
             }
         );
-    }   
+    }
 }

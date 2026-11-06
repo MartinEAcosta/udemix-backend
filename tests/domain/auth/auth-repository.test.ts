@@ -12,7 +12,7 @@ describe( 'Auth Repository', () => {
         async registerUser( registerUserDto : RegisterUserDto ) : Promise<UserEntity> {
             return UserEntity.fromObject(registerUserDto);
         }
-        
+
         async findUserByEmail( email : string ) : Promise<UserEntity | null> {
             return null;
         }
@@ -36,8 +36,9 @@ describe( 'Auth Repository', () => {
         expect( typeof mockAuthRepository.findUserById ).toBe( 'function' );
         expect( typeof mockAuthRepository.updateUser ).toBe( 'function' );
 
-        const [ error , registerUserDto ] = RegisterUserDto.create({ 
-            username : 'testuser',
+        const [ error , registerUserDto ] = RegisterUserDto.create({
+            first_name : 'Test',
+            last_name : 'User',
             email : 'testuser@gmail.com',
             password : 'testpassword'
         });
@@ -47,7 +48,8 @@ describe( 'Auth Repository', () => {
 
         const user = await mockAuthRepository.registerUser( registerUserDto! );
         expect( user ).toBeInstanceOf( UserEntity );
-        expect( user.username ).toBe( registerUserDto!.username );
+        expect( user.first_name ).toBe( registerUserDto!.first_name );
+        expect( user.last_name ).toBe( registerUserDto!.last_name );
         expect( user.email ).toBe( registerUserDto!.email );
         expect( user.password ).toBe( registerUserDto!.password );
     });

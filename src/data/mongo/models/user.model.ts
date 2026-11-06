@@ -2,21 +2,35 @@ import mongoose, { Schema, Types } from 'mongoose';
 
 export interface IUserModel {
   _id             : Types.ObjectId; // Podría venir de la DB
-  username        : string;
+  first_name      : string;
+  last_name       : string;
   email           : string;
   isEmailVerified : boolean;
   role            : string;
   password        ?: string | null;
   balance         : number;
-  avatar_url      : string | null;
   id_file         ?: Types.ObjectId | null;
+}
+
+/**
+ * Mismo documento pero con `id_file` poblado: es el campo que .populate('id_file') reemplaza.
+ * Usado por todos los métodos de AuthDatasource que devuelven un usuario, para derivar
+ * avatar_url en caliente a partir del File relacionado — nunca se persiste.
+ */
+export interface IUserPopulateModel extends Omit<IUserModel , 'id_file'> {
+  id_file : { _id : Types.ObjectId; url : string | null } | null;
 }
 
 const userSchema = new mongoose.Schema({
 
-    username : {
+    first_name : {
         type     : String,
-        required : [ true , 'El nombre de usuario es requerido.'],
+        required : [ true , 'El nombre es requerido.'],
+    },
+
+    last_name : {
+        type     : String,
+        required : [ true , 'El apellido es requerido.'],
     },
 
     email : {
@@ -46,11 +60,6 @@ const userSchema = new mongoose.Schema({
         default : 0,
     },
     
-    avatar_url : {
-        type: String,
-        default : ''
-    },
-
     id_file : {
         type: Schema.Types.ObjectId,
         ref: 'File',

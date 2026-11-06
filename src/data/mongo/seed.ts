@@ -46,12 +46,12 @@ const seedCategories = async () => {
 }
 
 const USERS_SEED = [
-    { username: 'Admin Udemix', email: 'admin@udemix.test', role: 'admin', balance: 0 },
-    { username: 'Teacher Ana', email: 'teacher.ana@udemix.test', role: 'teacher', balance: 0 },
-    { username: 'Teacher Bruno', email: 'teacher.bruno@udemix.test', role: 'teacher', balance: 0 },
-    { username: 'Student Carla', email: 'student.carla@udemix.test', role: 'student', balance: 5000 },
-    { username: 'Student Diego', email: 'student.diego@udemix.test', role: 'student', balance: 0 },
-    { username: 'Student Elena', email: 'student.elena@udemix.test', role: 'student', balance: 10000 },
+    { first_name: 'Admin', last_name: 'Udemix', email: 'admin@udemix.test', role: 'admin', balance: 0 },
+    { first_name: 'Ana', last_name: 'Garcia', email: 'teacher.ana@udemix.test', role: 'teacher', balance: 0 },
+    { first_name: 'Bruno', last_name: 'Fernandez', email: 'teacher.bruno@udemix.test', role: 'teacher', balance: 0 },
+    { first_name: 'Carla', last_name: 'Lopez', email: 'student.carla@udemix.test', role: 'student', balance: 5000 },
+    { first_name: 'Diego', last_name: 'Martinez', email: 'student.diego@udemix.test', role: 'student', balance: 0 },
+    { first_name: 'Elena', last_name: 'Rodriguez', email: 'student.elena@udemix.test', role: 'student', balance: 10000 },
 ];
 
 const seedUsers = async () => {
@@ -70,13 +70,13 @@ const seedUsers = async () => {
 
     const users = await UserModel.insertMany(
         USERS_SEED.map( ( user , index ) => ({
-            username: user.username,
+            first_name: user.first_name,
+            last_name: user.last_name,
             email: user.email,
             isEmailVerified: true,
             role: user.role,
             password: hashedPassword,
             balance: user.balance,
-            avatar_url: avatarFiles[ index ].url,
             id_file: avatarFiles[ index ]._id,
         }) )
     );

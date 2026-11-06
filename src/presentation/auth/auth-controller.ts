@@ -8,7 +8,7 @@ import { HandlerResponses } from '../helpers/handler-responses';
 
 import { RegisterUserDto , LoginUserDto } from "../../domain/dtos";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
-import { RegisterUser , LoginUser , FindUserById } from "../../domain/use-cases";
+import { RegisterUser , LoginUser } from "../../domain/use-cases";
 import { ReloadToken } from "../../domain/use-cases/auth/reload-token";
 import { UpdateUser } from "../../domain/use-cases/auth/update-user";
 import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";

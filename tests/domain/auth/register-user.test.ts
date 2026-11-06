@@ -37,42 +37,47 @@ describe('RegisterUser UseCase' , () => {
     test('should register a new user successfully', async ( ) => {
     
         const registerUserDtoTest = {
-            username : 'testuser',
+            first_name : 'Test',
+            last_name : 'User',
             email : 'testuser@example.com',
             password : '123456asd'
         };
 
-        mockAuthRepository.findUserByEmail?.mockResolvedValue( null );    
+        mockAuthRepository.findUserByEmail?.mockResolvedValue( null );
         mockAuthRepository.registerUser?.mockResolvedValue({
             id: 'mockedUserId',
-            username: registerUserDtoTest.username,
+            first_name: registerUserDtoTest.first_name,
+            last_name: registerUserDtoTest.last_name,
             password : 'hashedPassword',
             email: registerUserDtoTest.email,
             isEmailVerified : false,
             role : 'student',
             balance : 0,
-            avatar_url : '',
             id_file : '',
+            avatar_url : null,
         });
 
         mockTokenManager.generateToken?.mockResolvedValue( 'mockedToken' );
         const result = await registerUserUseCase.execute( registerUserDtoTest );
-        
+
         expect( mockAuthRepository.findUserByEmail ).toHaveBeenCalledWith( registerUserDtoTest.email );
         expect( mockEncrypter.hash ).toHaveBeenCalledWith( registerUserDtoTest.password );
         expect(result).toHaveProperty('user');
         expect(result).toHaveProperty('token');
         expect(result.user).toEqual({
             id: 'mockedUserId',
-            username: registerUserDtoTest.username,
+            first_name: registerUserDtoTest.first_name,
+            last_name: registerUserDtoTest.last_name,
             email: registerUserDtoTest.email,
             isEmailVerified: false,
+            avatar_url: null,
         });
     });
 
     test('should throw an error if email is already registered', async () => {
         const registerUserDto = {
-            username : 'testuser',
+            first_name : 'Test',
+            last_name : 'User',
             email : 'testuser@example.com',
             password : '123456asd',
         };
@@ -80,14 +85,15 @@ describe('RegisterUser UseCase' , () => {
         try {
             mockAuthRepository.findUserByEmail?.mockResolvedValue({
                 id: 'existingUserId',
-                username: 'existingUser',
+                first_name: 'Existing',
+                last_name: 'User',
                 email: registerUserDto.email,
                 password : 'hashedPassword',
                 isEmailVerified : false,
                 role : 'student',
                 balance : 0,
-                avatar_url : '',
                 id_file : '',
+                avatar_url : null,
             });
             await registerUserUseCase.execute( registerUserDto );
             expect(true).toBe(false);
