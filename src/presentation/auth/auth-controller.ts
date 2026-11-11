@@ -14,6 +14,8 @@ import { UpdateUser } from "../../domain/use-cases/auth/update-user";
 import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
 import { SocialLoginWithGoogle } from "../../domain/use-cases/auth/social-login-with-google";
 import { SocialAuthProvider } from "../../domain/services/SocialAuthProvider";
+import { UpdatePasswordDto } from "../../domain/dtos/auth/update-password.dto";
+import { UpdatePassword } from "../../domain/use-cases/auth/update-password";
 
 export class AuthController {
 
@@ -78,6 +80,20 @@ export class AuthController {
         new ReloadToken( this.authRepository, this.tokenManager )
             .execute( user.id )
             .then( authResponse => HandlerResponses.handleAuthSuccess( res, authResponse , 200) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
+    }
+
+    public updatePassword = ( req : AuthenticatedRequest , res : Response ) => {
+        const user = req.user;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe esar autenticado para actualizar su contraseña.') , res );
+    
+        const { currentPassword , newPassword } = req.body;
+        const [ error , updatePasswordDto ] = UpdatePasswordDto.create( { id: user.id, current_password: currentPassword, new_password: newPassword } );
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
+
+        new UpdatePassword( this.authRepository , this.tokenManager , this.encrypter )
+            .execute( updatePasswordDto! )
+            .then( updatedUser => HandlerResponses.handleAuthSuccess( res , updatedUser , 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
 

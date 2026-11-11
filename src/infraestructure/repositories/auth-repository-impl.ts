@@ -22,6 +22,16 @@ export class AuthRepositoryImpl implements AuthRepository {
         }
     }
 
+    async updateUserPassword( userId : string , hashedPassword : string ) : Promise<UserEntity> {
+        try{
+            const hasUpdated = await this.authDatasource.updateUserPassword( userId , hashedPassword );
+            return UserEntity.fromObject( hasUpdated );
+        }   
+        catch( error ) {
+            throw error;
+        }
+    }
+
     async registerUser( registerUserDto: RegisterUserDto ) : Promise<UserEntity> {
         try{
             const savedUser = await this.authDatasource.registerUser( registerUserDto );

@@ -6,6 +6,7 @@ export abstract class AuthDatasource {
 
     abstract registerUser( registerUserDto : RegisterUserDto ) : Promise<UserResponseDto>;
     abstract updateUser ( userDto : UpdateUserDto ) : Promise<UserResponseDto>;
+    abstract updateUserPassword( userId : string , hashedPassword : string ) : Promise<UserResponseDto>;
     abstract findUserByEmail( email : string ): Promise<UserResponseDto | null>;
     abstract findUserById( id : string ) : Promise<UserResponseDto | null>;
 
