@@ -50,6 +50,12 @@ export class AuthRouter {
                 authController.updatePassword
             );
 
+            router.post(
+                '/password/set',
+                [authMiddleware.validateJWT],
+                authController.setPassword
+            );
+
             // Evitar el get porque el clasico prefetch de la página puede hacer que se ejecute 
             // el endpoint sin que el usuario lo desee. Mejor usar un post con un boton de validación.
             router.post(

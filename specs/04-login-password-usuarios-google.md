@@ -1,6 +1,6 @@
 # SPEC 04 — Login y seteo de password para usuarios creados vía Google
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depende de:** ninguno
 > **Fecha:** 2026-11-11
 > **Objetivo:** Evitar que el login con email/password explote para usuarios creados vía Google (sin password local) y darles un endpoint para establecer una password inicial, sin revelar que la cuenta es solo-Google.

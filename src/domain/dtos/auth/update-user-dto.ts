@@ -28,5 +28,11 @@ export class UpdateUserDto {
     static markEmailVerified ( id : string , isEmailVerified : boolean ) : UpdateUserDto {
         return new UpdateUserDto( id, undefined, undefined, undefined, undefined, undefined, isEmailVerified );
     }
+
+    // Uso interno (social login): reclama una cuenta plantada/no verificada, anulando
+    // cualquier password previo ya que el dueño real recién se verificó vía Google.
+    static reclaimUnverifiedAccount ( id : string ) : UpdateUserDto {
+        return new UpdateUserDto( id, undefined, undefined, undefined, null, undefined, true );
+    }
 }
 

@@ -16,6 +16,8 @@ import { SocialLoginWithGoogle } from "../../domain/use-cases/auth/social-login-
 import { SocialAuthProvider } from "../../domain/services/SocialAuthProvider";
 import { UpdatePasswordDto } from "../../domain/dtos/auth/update-password.dto";
 import { UpdatePassword } from "../../domain/use-cases/auth/update-password";
+import { SetPasswordDto } from "../../domain/dtos/auth/set-password.dto";
+import { SetPassword } from "../../domain/use-cases/auth/set-password";
 
 export class AuthController {
 
@@ -93,6 +95,20 @@ export class AuthController {
 
         new UpdatePassword( this.authRepository , this.tokenManager , this.encrypter )
             .execute( updatePasswordDto! )
+            .then( updatedUser => HandlerResponses.handleAuthSuccess( res , updatedUser , 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
+    }
+
+    public setPassword = ( req : AuthenticatedRequest , res : Response ) => {
+        const user = req.user;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe esar autenticado para establecer su contraseña.') , res );
+
+        const { newPassword } = req.body;
+        const [ error , setPasswordDto ] = SetPasswordDto.create( { id: user.id, new_password: newPassword } );
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
+
+        new SetPassword( this.authRepository , this.tokenManager , this.encrypter )
+            .execute( setPasswordDto! )
             .then( updatedUser => HandlerResponses.handleAuthSuccess( res , updatedUser , 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
