@@ -1,8 +1,8 @@
 import nodemailer, { Transporter } from 'nodemailer';
 
-import { EmailValidator, SendEmailOptions } from "../../domain/services/EmailValidator";
+import { MailerService, SendEmailOptions } from "../../domain/services/MailerService";
 
-export class EmailSenderAdapter implements EmailValidator {
+export class EmailSenderAdapter implements MailerService {
 
     private transporter : Transporter;
     public baseURL      : string;

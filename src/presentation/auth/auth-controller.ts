@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import { AuthRepository } from "../../domain/repository/auth-repository";
+import { MailerService } from "../../domain/services";
 import { Encrypter } from "../../domain/services/Encrypter";
 import { TokenManager } from "../../domain/services/TokenManager";
 import { CustomError } from "../../domain/errors/custom-error";
@@ -18,6 +19,7 @@ import { UpdatePasswordDto } from "../../domain/dtos/auth/update-password.dto";
 import { UpdatePassword } from "../../domain/use-cases/auth/update-password";
 import { SetPasswordDto } from "../../domain/dtos/auth/set-password.dto";
 import { SetPassword } from "../../domain/use-cases/auth/set-password";
+import { ForgotPassword } from "../../domain/use-cases/auth/forgot-password";
 
 export class AuthController {
 
@@ -25,7 +27,8 @@ export class AuthController {
         private readonly authRepository : AuthRepository,
         private readonly encrypter      : Encrypter,
         private readonly tokenManager   : TokenManager,
-        private readonly socialAuth : SocialAuthProvider,
+        private readonly socialAuth     : SocialAuthProvider,
+        private readonly mailerService  : MailerService,
     ){}
 
     public registerUser = ( req : Request , res : Response ) => {
@@ -83,6 +86,18 @@ export class AuthController {
             .execute( user.id )
             .then( authResponse => HandlerResponses.handleAuthSuccess( res, authResponse , 200) )
             .catch( error => HandlerResponses.handleError( error , res ) );
+    }
+
+    public forgotPassword = ( req : Request , res : Response ) => {
+        const { email }  = req.body;
+        if (!email) return HandlerResponses.handleError( CustomError.badRequest('El email es requerido'), res );
+
+        const sendGenericResponse = () => HandlerResponses.handleSuccess( res, 'En caso de que el usuario exista, enviamos un email.', 200 );
+
+        new ForgotPassword( this.authRepository , this.mailerService , this.tokenManager )
+            .execute( email )
+            .then( sendGenericResponse )
+            .catch( sendGenericResponse );
     }
 
     public updatePassword = ( req : AuthenticatedRequest , res : Response ) => {

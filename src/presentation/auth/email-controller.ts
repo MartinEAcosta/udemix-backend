@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { CustomError } from "../../domain/errors/custom-error";
-import { EmailValidator } from "../../domain/services/EmailValidator";
+import { MailerService } from "../../domain/services/MailerService";
 import { HandlerResponses } from "../helpers/handler-responses";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 import { TokenManager } from "../../domain/services/TokenManager";
@@ -13,7 +13,7 @@ export class EmailController {
 
     constructor(
         private readonly authRepository : AuthRepository,
-        private readonly emailValidator : EmailValidator,
+        private readonly mailerService : MailerService,
         private readonly tokenManager   : TokenManager,
     ) {}
 
@@ -23,7 +23,7 @@ export class EmailController {
         console.log(req.user)
         if( !email ) return HandlerResponses.handleError( CustomError.unauthorized('Necesitas estar autenticado para validar tu email.') , res );
 
-        new SendEmailValidationLink( this.authRepository, this.emailValidator , this.tokenManager )
+        new SendEmailValidationLink( this.authRepository, this.mailerService , this.tokenManager )
             .execute( email )
             .then( emailResponse => HandlerResponses.handleSuccess( res , { send : emailResponse } , 200 ) )
             .catch( error => HandlerResponses.handleError(error,res) );  

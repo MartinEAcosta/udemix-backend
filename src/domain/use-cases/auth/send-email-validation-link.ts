@@ -1,6 +1,6 @@
 import { CustomError } from "../../errors/custom-error";
 import { AuthRepository } from "../../repository/auth-repository";
-import { EmailValidator } from "../../services/EmailValidator";
+import { MailerService } from "../../services/MailerService";
 import { TokenManager } from "../../services/TokenManager";
 import { regularExps } from '../../helpers/regular.exp';
 import { buildEmailValidationHtml } from '../../helpers/email-templates';
@@ -13,7 +13,7 @@ export class SendEmailValidationLink implements SendEmailValidationLinkUseCase {
 
     constructor( 
         private readonly authRepository : AuthRepository,
-        private readonly emailValidator : EmailValidator,
+        private readonly mailerService : MailerService,
         private readonly tokenManager   : TokenManager,
     ){ }
 
@@ -27,7 +27,7 @@ export class SendEmailValidationLink implements SendEmailValidationLinkUseCase {
         const token = await this.tokenManager.generateToken( {email} );
         if( !token ) throw CustomError.internalServer('Hubo un error al generar el token.');
 
-        const link = `${ this.emailValidator.baseURL }/auth/verify-email/${ token }`;
+        const link = `${ this.mailerService.baseURL }/auth/verify-email/${ token }`;
         const html = buildEmailValidationHtml( { email, link } );
 
         const options = {
@@ -36,7 +36,7 @@ export class SendEmailValidationLink implements SendEmailValidationLinkUseCase {
             htmlBody : html,
         }; 
 
-        const isSent = await this.emailValidator.sendEmail( options );
+        const isSent = await this.mailerService.sendEmail( options );
         if( !isSent ) throw CustomError.internalServer('Hubo un error inesperado al enviar el correo.');
 
         console.log(isSent);
