@@ -54,6 +54,11 @@ export class AuthRouter {
                 authController.resetPassword
             );
 
+            router.get(
+                '/reset-password/:token/status',
+                authController.singleTokenUseIsValid
+            );
+
             router.put(
                 '/password',
                 [authMiddleware.validateJWT],

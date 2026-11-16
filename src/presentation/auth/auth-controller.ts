@@ -23,6 +23,7 @@ import { ForgotPassword } from "../../domain/use-cases/auth/forgot-password";
 import { ResetPasswordDto } from "../../domain/dtos/auth/reset-password.dto";
 import { ResetPassword } from "../../domain/use-cases/auth/reset-password";
 import { SingleUseTokenRepository } from "../../domain/repository/single-use-token-repository";
+import { SingleTokenUseIsValid } from "../../domain/use-cases/auth/single-token-use-is-valid";
 
 export class AuthController {
 
@@ -114,6 +115,16 @@ export class AuthController {
             .execute( resetPasswordDto! )
             .then( () => HandlerResponses.handleSuccess( res , 'La contraseña se actualizo correctamente.' , 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
+    }
+
+    public singleTokenUseIsValid = ( req : Request , res : Response ) => {
+        if( typeof req.params.token !== 'string' || !req.params.token ) return HandlerResponses.handleError( CustomError.badRequest('Es necesario un token para chequear su validez.') , res );
+        const { token } = req.params;
+        console.log(token);
+        new SingleTokenUseIsValid( this.tokenManager , this.singleUseTokenRepository )
+            .execute( token , 'password_reset' )
+            .then( valid => HandlerResponses.handleSuccess( res , { valid } , 200 ) )
+            .catch( () => HandlerResponses.handleSuccess( res , { valid: false } , 200 ) );
     }
 
     public updatePassword = ( req : AuthenticatedRequest , res : Response ) => {
