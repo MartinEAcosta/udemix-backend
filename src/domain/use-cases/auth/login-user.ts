@@ -23,8 +23,10 @@ export class LoginUser implements LoginUserUseCase{
         const userExists = await this.authRepository.findUserByEmail( loginUserDto.email );
         if( !userExists ) throw CustomError.badRequest('El email ingresado no se encuentra vinculado a una cuenta.');
 
-        const { password } = loginUserDto;    
-        const isMatching = this.encrypter.compare( password , userExists.password! );
+        const { password } = loginUserDto;
+        if( !userExists.password ) throw CustomError.badRequest('Chequee las credenciales e intente nuevamente.');
+
+        const isMatching = this.encrypter.compare( password , userExists.password );
         if( !isMatching ) throw CustomError.badRequest('Chequee las credenciales e intente nuevamente.');
 
         const payload = {

@@ -19,6 +19,13 @@ export class AuthDatasourceImpl implements AuthDatasource {
     }).populate<IUserPopulateModel>('id_file', 'url');
     return UserMapper.fromUserResponseDto(updatedUser!);
   }
+  
+  async updateUserPassword( userId : string , hashedPassword : string ) : Promise<UserResponseDto> {
+    const updatedUser = await UserModel.findByIdAndUpdate( userId , { password : hashedPassword } , { new : true })
+                                          .populate<IUserPopulateModel>('id_file', 'url');
+
+    return UserMapper.fromUserResponseDto(updatedUser!);
+  }
 
   async findUserByEmail(email: string): Promise<UserResponseDto | null> {
     const userExists = await UserModel.findOne({ email: email })

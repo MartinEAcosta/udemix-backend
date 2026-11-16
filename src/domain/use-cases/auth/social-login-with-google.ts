@@ -3,6 +3,7 @@ import { SocialLoginResponseDto } from '../../dtos/auth/auth.responses.dto';
 import { TokenManager } from "../../services";
 import { AuthRepository } from "../../repository";
 import { RegisterUserDto } from "../../dtos";
+import { UpdateUserDto } from "../../dtos/auth/update-user-dto";
 import { CustomError } from "../../errors/custom-error";
 
 interface SocialLoginWithGoogleUseCase {
@@ -34,6 +35,10 @@ export class SocialLoginWithGoogle implements SocialLoginWithGoogleUseCase {
             if( error ) throw CustomError.badRequest('Error creating user');
             const newUser = await this.authRepository.registerUser( userDto! );
             userExists = newUser;
+        } else if( !userExists.isEmailVerified ) {
+            userExists = await this.authRepository.updateUser(
+                UpdateUserDto.reclaimUnverifiedAccount( userExists.id )
+            );
         }
 
         console.log('User exists:', userExists);

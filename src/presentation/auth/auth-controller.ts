@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import { AuthRepository } from "../../domain/repository/auth-repository";
+import { MailerService } from "../../domain/services";
 import { Encrypter } from "../../domain/services/Encrypter";
 import { TokenManager } from "../../domain/services/TokenManager";
 import { CustomError } from "../../domain/errors/custom-error";
@@ -14,6 +15,14 @@ import { UpdateUser } from "../../domain/use-cases/auth/update-user";
 import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
 import { SocialLoginWithGoogle } from "../../domain/use-cases/auth/social-login-with-google";
 import { SocialAuthProvider } from "../../domain/services/SocialAuthProvider";
+import { UpdatePasswordDto } from "../../domain/dtos/auth/update-password.dto";
+import { UpdatePassword } from "../../domain/use-cases/auth/update-password";
+import { SetPasswordDto } from "../../domain/dtos/auth/set-password.dto";
+import { SetPassword } from "../../domain/use-cases/auth/set-password";
+import { ForgotPassword } from "../../domain/use-cases/auth/forgot-password";
+import { ResetPasswordDto } from "../../domain/dtos/auth/reset-password.dto";
+import { ResetPassword } from "../../domain/use-cases/auth/reset-password";
+import { SingleUseTokenRepository } from "../../domain/repository/single-use-token-repository";
 
 export class AuthController {
 
@@ -21,7 +30,9 @@ export class AuthController {
         private readonly authRepository : AuthRepository,
         private readonly encrypter      : Encrypter,
         private readonly tokenManager   : TokenManager,
-        private readonly socialAuth : SocialAuthProvider,
+        private readonly socialAuth     : SocialAuthProvider,
+        private readonly mailerService  : MailerService,
+        private readonly singleUseTokenRepository : SingleUseTokenRepository,
     ){}
 
     public registerUser = ( req : Request , res : Response ) => {
@@ -78,6 +89,58 @@ export class AuthController {
         new ReloadToken( this.authRepository, this.tokenManager )
             .execute( user.id )
             .then( authResponse => HandlerResponses.handleAuthSuccess( res, authResponse , 200) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
+    }
+
+    public forgotPassword = ( req : Request , res : Response ) => {
+        const { email }  = req.body;
+        if (!email) return HandlerResponses.handleError( CustomError.badRequest('El email es requerido'), res );
+
+        const sendGenericResponse = () => HandlerResponses.handleSuccess( res, 'En caso de que el usuario exista, enviamos un email.', 200 );
+
+        new ForgotPassword( this.authRepository , this.mailerService , this.tokenManager , this.singleUseTokenRepository )
+            .execute( email )
+            .then( sendGenericResponse )
+            .catch( sendGenericResponse );
+    }
+
+    public resetPassword = ( req : Request , res : Response ) => {
+        const { token , password } = req.body;
+
+        const [ error , resetPasswordDto ] = ResetPasswordDto.create({ token , password });
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
+
+        new ResetPassword( this.authRepository , this.singleUseTokenRepository , this.tokenManager , this.encrypter )
+            .execute( resetPasswordDto! )
+            .then( () => HandlerResponses.handleSuccess( res , 'La contraseña se actualizo correctamente.' , 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
+    }
+
+    public updatePassword = ( req : AuthenticatedRequest , res : Response ) => {
+        const user = req.user;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe esar autenticado para actualizar su contraseña.') , res );
+    
+        const { currentPassword , newPassword } = req.body;
+        const [ error , updatePasswordDto ] = UpdatePasswordDto.create( { id: user.id, current_password: currentPassword, new_password: newPassword } );
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
+
+        new UpdatePassword( this.authRepository , this.tokenManager , this.encrypter )
+            .execute( updatePasswordDto! )
+            .then( updatedUser => HandlerResponses.handleAuthSuccess( res , updatedUser , 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
+    }
+
+    public setPassword = ( req : AuthenticatedRequest , res : Response ) => {
+        const user = req.user;
+        if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe esar autenticado para establecer su contraseña.') , res );
+
+        const { newPassword } = req.body;
+        const [ error , setPasswordDto ] = SetPasswordDto.create( { id: user.id, new_password: newPassword } );
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
+
+        new SetPassword( this.authRepository , this.tokenManager , this.encrypter )
+            .execute( setPasswordDto! )
+            .then( updatedUser => HandlerResponses.handleAuthSuccess( res , updatedUser , 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }
 

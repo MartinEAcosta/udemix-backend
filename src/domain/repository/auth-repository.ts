@@ -10,5 +10,6 @@ export abstract class AuthRepository {
     abstract findUserByEmail( email : string ) : Promise<UserEntity | null>;
     abstract findUserById( id : string ) : Promise<UserEntity | null>;
     abstract updateUser ( updateUserDto : UpdateUserDto ,ts ?: TransactionSession ) : Promise<UserEntity>;
+    abstract updateUserPassword( userId : string , hashedPassword : string ) : Promise<UserEntity>;
 
 }

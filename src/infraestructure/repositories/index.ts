@@ -7,3 +7,4 @@ export * from './lesson-repository-impl';
 export * from './module-repository-impl';
 export * from './order-repository-impl';
 export * from './payment-repository-impl';
+export * from './single-use-token-repository-impl';

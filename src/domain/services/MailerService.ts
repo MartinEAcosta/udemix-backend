@@ -5,7 +5,7 @@ export interface SendEmailOptions {
     htmlBody : string,
 }
 
-export abstract class EmailValidator {
+export abstract class MailerService {
 
     abstract baseURL : string;
 

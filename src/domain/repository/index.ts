@@ -7,3 +7,4 @@ export * from './lesson-repository';
 export * from './module-repository';
 export * from './order-repository';
 export * from './payment-repository';
+export * from './single-use-token-repository';

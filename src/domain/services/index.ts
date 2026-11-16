@@ -1,4 +1,4 @@
-export * from './EmailValidator';
+export * from './MailerService';
 export * from './Encrypter';
 export * from './FileStorage';
 export * from './PaymentService';

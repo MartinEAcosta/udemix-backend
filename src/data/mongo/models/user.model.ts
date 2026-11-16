@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
 
     last_name : {
         type     : String,
-        required : [ true , 'El apellido es requerido.'],
+        default  : '',
     },
 
     email : {

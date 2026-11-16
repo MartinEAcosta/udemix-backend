@@ -40,7 +40,7 @@ src/
     datasources/       # abstract classes — contracts implemented by infraestructure/datasources
     use-cases/<feature>/   # one class per use case, `execute()` method, injected with repositories via constructor
                            # features: auth, category, course, enrollment, file, lesson, module, order, payment
-    services/          # abstract service contracts (Encrypter, TokenManager, FileStorage, EmailValidator,
+    services/          # abstract service contracts (Encrypter, TokenManager, FileStorage, MailerService,
                        # SocialAuthProvider, PaymentService, UnitOfWork)
     errors/custom-error.ts   # CustomError — static factories (badRequest/unauthorized/forbidden/notFound/internalServer), the only error type controllers translate to HTTP
     helpers/            # query builders, regex constants
@@ -117,6 +117,10 @@ Use-cases and repositories throw `CustomError` (or let underlying errors propaga
 `AuthMiddleware.validateJWT` reads `Authorization: Bearer <token>`, validates via `TokenManager` (JWT adapter), loads the user via `AuthRepository`, and attaches it as `req.user`. `validatePermissions(roles)` gates by `user.role`. `validateAndAssignOwner` stamps `req.body.id_owner` from the authenticated user for create endpoints.
 
 Social login goes through the `SocialAuthProvider` contract (`src/domain/services/SocialAuthProvider.ts`), implemented by `GoogleAdapter` (`src/config/adapters/google.adapter.ts`) using `google-auth-library` + `GOOGLE_AUTH_CLIENT_ID`/`GOOGLE_AUTH_SECRET`.
+
+Email sending (validation links, password reset) goes through the `MailerService` contract (`src/domain/services/MailerService.ts`), implemented by `EmailSenderAdapter`. `POST /api/auth/forgot-password` (no JWT) always responds generically regardless of whether the email exists, to avoid leaking account existence; `ForgotPassword` use-case short-circuits to `true` when no user matches.
+
+Password changes are split by whether the user already has a local password: `POST /api/auth/password/set` (JWT) -> `SetPassword` use-case, for users with no password yet (e.g. Google-created accounts) — rejects with 400 if `user.password` is already set. `PUT /api/auth/password` (JWT) -> `UpdatePassword` use-case, for users changing an existing password — requires a valid `current_password`.
 
 ### Transactions
 

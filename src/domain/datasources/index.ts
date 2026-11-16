@@ -7,3 +7,4 @@ export * from './lesson-datasource';
 export * from './module-datasource';
 export * from './order-datasource';
 export * from './payment-datasource';
+export * from './single-use-token-datasource';
