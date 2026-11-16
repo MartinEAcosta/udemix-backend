@@ -49,6 +49,11 @@ export class AuthRouter {
                 authController.forgotPassword
             );
 
+            router.post(
+                '/reset-password',
+                authController.resetPassword
+            );
+
             router.put(
                 '/password',
                 [authMiddleware.validateJWT],

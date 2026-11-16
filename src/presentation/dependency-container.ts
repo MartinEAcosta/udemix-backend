@@ -25,6 +25,9 @@ import { OrderRepositoryImpl } from "../infraestructure/repositories/order-repos
 import { OrderDataSourceImpl } from "../infraestructure/datasources/order-datasource-impl";
 import { SocialAuthProvider } from "../domain/services/SocialAuthProvider";
 import { GoogleAdapter } from "../config/adapters/google.adapter";
+import { SingleUseTokenRepository } from "../domain/repository/single-use-token-repository";
+import { SingleUseTokenRepositoryImpl } from "../infraestructure/repositories/single-use-token-repository-impl";
+import { SingleUseTokenDatasourceImpl } from "../infraestructure/datasources/single-use-token-datasource-impl";
 
 
 export class DependencyContainer {
@@ -60,6 +63,7 @@ export class DependencyContainer {
     readonly moduleRepository     : ModuleRepository;
     readonly paymentRepository    : PaymentRepository
     readonly orderRepository      : OrderRepository;
+    readonly singleUseTokenRepository : SingleUseTokenRepository;
 
     //* Services 
     readonly mailerService : MailerService;
@@ -96,6 +100,7 @@ export class DependencyContainer {
         this.moduleRepository     = new ModuleRepositoryImpl( new ModuleDatasourceImpl() );
         this.paymentRepository    = new PaymentRepositoryImpl( new PaymentDataSourceImpl( this.paymentService ) );
         this.orderRepository      = new OrderRepositoryImpl( new OrderDataSourceImpl( this.paymentService ) );
+        this.singleUseTokenRepository = new SingleUseTokenRepositoryImpl( new SingleUseTokenDatasourceImpl() );
 
         this.authMiddleware       = new AuthMiddleware( this.tokenManager , this.authRepository);
         this.courseMiddleware     = new CourseMiddleware( );
@@ -104,10 +109,10 @@ export class DependencyContainer {
         this.paginationMiddleware = new PaginationMiddleware();
         
 
-        this.authController       = new AuthController( this.authRepository, this.encrypter , this.tokenManager , this.googleAuthClient , this.mailerService );
+        this.authController       = new AuthController( this.authRepository, this.encrypter , this.tokenManager , this.googleAuthClient , this.mailerService , this.singleUseTokenRepository );
         this.categoryController   = new CategoryController( this.categoryRepository );
         this.courseController     = new CourseController( this.courseRepository , this.categoryRepository , this.fileRepository );
-        this.emailController      = new EmailController( this.authRepository , this.mailerService , this.tokenManager );
+        this.emailController      = new EmailController( this.authRepository , this.mailerService , this.tokenManager , this.singleUseTokenRepository );
         this.enrollmentController = new EnrollmentController( this.enrollmentRepository , this.authRepository , this.courseRepository , this.lessonRepository , this.moduleRepository , this.unitOfWork );
         this.fileController       = new FileController( this.fileRepository , this.courseRepository , this.lessonRepository , this.authRepository);
         this.lessonController     = new LessonController( this.lessonRepository , this.moduleRepository , this.courseRepository , this.enrollmentRepository , this.unitOfWork );

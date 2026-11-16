@@ -20,6 +20,9 @@ import { UpdatePassword } from "../../domain/use-cases/auth/update-password";
 import { SetPasswordDto } from "../../domain/dtos/auth/set-password.dto";
 import { SetPassword } from "../../domain/use-cases/auth/set-password";
 import { ForgotPassword } from "../../domain/use-cases/auth/forgot-password";
+import { ResetPasswordDto } from "../../domain/dtos/auth/reset-password.dto";
+import { ResetPassword } from "../../domain/use-cases/auth/reset-password";
+import { SingleUseTokenRepository } from "../../domain/repository/single-use-token-repository";
 
 export class AuthController {
 
@@ -29,6 +32,7 @@ export class AuthController {
         private readonly tokenManager   : TokenManager,
         private readonly socialAuth     : SocialAuthProvider,
         private readonly mailerService  : MailerService,
+        private readonly singleUseTokenRepository : SingleUseTokenRepository,
     ){}
 
     public registerUser = ( req : Request , res : Response ) => {
@@ -94,10 +98,22 @@ export class AuthController {
 
         const sendGenericResponse = () => HandlerResponses.handleSuccess( res, 'En caso de que el usuario exista, enviamos un email.', 200 );
 
-        new ForgotPassword( this.authRepository , this.mailerService , this.tokenManager )
+        new ForgotPassword( this.authRepository , this.mailerService , this.tokenManager , this.singleUseTokenRepository )
             .execute( email )
             .then( sendGenericResponse )
             .catch( sendGenericResponse );
+    }
+
+    public resetPassword = ( req : Request , res : Response ) => {
+        const { token , password } = req.body;
+
+        const [ error , resetPasswordDto ] = ResetPasswordDto.create({ token , password });
+        if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ) , res );
+
+        new ResetPassword( this.authRepository , this.singleUseTokenRepository , this.tokenManager , this.encrypter )
+            .execute( resetPasswordDto! )
+            .then( () => HandlerResponses.handleSuccess( res , 'La contraseña se actualizo correctamente.' , 200 ) )
+            .catch( error => HandlerResponses.handleError( error , res ) );
     }
 
     public updatePassword = ( req : AuthenticatedRequest , res : Response ) => {
