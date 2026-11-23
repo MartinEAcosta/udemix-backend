@@ -17,12 +17,17 @@ export class CourseDatasourceImpl implements CourseDatasource {
         const [ courses , total ] = await Promise.all([
             CourseModel.aggregate([
                 { $match : query },
+                // Sin un orden explícito, Mongo no garantiza el mismo orden entre llamadas:
+                // los límites de página se corren y un curso puede repetirse o no aparecer nunca.
+                { $sort : { _id : 1 } },
                 { $skip : (pagination.current_page - 1) * pagination.limit } , { $limit : pagination.limit },
-                { $lookup : { 
+                { $lookup : {
                     from : 'users', localField: 'id_owner', foreignField: '_id', as: 'owner',
                     pipeline : [{ $project: { first_name : 1 , last_name : 1, avatarUrl : 1,}}]
                 }},
-                { $unwind: '$owner' } ]),
+                // preserveNullAndEmptyArrays: sin esto, un curso cuyo owner ya no existe
+                // desaparece del listado en vez de devolverse sin owner.
+                { $unwind: { path : '$owner' , preserveNullAndEmptyArrays : true } } ]),
             CourseModel.countDocuments(query)
             ]);
 
