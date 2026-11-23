@@ -35,10 +35,9 @@ export class UpdateCourse implements UpdateCourseUseCase {
         }
 
         else{
-            return await this.courseRepository.updateCourse( {
-                                                                ...toUpdateDto,
-                                                                id_owner : courseToUpdate.id_owner,
-                                                             } );
+            // No hace falta forzar el id_owner acá: quedó fuera de UPDATABLE_COURSE_FIELDS,
+            // así que el update genérico no puede reasignar el dueño del curso.
+            return await this.courseRepository.updateCourse( toUpdateDto );
         }
     }
 
