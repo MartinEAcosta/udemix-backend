@@ -10,15 +10,14 @@ export interface IUserModel {
   password        ?: string | null;
   balance         : number;
   id_file         ?: Types.ObjectId | null;
-}
-
-/**
- * Mismo documento pero con `id_file` poblado: es el campo que .populate('id_file') reemplaza.
- * Usado por todos los métodos de AuthDatasource que devuelven un usuario, para derivar
- * avatar_url en caliente a partir del File relacionado — nunca se persiste.
- */
-export interface IUserPopulateModel extends Omit<IUserModel , 'id_file'> {
-  id_file : { _id : Types.ObjectId; url : string | null } | null;
+  /**
+   * Copia desnormalizada del `url` del File apuntado por `id_file`.
+   * `id_file` sigue siendo la fuente de verdad (y el FK que permite borrar el archivo);
+   * este campo existe para que las lecturas de usuario y el listado de cursos no tengan
+   * que tocar la colección `files`. Se escribe únicamente vía AuthDatasource.updateUserAvatar,
+   * en el mismo $set que `id_file`, para que el par nunca se desincronice.
+   */
+  avatar_url      ?: string | null;
 }
 
 const userSchema = new mongoose.Schema({
@@ -63,7 +62,12 @@ const userSchema = new mongoose.Schema({
     id_file : {
         type: Schema.Types.ObjectId,
         ref: 'File',
-        deafult : null
+        default : null
+    },
+
+    avatar_url : {
+        type    : String,
+        default : null,
     }
 
 });

@@ -1,38 +1,56 @@
+import { Types } from "mongoose";
+
 import { CourseDatasource } from "../../domain/datasources/course-datasource";
-import { CourseModel, ICourseModel, ICoursePopulateOwnerModel } from "../../data/mongo/models/course.model";
+import { CourseModel, ICourseModel, ICourseWithOwnerModel } from "../../data/mongo/models/course.model";
 import { CourseFilterDto } from "../../domain/dtos/course/course-filter.dto";
 import { CreateCourseDto } from "../../domain/dtos/course/create-course.dto";
 import { UpdateCourseDto } from "../../domain/dtos/course/update-course.dto";
-import { CoursePopulateOwnerResponseDto, CourseResponseDto } from "../../domain/dtos/course/course.responses";
+import { CourseResponseDto, CourseWithOwnerResponseDto } from "../../domain/dtos/course/course.responses";
 import { CourseMapper } from "../mappers/course.mapper";
 import { PaginatedResult, PaginationDto } from "../../domain/dtos/shared/pagination.dto";
 import { CourseQueryBuilder } from "../helpers/course-query-builder";
 import { CustomError } from "../../domain/errors/custom-error";
 
 export class CourseDatasourceImpl implements CourseDatasource {
-    
-    async findAllCourses( filter : CourseFilterDto , pagination : PaginationDto ) : Promise<PaginatedResult<CourseResponseDto[]>> {
+
+    /**
+     * Resuelve el profesor dueño del curso en un campo `owner` aparte.
+     *
+     * Proyecta `avatar_url` directo del usuario: no hace falta un segundo $lookup a `files`
+     * porque la url está desnormalizada en el documento (ver IUserModel.avatar_url).
+     *
+     * A diferencia de .populate, NO sobreescribe `id_owner`: CourseEntity.fromObject exige un
+     * id_owner no vacío, así que reemplazarlo por el documento haría fallar la lectura de un
+     * curso cuyo owner ya fue borrado.
+     */
+    private static readonly ownerLookupStages = [
+        { $lookup : {
+            from : 'users', localField : 'id_owner', foreignField : '_id', as : 'owner',
+            pipeline : [{ $project : { first_name : 1 , last_name : 1 , avatar_url : 1 } }]
+        }},
+        // preserveNullAndEmptyArrays: sin esto, un curso cuyo owner ya no existe
+        // desaparece del resultado en vez de devolverse sin owner.
+        { $unwind : { path : '$owner' , preserveNullAndEmptyArrays : true } },
+    ];
+
+    async findAllCourses( filter : CourseFilterDto , pagination : PaginationDto ) : Promise<PaginatedResult<CourseWithOwnerResponseDto[]>> {
         const query = CourseQueryBuilder.fromFilter( filter );
 
         const [ courses , total ] = await Promise.all([
-            CourseModel.aggregate([
+            CourseModel.aggregate<ICourseWithOwnerModel>([
                 { $match : query },
                 // Sin un orden explícito, Mongo no garantiza el mismo orden entre llamadas:
                 // los límites de página se corren y un curso puede repetirse o no aparecer nunca.
                 { $sort : { _id : 1 } },
                 { $skip : (pagination.current_page - 1) * pagination.limit } , { $limit : pagination.limit },
-                { $lookup : {
-                    from : 'users', localField: 'id_owner', foreignField: '_id', as: 'owner',
-                    pipeline : [{ $project: { first_name : 1 , last_name : 1, avatarUrl : 1,}}]
-                }},
-                // preserveNullAndEmptyArrays: sin esto, un curso cuyo owner ya no existe
-                // desaparece del listado en vez de devolverse sin owner.
-                { $unwind: { path : '$owner' , preserveNullAndEmptyArrays : true } } ]),
+                // El $lookup va después del $limit para que el join toque sólo la página actual.
+                ...CourseDatasourceImpl.ownerLookupStages,
+            ]),
             CourseModel.countDocuments(query)
             ]);
 
         return {
-            items : courses.map( CourseMapper.fromCourseResponseDto ),
+            items : courses.map( CourseMapper.fromCourseWithOwnerResponseDto ),
             total,
         };
     }
@@ -50,14 +68,18 @@ export class CourseDatasourceImpl implements CourseDatasource {
         return CourseMapper.fromCourseResponseDto( course );
     }
 
-    async findCoursePopulatedById( id : string ) : Promise<CoursePopulateOwnerResponseDto | null> {
-        const course = await CourseModel.findById( id )
-                                        .populate( 'id_owner' , 'first_name last_name email' )
-                                        .lean<ICoursePopulateOwnerModel | null>();
-        if( !course ) return null;
-        if( !course.id_owner ) throw CustomError.internalServer('El curso no tiene un propietario válido.');
+    async findCourseWithOwnerById( id : string ) : Promise<CourseWithOwnerResponseDto | null> {
+        // $match no castea el id como lo hace findById, y new Types.ObjectId() tira con un
+        // string inválido: se trata como "no encontrado" en vez de dejar escapar un CastError.
+        if( !Types.ObjectId.isValid( id ) ) return null;
 
-        return CourseMapper.fromCoursePopulateOwnerResponseDto( { ...course , id_owner : course.id_owner } );
+        const [ course ] = await CourseModel.aggregate<ICourseWithOwnerModel>([
+            { $match : { _id : new Types.ObjectId( id ) } },
+            ...CourseDatasourceImpl.ownerLookupStages,
+        ]);
+        if( !course ) return null;
+
+        return CourseMapper.fromCourseWithOwnerResponseDto( course );
     }
     
     async findCoursesByCategoryId( category_id : string ) : Promise<CourseResponseDto[]> {

@@ -20,7 +20,12 @@ export interface CourseOwnerResponseDto {
     avatar_url : string | null,
 }
 
-export interface CoursePopulateOwnerResponseDto extends Omit<CourseResponseDto , 'id_owner'> {
+/**
+ * Curso con los datos del profesor resueltos por $lookup, para mostrar nombre y avatar
+ * sin un segundo fetch. `owner` es null cuando el usuario referenciado ya no existe.
+ * Conserva `id_owner` — el listado ya lo devolvía y quitarlo rompería a los consumidores.
+ */
+export interface CourseWithOwnerResponseDto extends CourseResponseDto {
     owner : CourseOwnerResponseDto | null,
 }
 

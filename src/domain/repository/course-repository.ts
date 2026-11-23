@@ -9,7 +9,10 @@ export abstract class CourseRepository {
 
     abstract findAllCourses( filter : CourseFilterDto , pagination : PaginationDto ) : Promise<PaginatedResult<CourseEntity[]>>;
     abstract findCoursesByIds( id_courses : string[] ) : Promise<CourseEntity[]>;
+    /** Lectura liviana, sin el owner: la usan los checks de propiedad de archivos y cursos. */
     abstract findCourseById( id : string ) : Promise<CourseEntity | null>;
+    /** Lectura para mostrar: trae nombre y avatar del profesor resueltos por $lookup. */
+    abstract findCourseWithOwnerById( id : string ) : Promise<CourseEntity | null>;
     abstract findCoursesByCategory( category_id : string ) : Promise<CourseEntity[]>;
     abstract saveCourse( createCourseDto : CreateCourseDto ) : Promise<CourseEntity>;
     abstract updateCourse( updateCourseDto : UpdateCourseDto ) : Promise<CourseEntity>;

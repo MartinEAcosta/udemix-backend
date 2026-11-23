@@ -59,6 +59,16 @@ export class CourseRepositoryImpl implements CourseRepository{
         }
     }
 
+    async findCourseWithOwnerById( id: string ) : Promise<CourseEntity | null> {
+        try{
+            const course = await this.courseDatasource.findCourseWithOwnerById(id);
+            return course ? CourseEntity.fromObject( course ) : null;
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
     async saveCourse( createCourseDto : CreateCourseDto ) : Promise<CourseEntity> {
         try{
             const courseSaved = await this.courseDatasource.saveCourse( createCourseDto );

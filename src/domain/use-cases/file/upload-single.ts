@@ -4,6 +4,7 @@ import { UploadFileDto } from "../../dtos/file/file.dto";
 import { FileResponseDto } from "../../dtos/file/file-response.dto";
 import { AuthRepository, CourseRepository, LessonRepository } from "../../repository";
 import { Folders } from "../../entities/file.entity";
+import { UpdateUserAvatarDto } from "../../dtos/auth/update-user-avatar.dto";
 
 export interface UploadFileUseCase {
     execute( files : UploadFileDto , folder : Folders , id_entity : string , id_user : string , role : string ) : Promise<FileResponseDto>;
@@ -73,11 +74,11 @@ export class UploadSingle implements UploadFileUseCase {
                 return await this.authRepository.findUserById(id);
             },
             update : async( id : string , newFile : FileResponseDto ) => {
-                return await this.authRepository.updateUser(
-                    {
-                        id,
-                        id_file : newFile.id,
-                    });
+                // Igual que el thumbnail_url del curso, el avatar_url se guarda desnormalizado
+                // junto al id_file, en un solo $set, para no tener que poblar files en cada lectura.
+                return await this.authRepository.updateUserAvatar(
+                    UpdateUserAvatarDto.fromUploadedFile( id , newFile )
+                );
             }
         }
     }

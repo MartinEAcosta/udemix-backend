@@ -2,6 +2,7 @@ import { FileRepository } from '../../repository/file-repository';
 import { AuthRepository, CourseRepository, LessonRepository } from '../../repository';
 import { CustomError } from '../../errors/custom-error';
 import { Folders } from '../../entities/file.entity';
+import { UpdateUserAvatarDto } from '../../dtos/auth/update-user-avatar.dto';
 
 interface DeleteFileUseCase {
     execute ( folder : Folders , id_entity : string , id_user : string , role : string ) : Promise<boolean>;
@@ -44,6 +45,16 @@ export class DeleteFile implements DeleteFileUseCase {
         }
 
         const res = await this.fileRepository.deleteFile( searchedEntity.id_file );
+        if( !res ) return res;
+
+        // El avatar_url del usuario es una copia del url del File recién borrado: si no se limpia
+        // acá, queda apuntando a un archivo que ya no existe en Cloudinary y el id_file queda
+        // como referencia colgada que impide volver a borrar.
+        // Deuda conocida: los folders course y lesson siguen dejando el id_file colgado.
+        if( folder === 'user' ) {
+            await this.authRepository.updateUserAvatar( UpdateUserAvatarDto.cleared( id_entity ) );
+        }
+
         return res;
     }
 
