@@ -6,6 +6,15 @@ import { UserResponseDto } from "../../domain/dtos/auth/auth.responses.dto";
 import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
 import { UpdateUserAvatarDto } from "../../domain/dtos/auth/update-user-avatar.dto";
 import { CustomError } from "../../domain/errors/custom-error";
+import { pickFields } from "../helpers/pick-fields";
+
+/**
+ * Claves que el update genérico de perfil puede escribir.
+ * Exportada para que el test de desincronización la compare contra las claves de UpdateUserDto.
+ */
+export const UPDATABLE_USER_FIELDS = [
+    'first_name' , 'last_name' , 'email' , 'password' , 'isEmailVerified' , 'balance',
+] as const;
 
 export class AuthDatasourceImpl implements AuthDatasource {
   async registerUser( registerUserDto: RegisterUserDto): Promise<UserResponseDto> {
@@ -15,27 +24,20 @@ export class AuthDatasourceImpl implements AuthDatasource {
   }
 
   /**
-   * Update genérico del perfil. El objeto de $set se arma campo por campo a propósito:
-   * antes se pasaba el DTO completo a findByIdAndUpdate, así que cualquier propiedad que
-   * llegara por esta vía — body HTTP o spread de una entidad entera — alcanzaba el documento.
-   * `id_file` y `avatar_url` quedan deliberadamente fuera: sólo los escribe updateUserAvatar.
+   * Update genérico del perfil.
+   *
+   * `id_file` y `avatar_url` quedan deliberadamente fuera de la whitelist: los escribe
+   * únicamente updateUserAvatar, para que el FK y su copia desnormalizada no se separen.
+   * La lista es lo que defiende el documento, no la firma del parámetro: un caller puede
+   * pasar un objeto más ancho con un spread y eso compila igual (TypeScript no aplica
+   * excess property check a las propiedades spreadeadas).
    */
   async updateUser(userDto : UpdateUserDto): Promise<UserResponseDto> {
-    const updateFields : Partial<Pick<IUserModel , 'first_name' | 'last_name' | 'email' | 'password' | 'isEmailVerified' | 'balance'>> = {};
+    const fieldsToUpdate = pickFields( userDto , UPDATABLE_USER_FIELDS );
 
-    // `!== undefined` y no un truthy check: password admite null a propósito
-    // (ver UpdateUserDto.reclaimUnverifiedAccount) e isEmailVerified admite false.
-    if( userDto.first_name !== undefined )      updateFields.first_name = userDto.first_name;
-    if( userDto.last_name !== undefined )       updateFields.last_name = userDto.last_name;
-    if( userDto.email !== undefined )           updateFields.email = userDto.email;
-    if( userDto.password !== undefined )        updateFields.password = userDto.password;
-    if( userDto.isEmailVerified !== undefined ) updateFields.isEmailVerified = userDto.isEmailVerified;
-    if( userDto.balance !== undefined )         updateFields.balance = userDto.balance;
-
-    // Mongo rechaza un $set vacío, así que un update sin campos se resuelve como lectura.
-    const updatedUser = Object.keys( updateFields ).length === 0
-      ? await UserModel.findById( userDto.id ).lean<IUserModel | null>()
-      : await UserModel.findByIdAndUpdate( userDto.id , { $set : updateFields } , { new : true } ).lean<IUserModel | null>();
+    const updatedUser = await UserModel
+      .findByIdAndUpdate( userDto.id , { $set : fieldsToUpdate } , { new : true } )
+      .lean<IUserModel | null>();
 
     if( !updatedUser ) throw CustomError.notFound('El usuario que intentas actualizar no existe.');
 

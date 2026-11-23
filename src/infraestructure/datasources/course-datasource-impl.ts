@@ -9,9 +9,25 @@ import { CourseResponseDto, CourseWithOwnerResponseDto } from "../../domain/dtos
 import { CourseMapper } from "../mappers/course.mapper";
 import { PaginatedResult, PaginationDto } from "../../domain/dtos/shared/pagination.dto";
 import { CourseQueryBuilder } from "../helpers/course-query-builder";
+import { pickFields } from "../helpers/pick-fields";
 import { CustomError } from "../../domain/errors/custom-error";
 
 export class CourseDatasourceImpl implements CourseDatasource {
+
+    /**
+     * Claves que el update genérico de curso puede escribir.
+     *
+     * Afuera a propósito:
+     *  - `current_enrolled`: sólo se mueve con el $inc de saveEnrollment. Escribirlo desde acá
+     *    pisa un incremento concurrente con un valor leído antes — y pasa de verdad:
+     *    delete-course-thumbnail arrastra una CourseEntity entera de una lectura previa.
+     *  - `id_owner`: no existe feature de transferencia de propiedad.
+     *  - `spots_remaining` / `owner`: derivados, nunca se persisten.
+     */
+    private static readonly UPDATABLE_COURSE_FIELDS = [
+        'title' , 'description' , 'id_category' , 'category_name',
+        'thumbnail_url' , 'id_file' , 'price' , 'capacity',
+    ] as const;
 
     /**
      * Resuelve el profesor dueño del curso en un campo `owner` aparte.
@@ -97,12 +113,12 @@ export class CourseDatasourceImpl implements CourseDatasource {
     }
 
     async updateCourse( updateCourseDTO : UpdateCourseDto ) : Promise<CourseResponseDto> {
-        const { id , ...changes } = updateCourseDTO;
+        const fieldsToUpdate = pickFields( updateCourseDTO , CourseDatasourceImpl.UPDATABLE_COURSE_FIELDS );
 
         const updatedCourse = await CourseModel
                                         .findByIdAndUpdate(
-                                            id,
-                                            changes,
+                                            updateCourseDTO.id,
+                                            { $set : fieldsToUpdate },
                                             { new : true }
                                         )
                                         .lean<ICourseModel | null>();

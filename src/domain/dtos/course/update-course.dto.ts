@@ -16,10 +16,14 @@ export class UpdateCourseDto {
     ){}
         
 
+    // `capacity` NO lleva default: con `= null`, cualquier update que la omitiera le borraba el
+    // cupo al curso (null sí se escribe, undefined lo descarta Mongoose) y además dejaba muerto
+    // al guard de abajo, porque capacity nunca podía ser undefined acá adentro.
+    // Mandar `capacity: null` explícito sigue funcionando: así se marca un curso sin límite.
     static create = ( id : string, props: { [ key:string ] : any } ) : [ string? , UpdateCourseDto? ] => {
-        const { title, description, id_category, category_name , thumbnail_url, id_file , id_owner, price, capacity = null} = props;
+        const { title, description, id_category, category_name , thumbnail_url, id_file , id_owner, price, capacity } = props;
 
-        if( isNaN( capacity ) && capacity !== undefined ){
+        if( capacity !== undefined && capacity !== null && isNaN( capacity ) ){
             return [ 'La capacidad debe ser un número válido o nulo.' , undefined ];
         }
 

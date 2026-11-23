@@ -6,8 +6,17 @@ import { EnrollmentDetailedResponseDTO, EnrollmentResponseDTO, UpdateEnrollmentR
 import { IEnrollmentDetailedModel } from '../../data/mongo/models/enrollment.model';
 import { CustomError } from "../../domain/errors/custom-error";
 import { TransactionSession } from "../../domain/services/UnitOfWork";
+import { pickFields } from "../helpers/pick-fields";
 
 export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
+
+    /**
+     * Claves que el update de inscripción puede escribir: lo único que algún flujo cambia
+     * (MarkLessonAsCompleted). El caller pasa una EnrollmentEntity entera, así que sin esta
+     * lista viajan también la identidad (`id_user`, `id_course`), el timestamp `purchaseDate`
+     * y los campos que nadie escribe (`last_lesson`, `last_accessed_at`, `completed_at`).
+     */
+    private static readonly UPDATABLE_ENROLLMENT_FIELDS = [ 'progress' , 'completed_lessons' ] as const;
 
     findAllEnrollments = async( ) : Promise<EnrollmentResponseDTO[]> => {
         const listOfAllEnrollments = await EnrollmentModel.find({});
@@ -65,7 +74,9 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
     }
 
     updateEnrollment = async( enrollmentRequestDTO : UpdateEnrollmentRequestDTO ) : Promise<EnrollmentResponseDTO> => {
-        const updatedEnrollment = await EnrollmentModel.findByIdAndUpdate( enrollmentRequestDTO.id , enrollmentRequestDTO , { new : true } );
+        const fieldsToUpdate = pickFields( enrollmentRequestDTO , EnrollmentDatasourceImpl.UPDATABLE_ENROLLMENT_FIELDS );
+
+        const updatedEnrollment = await EnrollmentModel.findByIdAndUpdate( enrollmentRequestDTO.id , { $set : fieldsToUpdate } , { new : true } );
         if( !updatedEnrollment ) throw 'Hubo un error al actualizar la inscripción.';
 
         return EnrollmentMapper.fromEnrollmentResponseDTO( updatedEnrollment );

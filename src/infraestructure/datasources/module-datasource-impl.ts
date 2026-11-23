@@ -6,17 +6,30 @@ import { UpdateModuleDto } from '../../domain/dtos/module/update-module.dto';
 import { ModuleEntity } from '../../domain/entities/module.entity';
 import { TransactionSession } from '../../domain/services/UnitOfWork';
 import { ModuleMapper } from '../mappers/module.mapper';
+import { pickFields } from '../helpers/pick-fields';
 
 export class ModuleDatasourceImpl implements ModuleDatasource{
-    
+
+    /**
+     * Claves que el update genérico de módulo puede escribir.
+     *
+     * `id_lessons` queda afuera a propósito: el array se construye con el $addToSet de
+     * addLessonToModule. Pasarlo por acá permitía reemplazarlo entero desde el body y
+     * huerfanar lecciones, sin ninguna validación. Si hace falta reordenar o quitar lecciones,
+     * va en un método propio con su propia validación.
+     */
+    private static readonly UPDATABLE_MODULE_FIELDS = [ 'title' , 'unit' , 'id_course' ] as const;
+
     async createModule ( createModuleDto : CreateModuleDto ) : Promise<ModuleResponseDto> {
         const moduleCreated = await ModuleModel.create( createModuleDto );
-        
+
         return ModuleMapper.fromModuleResponseDto( moduleCreated );
     }
 
     async updateModule ( updateModuleDto : UpdateModuleDto ) : Promise<ModuleResponseDto | null> {
-        const moduleUpdated = await ModuleModel.findOneAndUpdate({ _id : updateModuleDto.id } , updateModuleDto , { new : true });
+        const fieldsToUpdate = pickFields( updateModuleDto , ModuleDatasourceImpl.UPDATABLE_MODULE_FIELDS );
+
+        const moduleUpdated = await ModuleModel.findOneAndUpdate({ _id : updateModuleDto.id } , { $set : fieldsToUpdate } , { new : true });
         return moduleUpdated ? ModuleMapper.fromModuleResponseDto( moduleUpdated ) : null;
     }
     
