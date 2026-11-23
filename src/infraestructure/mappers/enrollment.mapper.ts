@@ -13,7 +13,7 @@ export class EnrollmentMapper {
             last_lesson : enrollmentDoc.last_lesson ? enrollmentDoc.last_lesson.toString() : null,
             last_accessed_at: enrollmentDoc.last_accessed_at ?? null,
             completed_lessons : enrollmentDoc.completed_lessons.map( id_lesson => id_lesson.toString() ) ?? [],
-            completed_at : enrollmentDoc.purchaseDate,
+            completed_at : enrollmentDoc.completed_at ?? undefined,
         }
     }
 

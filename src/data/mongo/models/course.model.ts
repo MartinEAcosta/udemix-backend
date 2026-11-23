@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose";
-import { IUserModel } from "./user.model";
+import { IUserModel, IUserPopulateModel } from "./user.model";
 
 export interface ICourseModel {
     _id              : Types.ObjectId,
@@ -19,8 +19,12 @@ export interface ICourseModel {
  * Mismo documento pero con `id_owner` poblado: es el campo que .populate('id_owner') reemplaza.
  * Puede ser null: si el usuario referenciado ya no existe, populate deja el campo en null.
  */
+export type ICourseOwnerModel =
+    Pick<IUserModel , '_id' | 'first_name' | 'last_name'> &
+    Pick<IUserPopulateModel , 'id_file'>; 
+
 export interface ICoursePopulateOwnerModel extends Omit<ICourseModel , 'id_owner'> {
-    id_owner : Pick<IUserModel , '_id' | 'first_name' | 'last_name' | 'email'> | null,
+    id_owner : ICourseOwnerModel | null,
 }
 
 const courseSchema = new mongoose.Schema({

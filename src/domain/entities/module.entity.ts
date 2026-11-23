@@ -1,4 +1,3 @@
-import { CustomError } from "../errors/custom-error";
 
 interface ModuleOptions{
     id        : string;
@@ -28,9 +27,9 @@ export class ModuleEntity {
     static fromObject( object : { [ key : string ] : any } ) {
         const { id , title , unit , lessons, id_course } = object;
 
-        if( !title ) throw CustomError.badRequest('El titulo del modulo no puede estar vació.');
-        if( !unit ) throw CustomError.badRequest('El numero del modulo no puede ser estar vació');
-        if( !id_course ) throw CustomError.badRequest('El modulo debe estar asignado a un curso.');
+        if( !title ) throw 'El titulo del modulo no puede estar vació.';
+        if( !unit ) throw 'El numero del modulo no puede ser estar vació';
+        if( !id_course ) throw 'El modulo debe estar asignado a un curso.';
 
         return new ModuleEntity({ id, title , unit ,lessons , id_course});
     }

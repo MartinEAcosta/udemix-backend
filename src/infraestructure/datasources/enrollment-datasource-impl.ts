@@ -54,7 +54,7 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
             },
             { $inc : { current_enrolled : 1 } },
             { new : true , session },
-        );
+        ).lean();
         if( !course ) throw CustomError.badRequest('El curso no existe o ya no tiene cupos disponibles.');
 
         // Mongoose ignora las options si el documento no va en un array.

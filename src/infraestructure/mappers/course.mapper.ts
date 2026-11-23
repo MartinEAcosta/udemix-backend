@@ -2,13 +2,7 @@ import { ICourseModel, ICoursePopulateOwnerModel } from '../../data';
 import { CourseEntity } from '../../domain/entities/course.entity';
 import { CoursePopulateOwnerResponseDto, CourseResponseDto } from './../../domain/dtos/course/course.responses';
 
-/** Curso poblado cuyo owner ya fue verificado como existente. */
-type CourseWithOwner = Omit<ICoursePopulateOwnerModel , 'id_owner'> & {
-    id_owner : NonNullable<ICoursePopulateOwnerModel['id_owner']>,
-};
-
-
-export class CourseMapper {
+export class CourseMapper { 
 
     static fromCourseResponseDto = ( courseDoc : ICourseModel ) : CourseResponseDto => {
         return {
@@ -27,7 +21,7 @@ export class CourseMapper {
         }
     }
 
-    static fromCoursePopulateOwnerResponseDto = ( courseDoc : CourseWithOwner ) : CoursePopulateOwnerResponseDto => {
+    static fromCoursePopulateOwnerResponseDto = ( courseDoc : ICoursePopulateOwnerModel ) : CoursePopulateOwnerResponseDto => {
         const owner = courseDoc.id_owner;
         return {
             id : courseDoc._id.toString(),
@@ -37,16 +31,17 @@ export class CourseMapper {
             category_name : courseDoc.category_name ?? null,
             thumbnail_url : courseDoc.thumbnail_url ?? null,
             id_file : courseDoc.id_file?.toString() ?? null,
-            owner : {
-                id : owner._id.toString(),
-                first_name : owner.first_name,
-                last_name : owner.last_name,
-                email : owner.email,
-            },
             price : courseDoc.price,
             capacity : courseDoc.capacity ?? undefined,
             current_enrolled : courseDoc.current_enrolled,
             spots_remaining : CourseEntity.calculateSpotsRemaining( courseDoc.capacity , courseDoc.current_enrolled ),
+            owner : owner ? 
+            {
+                id : owner._id.toString(),
+                first_name : owner.first_name,
+                last_name : owner.last_name,
+                avatar_url : owner.id_file?.url ?? null,
+            } : null,
         }
     }
 }

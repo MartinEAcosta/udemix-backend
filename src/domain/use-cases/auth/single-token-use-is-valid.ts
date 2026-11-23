@@ -14,7 +14,6 @@ export class SingleTokenUseIsValid implements SingleTokenUseIsValidUseCase {
     ) {}
 
     async execute( token : string , purpose : SingleUseTokenPurpose ) : Promise<boolean> {
-        console.log('llame')
         const payload = await this.tokenManager.validateToken<{ email : string , jti : string }>( token );
         if( !payload?.email || !payload?.jti ) return false;
 

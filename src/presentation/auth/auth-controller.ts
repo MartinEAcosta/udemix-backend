@@ -83,7 +83,6 @@ export class AuthController {
     }
 
     public reloadToken = ( req : AuthenticatedRequest , res : Response ) => {
-
         const user = req.user;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('El usuario debe esar autenticado para refrescar el token.') , res );
 

@@ -15,12 +15,16 @@ export class CourseDatasourceImpl implements CourseDatasource {
         const query = CourseQueryBuilder.fromFilter( filter );
 
         const [ courses , total ] = await Promise.all([
-            CourseModel.find( query )
-                .skip( ( pagination.current_page - 1 ) * pagination.limit )
-                .limit( pagination.limit )
-                .lean<ICourseModel[]>(),
-            CourseModel.countDocuments( query ),
-        ]);
+            CourseModel.aggregate([
+                { $match : query },
+                { $skip : (pagination.current_page - 1) * pagination.limit } , { $limit : pagination.limit },
+                { $lookup : { 
+                    from : 'users', localField: 'id_owner', foreignField: '_id', as: 'owner',
+                    pipeline : [{ $project: { first_name : 1 , last_name : 1, avatarUrl : 1,}}]
+                }},
+                { $unwind: '$owner' } ]),
+            CourseModel.countDocuments(query)
+            ]);
 
         return {
             items : courses.map( CourseMapper.fromCourseResponseDto ),

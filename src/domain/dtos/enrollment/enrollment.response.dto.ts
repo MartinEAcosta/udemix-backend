@@ -7,7 +7,7 @@ export interface EnrollmentResponseDTO {
     last_lesson : string | null;
     last_accessed_at : Date | null;
     completed_lessons : string[];
-    completed_at : Date | null;
+    completed_at ?: Date | null;
 }
 
 // export interface NextEnrollmentResponseDTO {
