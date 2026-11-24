@@ -20,15 +20,6 @@ export interface EnrollmentResponseDTO {
 //     next_lesson : string;
 // }
 
-export interface UpdateEnrollmentRequestDTO {
-    id : string;
-    id_user : string;
-    id_course : string;
-    purchaseDate ?: Date;
-    progress ?: number;
-    completed_lessons ?: string[];
-}
-
 export interface EnrollmentDetailedResponseDTO{
     id : string;
     id_user : string;

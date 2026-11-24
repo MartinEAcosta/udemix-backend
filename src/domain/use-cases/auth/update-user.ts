@@ -24,16 +24,14 @@ export class UpdateUser implements UpdateUserUseCase {
             if( emailExists ) throw CustomError.badRequest('El email ya esta en uso.');
         }
         
-        let userToSave = { ...userDto };
-        if( userDto.password ){
-            const passwordHashed = this.encrypter.hash( userDto.password );
-            userToSave.password = passwordHashed;
-        }
+        // Si cambian el email, se marca como no verificado.
+        const emailChanged = userDto.email != null && userDto.email !== userExists.email;
 
-        // Si cambian el email, se marca como no verificado, sino me devuelve el dto normal.
-        const updateData = userDto.email != null && userDto.email !== userExists.email
-            ? { ...userToSave, isEmailVerified: false }
-            : userToSave;
+        const updateData = UpdateUserDto.withProfileChanges( userDto , {
+            hashedPassword : userDto.password ? this.encrypter.hash( userDto.password ) : undefined,
+            unverifyEmail  : emailChanged,
+        });
+
         const updatedUser = await this.authRepository.updateUser( updateData );
         if( !updatedUser ) throw CustomError.internalServer('Error al actualizar el usuario.');
 

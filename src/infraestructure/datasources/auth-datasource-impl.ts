@@ -1,20 +1,11 @@
-import { AuthDatasource } from "../../domain/datasources/auth-datasource";
 import { IUserModel, UserModel } from "./../../data/mongo/models/user.model";
+import { AuthDatasource } from "../../domain/datasources/auth-datasource";
+import { CustomError } from "../../domain/errors/custom-error";
 import { UserMapper } from "../mappers/user.mapper";
 import { RegisterUserDto } from "../../domain/dtos/auth/register-user.dto";
 import { UserResponseDto } from "../../domain/dtos/auth/auth.responses.dto";
 import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
 import { UpdateUserAvatarDto } from "../../domain/dtos/auth/update-user-avatar.dto";
-import { CustomError } from "../../domain/errors/custom-error";
-import { pickFields } from "../helpers/pick-fields";
-
-/**
- * Claves que el update genérico de perfil puede escribir.
- * Exportada para que el test de desincronización la compare contra las claves de UpdateUserDto.
- */
-export const UPDATABLE_USER_FIELDS = [
-    'first_name' , 'last_name' , 'email' , 'password' , 'isEmailVerified' , 'balance',
-] as const;
 
 export class AuthDatasourceImpl implements AuthDatasource {
   async registerUser( registerUserDto: RegisterUserDto): Promise<UserResponseDto> {
@@ -33,10 +24,14 @@ export class AuthDatasourceImpl implements AuthDatasource {
    * excess property check a las propiedades spreadeadas).
    */
   async updateUser(userDto : UpdateUserDto): Promise<UserResponseDto> {
-    const fieldsToUpdate = pickFields( userDto , UPDATABLE_USER_FIELDS );
+    if( !( userDto instanceof UpdateUserDto ) ) {
+      throw CustomError.internalServer('updateUser exige un UpdateUserDto construido por sus factories.');
+    }
+
+    const { id , ...fieldsToUpdate } = userDto;
 
     const updatedUser = await UserModel
-      .findByIdAndUpdate( userDto.id , { $set : fieldsToUpdate } , { new : true } )
+      .findByIdAndUpdate( id , { $set : fieldsToUpdate } , { new : true } )
       .lean<IUserModel | null>();
 
     if( !updatedUser ) throw CustomError.notFound('El usuario que intentas actualizar no existe.');

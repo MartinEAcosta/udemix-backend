@@ -1,5 +1,6 @@
 import { OrderRequestAdapterDto } from "../../dtos/order/order-request-adapter.dto";
 import { PaymentRequestDTO } from "../../dtos/payment/payment-request.dto";
+import { PaymentUpdateDto } from "../../dtos/payment/payment-update.dto";
 import { OrderGatewayResult } from "../../dtos/payment/payment.response";
 import { UserEntity } from "../../entities/user.entity";
 import { CustomError } from "../../errors/custom-error";
@@ -72,12 +73,7 @@ export class CreateOrder implements CreateOrderUseCase {
         }
 
         return await this.paymentRepository.updatePayment(
-            {
-                id : createdPayment.id,
-                id_payment : gatewayResponse.id,
-                status : gatewayResponse.status,
-                date : new Date(),
-            }
+            PaymentUpdateDto.fromGatewayOrder( createdPayment.id , gatewayResponse.id , gatewayResponse.status )
         );
     }
 

@@ -1,4 +1,5 @@
 import { EnrollmentEntity } from "../../entities/enrollment.entity";
+import { UpdateEnrollmentDto } from "../../dtos/enrollment/update-enrollment.dto";
 import { CustomError } from "../../errors/custom-error";
 import { AuthRepository, CourseRepository, EnrollmentRepository, LessonRepository, ModuleRepository } from "../../repository";
 
@@ -39,7 +40,9 @@ export class MarkLessonAsCompleted implements MarkLessonAsCompletedUseCase {
         const totalLessons = modules.reduce( ( total , module ) => { return total + module.lessons.length } , 0 );
         enrollment.progress = ( enrollment.completed_lessons.length / totalLessons ) * 100;
 
-        return await this.enrollmentRepository.updateEnrollment( enrollment );
+        return await this.enrollmentRepository.updateEnrollment(
+            UpdateEnrollmentDto.progressUpdate( enrollment.id , enrollment.progress , enrollment.completed_lessons )
+        );
     }
 
 }

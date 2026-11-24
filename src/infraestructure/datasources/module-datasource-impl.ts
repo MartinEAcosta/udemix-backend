@@ -6,19 +6,9 @@ import { UpdateModuleDto } from '../../domain/dtos/module/update-module.dto';
 import { ModuleEntity } from '../../domain/entities/module.entity';
 import { TransactionSession } from '../../domain/services/UnitOfWork';
 import { ModuleMapper } from '../mappers/module.mapper';
-import { pickFields } from '../helpers/pick-fields';
+import { CustomError } from '../../domain/errors/custom-error';
 
 export class ModuleDatasourceImpl implements ModuleDatasource{
-
-    /**
-     * Claves que el update genérico de módulo puede escribir.
-     *
-     * `id_lessons` queda afuera a propósito: el array se construye con el $addToSet de
-     * addLessonToModule. Pasarlo por acá permitía reemplazarlo entero desde el body y
-     * huerfanar lecciones, sin ninguna validación. Si hace falta reordenar o quitar lecciones,
-     * va en un método propio con su propia validación.
-     */
-    private static readonly UPDATABLE_MODULE_FIELDS = [ 'title' , 'unit' , 'id_course' ] as const;
 
     async createModule ( createModuleDto : CreateModuleDto ) : Promise<ModuleResponseDto> {
         const moduleCreated = await ModuleModel.create( createModuleDto );
@@ -27,9 +17,13 @@ export class ModuleDatasourceImpl implements ModuleDatasource{
     }
 
     async updateModule ( updateModuleDto : UpdateModuleDto ) : Promise<ModuleResponseDto | null> {
-        const fieldsToUpdate = pickFields( updateModuleDto , ModuleDatasourceImpl.UPDATABLE_MODULE_FIELDS );
+        if( !( updateModuleDto instanceof UpdateModuleDto ) ) {
+            throw CustomError.internalServer('updateModule exige un UpdateModuleDto construido por sus factories.');
+        }
 
-        const moduleUpdated = await ModuleModel.findOneAndUpdate({ _id : updateModuleDto.id } , { $set : fieldsToUpdate } , { new : true });
+        const { id , ...fieldsToUpdate } = updateModuleDto;
+
+        const moduleUpdated = await ModuleModel.findOneAndUpdate({ _id : id } , { $set : fieldsToUpdate } , { new : true });
         return moduleUpdated ? ModuleMapper.fromModuleResponseDto( moduleUpdated ) : null;
     }
     

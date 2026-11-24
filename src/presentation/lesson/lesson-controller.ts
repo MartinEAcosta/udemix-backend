@@ -48,7 +48,9 @@ export class LessonController {
 
         const { user } = req;
         if( !user ) throw HandlerResponses.handleError( CustomError.unauthorized( 'Debes estar autenticado para actualizar una lección.' ), res );
-        const [ error , lessonRequestDto ] = UpdateLessonDto.create( req.body );
+        // El id manda desde la ruta: antes se validaba el de params y después se usaba el del
+        // body, así que el :id de la URL se descartaba.
+        const [ error , lessonRequestDto ] = UpdateLessonDto.create( { ...req.body , id } );
         if( error ) return HandlerResponses.handleError( CustomError.badRequest( error ), res );
 
 

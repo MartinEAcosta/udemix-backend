@@ -1,22 +1,14 @@
-import { CourseModel, EnrollmentModel } from "../../data";
 import { EnrollmentDatasource } from "../../domain/datasources/enrollment-datasource";
-import { CreateEnrollmentRequestDTO } from "../../domain/dtos/enrollment/create-enrollment.dto";
-import { EnrollmentMapper } from "../mappers/enrollment.mapper";
-import { EnrollmentDetailedResponseDTO, EnrollmentResponseDTO, UpdateEnrollmentRequestDTO } from '../../domain/dtos/enrollment/enrollment.response.dto';
+import { CourseModel, EnrollmentModel } from "../../data";
 import { IEnrollmentDetailedModel } from '../../data/mongo/models/enrollment.model';
-import { CustomError } from "../../domain/errors/custom-error";
 import { TransactionSession } from "../../domain/services/UnitOfWork";
-import { pickFields } from "../helpers/pick-fields";
+import { CustomError } from "../../domain/errors/custom-error";
+import { EnrollmentMapper } from "../mappers/enrollment.mapper";
+import { CreateEnrollmentRequestDTO } from "../../domain/dtos/enrollment/create-enrollment.dto";
+import { EnrollmentDetailedResponseDTO, EnrollmentResponseDTO } from '../../domain/dtos/enrollment/enrollment.response.dto';
+import { UpdateEnrollmentDto } from '../../domain/dtos/enrollment/update-enrollment.dto';
 
 export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
-
-    /**
-     * Claves que el update de inscripción puede escribir: lo único que algún flujo cambia
-     * (MarkLessonAsCompleted). El caller pasa una EnrollmentEntity entera, así que sin esta
-     * lista viajan también la identidad (`id_user`, `id_course`), el timestamp `purchaseDate`
-     * y los campos que nadie escribe (`last_lesson`, `last_accessed_at`, `completed_at`).
-     */
-    private static readonly UPDATABLE_ENROLLMENT_FIELDS = [ 'progress' , 'completed_lessons' ] as const;
 
     findAllEnrollments = async( ) : Promise<EnrollmentResponseDTO[]> => {
         const listOfAllEnrollments = await EnrollmentModel.find({});
@@ -73,10 +65,14 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
         return EnrollmentMapper.fromEnrollmentResponseDTO( savedEnrollment );
     }
 
-    updateEnrollment = async( enrollmentRequestDTO : UpdateEnrollmentRequestDTO ) : Promise<EnrollmentResponseDTO> => {
-        const fieldsToUpdate = pickFields( enrollmentRequestDTO , EnrollmentDatasourceImpl.UPDATABLE_ENROLLMENT_FIELDS );
+    updateEnrollment = async( enrollmentRequestDTO : UpdateEnrollmentDto ) : Promise<EnrollmentResponseDTO> => {
+        if( !( enrollmentRequestDTO instanceof UpdateEnrollmentDto ) ) {
+            throw CustomError.internalServer('updateEnrollment exige un UpdateEnrollmentDto construido por su factory.');
+        }
 
-        const updatedEnrollment = await EnrollmentModel.findByIdAndUpdate( enrollmentRequestDTO.id , { $set : fieldsToUpdate } , { new : true } );
+        const { id , ...fieldsToUpdate } = enrollmentRequestDTO;
+
+        const updatedEnrollment = await EnrollmentModel.findByIdAndUpdate( id , { $set : fieldsToUpdate } , { new : true } );
         if( !updatedEnrollment ) throw 'Hubo un error al actualizar la inscripción.';
 
         return EnrollmentMapper.fromEnrollmentResponseDTO( updatedEnrollment );

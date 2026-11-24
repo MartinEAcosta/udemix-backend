@@ -185,7 +185,9 @@ describe('Auth Datasource Implementation' , () => {
         expect( updatedUser.avatar_url ).toBe( avatarFile.url );
     });
 
-    test('should ignore id_file and avatar_url sent through the generic update path' , async() => {
+    // El portón: un objeto plano con id_file/avatar_url inyectados ya no se filtra en silencio,
+    // se rechaza. Y el documento queda intacto.
+    test('should reject a plain object instead of silently filtering it' , async() => {
         const createdUser = await authDatasource.registerUser(registerUserDto!);
         const avatarFile = await createAvatarFile('5');
 
@@ -195,13 +197,41 @@ describe('Auth Datasource Implementation' , () => {
 
         const foreignFile = await createAvatarFile('ajeno');
 
-        const updatedUser = await authDatasource.updateUser({
+        await expect(
+            authDatasource.updateUser({
+                id : createdUser.id!,
+                first_name : 'Renamed',
+                id_file : foreignFile.id,
+                avatar_url : 'https://evil.test/spoofed.png',
+            } as unknown as UpdateUserDto )
+        ).rejects.toThrow();
+
+        const rawUser = await UserModel.findById( createdUser.id ).lean();
+        expect( rawUser!.first_name ).toBe( registerUserDto!.first_name );
+        expect( rawUser!.id_file!.toString() ).toBe( avatarFile.id );
+        expect( rawUser!.avatar_url ).toBe( avatarFile.url );
+    });
+
+    // Y por el camino legítimo, los campos del avatar ni existen en el DTO: create() los
+    // descarta en la desestructuración, así que no hay nada que inyectar.
+    test('should leave the avatar untouched on a profile update built from the DTO' , async() => {
+        const createdUser = await authDatasource.registerUser(registerUserDto!);
+        const avatarFile = await createAvatarFile('6');
+
+        await authDatasource.updateUserAvatar(
+            UpdateUserAvatarDto.fromUploadedFile( createdUser.id! , avatarFile )
+        );
+
+        const [ , updateUserDto ] = UpdateUserDto.create({
             id : createdUser.id!,
             first_name : 'Renamed',
-            id_file : foreignFile.id,
+            id_file : new mongoose.Types.ObjectId().toString(),
             avatar_url : 'https://evil.test/spoofed.png',
-        } as unknown as UpdateUserDto );
+        });
 
+        const updatedUser = await authDatasource.updateUser( updateUserDto! );
+
+        expect( updatedUser.first_name ).toBe('Renamed');
         expect( updatedUser.id_file ).toBe( avatarFile.id );
         expect( updatedUser.avatar_url ).toBe( avatarFile.url );
     });

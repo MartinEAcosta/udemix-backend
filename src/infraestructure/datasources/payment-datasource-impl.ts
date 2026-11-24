@@ -5,16 +5,9 @@ import { PaymentUpdateDto } from '../../domain/dtos/payment/payment-update.dto';
 import { IdentificationTypesResponse, PaymentMethodsResponse, PaymentResponseDto } from '../../domain/dtos/payment/payment.response';
 import { PaymentService } from '../../domain/services';
 import { PaymentMapper } from '../mappers/payment.mapper';
-import { pickFields } from '../helpers/pick-fields';
+import { CustomError } from '../../domain/errors/custom-error';
 
 export class PaymentDataSourceImpl implements PaymentDataSource {
-
-    /**
-     * Claves que un update de pago puede escribir. `id` queda afuera porque es el filtro,
-     * no un campo: pasaba al update doc y sobrevivía sólo porque el strict de Mongoose
-     * descarta las claves que no están en el schema.
-     */
-    private static readonly UPDATABLE_PAYMENT_FIELDS = [ 'status' , 'date' , 'method' , 'id_payment' ] as const;
 
     constructor(
         private readonly paymentService : PaymentService
@@ -29,21 +22,31 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
     }
     
     async updatePayment( paymentRequest : PaymentUpdateDto ) : Promise<PaymentResponseDto> {
-        const fieldsToUpdate = pickFields( paymentRequest , PaymentDataSourceImpl.UPDATABLE_PAYMENT_FIELDS );
+        if( !( paymentRequest instanceof PaymentUpdateDto ) ) {
+            throw CustomError.internalServer('updatePayment exige un PaymentUpdateDto construido por sus factories.');
+        }
+
+        const { id , ...fieldsToUpdate } = paymentRequest;
 
         // El id va directo: findByIdAndUpdate ya envuelve en { _id : ... }, y pasarle el objeto
         // armaba { _id : { _id : id } }, que sólo funcionaba por el fallback del cast de ObjectId.
-        const paymentToUpdate = await PaymentModel.findByIdAndUpdate( paymentRequest.id , { $set : fieldsToUpdate } , { new : true }).exec();
+        const paymentToUpdate = await PaymentModel.findByIdAndUpdate( id , { $set : fieldsToUpdate } , { new : true }).exec();
+        if( !paymentToUpdate ) throw CustomError.notFound('El pago que intentas actualizar no existe.');
 
-        return PaymentMapper.fromPaymentResponseDto( paymentToUpdate! );
+        return PaymentMapper.fromPaymentResponseDto( paymentToUpdate );
     }
 
     async updatePaymentByIdPayment( paymentRequest : PaymentUpdateDto ) : Promise<PaymentResponseDto> {
-        const fieldsToUpdate = pickFields( paymentRequest , PaymentDataSourceImpl.UPDATABLE_PAYMENT_FIELDS );
+        if( !( paymentRequest instanceof PaymentUpdateDto ) ) {
+            throw CustomError.internalServer('updatePaymentByIdPayment exige un PaymentUpdateDto construido por sus factories.');
+        }
+
+        const { id , ...fieldsToUpdate } = paymentRequest;
 
         const paymentToUpdate = await PaymentModel.findOneAndUpdate({ id_payment : paymentRequest.id_payment }, { $set : fieldsToUpdate } , { new : true }).exec();
+        if( !paymentToUpdate ) throw CustomError.notFound('El pago que intentas actualizar no existe.');
 
-        return PaymentMapper.fromPaymentResponseDto( paymentToUpdate! );
+        return PaymentMapper.fromPaymentResponseDto( paymentToUpdate );
     }
 
     async findPaymentsMethods() : Promise<PaymentMethodsResponse[]> {

@@ -1,29 +1,32 @@
 
+/**
+ * Lo que un update de pago puede escribir. Sin `create( props )`: los dos flujos que actualizan
+ * un pago son internos (checkout y webhook), ninguno viene de un body de usuario.
+ *
+ * `id` es el filtro, no un campo: no se escribe.
+ */
 export class PaymentUpdateDto {
 
-    constructor(
-        public readonly id_payment : string,
-        public readonly status : string,
-        public readonly id ?: string,
-        public readonly date ?: Date,
-        public readonly method ?: string,
+    private constructor(
+        public readonly id_payment  : string,
+        public readonly status      : string,
+        public readonly id         ?: string,
+        public readonly date       ?: Date,
+        public readonly method     ?: string,
     ) { }
 
-    static create = ( props : { [ key : string ] : any } ) : [ string?, PaymentUpdateDto? ]  => {
-        const { id , id_payment , date , method , status } = props;
-    
-        if( !id ) return ['El id de la entidad payment a actualizar es requerido.', undefined];
-        if( !id_payment ) return ['El id del pago es requerido.' , undefined];
-        if( !date ) return ['La fecha en la se que actualizo es necesaria.' , undefined];
-        if ( method != 'card' && method != 'balance' ) return ['Método de pago invalido.', undefined];
-        if (!status) return ['El estado del pago no puede ser nulo.' , undefined]
+    /** Checkout: el pago local ya existe y la pasarela devolvió su id y estado. */
+    static fromGatewayOrder = (
+        id : string,
+        id_payment : string,
+        status : string,
+        method ?: string,
+    ) : PaymentUpdateDto => {
+        return new PaymentUpdateDto( id_payment , status , id , new Date() , method );
+    }
 
-        return [ undefined , new PaymentUpdateDto(
-            id_payment,
-            status,
-            id,
-            date,
-            method,
-        )]
+    /** Webhook: se resuelve por el id de la pasarela, sin conocer el id local. */
+    static statusFromGateway = ( id_payment : string , status : string ) : PaymentUpdateDto => {
+        return new PaymentUpdateDto( id_payment , status , undefined , new Date() );
     }
 }

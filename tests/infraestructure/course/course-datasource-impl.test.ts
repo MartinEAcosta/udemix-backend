@@ -6,6 +6,8 @@ import { MongoDatabase } from '../../../src/data/init';
 import { CourseModel } from '../../../src/data/mongo/models/course.model';
 import { CourseDatasourceImpl } from '../../../src/infraestructure/datasources/course-datasource-impl';
 import { UpdateCourseDto } from '../../../src/domain/dtos/course/update-course.dto';
+import { SetCourseThumbnailDto } from '../../../src/domain/dtos/course/set-course-thumbnail.dto';
+import { FileResponseDto } from '../../../src/domain/dtos/file/file-response.dto';
 
 describe('Course Datasource Implementation - updateCourse' , () => {
 
@@ -71,47 +73,142 @@ describe('Course Datasource Implementation - updateCourse' , () => {
         expect( updateDto ).toBeUndefined();
     });
 
-    // current_enrolled sólo se mueve con el $inc de saveEnrollment. Escribirlo desde un update
-    // genérico pisa un incremento concurrente con un valor leído antes.
-    test('should ignore current_enrolled coming through the generic update' , async() => {
+    // El portón: un objeto plano con los campos que no se deben escribir (current_enrolled sólo
+    // se mueve con el $inc de saveEnrollment, id_owner no se reasigna) ya no se filtra en
+    // silencio — se rechaza. Y el documento queda intacto.
+    test('should reject a plain object instead of silently filtering it' , async() => {
         const course = await createCourse({ current_enrolled : 7 });
+        const originalOwner = course.id_owner.toString();
 
-        await courseDatasource.updateCourse({
-            id : course._id.toString(),
-            title : 'Otro título',
-            current_enrolled : 0,
-        } as unknown as UpdateCourseDto );
+        await expect(
+            courseDatasource.updateCourse({
+                id : course._id.toString(),
+                title : 'Otro título',
+                current_enrolled : 0,
+                id_owner : new Types.ObjectId().toString(),
+            } as unknown as UpdateCourseDto )
+        ).rejects.toThrow();
 
         const raw = await CourseModel.findById( course._id ).lean();
         expect( raw!.current_enrolled ).toBe( 7 );
-        expect( raw!.title ).toBe('Otro título');
+        expect( raw!.id_owner.toString() ).toBe( originalOwner );
+        expect( raw!.title ).toBe('Curso base');
     });
 
-    test('should ignore id_owner coming through the generic update' , async() => {
+    test('should keep the owner untouched on a legit update built from the DTO' , async() => {
         const course = await createCourse();
         const originalOwner = course.id_owner.toString();
 
-        await courseDatasource.updateCourse({
-            id : course._id.toString(),
+        const [ , updateDto ] = UpdateCourseDto.create( course._id.toString() , {
+            title : 'Título nuevo',
+            // No están en el DTO: create() los descarta en la desestructuración.
             id_owner : new Types.ObjectId().toString(),
-        } as unknown as UpdateCourseDto );
+            current_enrolled : 0,
+        });
+
+        await courseDatasource.updateCourse( updateDto! );
 
         const raw = await CourseModel.findById( course._id ).lean();
+        expect( raw!.title ).toBe('Título nuevo');
         expect( raw!.id_owner.toString() ).toBe( originalOwner );
+        expect( raw!.current_enrolled ).toBe( 7 );
     });
 
-    test('should still write the fields on the whitelist, including explicit nulls' , async() => {
-        const course = await createCourse({ thumbnail_url : 'https://cdn.test/old.jpg' });
+});
 
-        await courseDatasource.updateCourse({
-            id : course._id.toString(),
-            thumbnail_url : null,
-            id_file : null,
-        } as unknown as UpdateCourseDto );
+describe('Course Datasource Implementation - setCourseThumbnail' , () => {
+
+    beforeAll(async() => {
+        await MongoDatabase.connect({ dbUrl : envs.DB_CON , dbName : envs.DB_NAME });
+    });
+
+    beforeEach(async() => {
+        await CourseModel.deleteMany({});
+    });
+
+    afterAll(async() => {
+        await mongoose.connection.close();
+    });
+
+    const courseDatasource = new CourseDatasourceImpl();
+
+    const createCourse = async() => {
+        return await CourseModel.create({
+            title : 'Curso base',
+            description : 'Descripción base',
+            id_category : new Types.ObjectId(),
+            category_name : 'Programación',
+            id_owner : new Types.ObjectId(),
+            price : 100,
+        });
+    }
+
+    const uploadedFile = ( id : string ) : FileResponseDto => ({
+        id,
+        public_id : 'test/thumb',
+        url : 'https://cdn.test/thumb.jpg',
+        folder : 'course',
+        size : 1024,
+        extension : 'jpg',
+        resource_type : 'image',
+    });
+
+    test('should write id_file and thumbnail_url together' , async() => {
+        const course = await createCourse();
+        const fileId = new Types.ObjectId().toString();
+
+        const updated = await courseDatasource.setCourseThumbnail(
+            SetCourseThumbnailDto.fromUploadedFile( course._id.toString() , uploadedFile( fileId ) )
+        );
+
+        expect( updated.id_file ).toBe( fileId );
+        expect( updated.thumbnail_url ).toBe('https://cdn.test/thumb.jpg');
+    });
+
+    test('should clear id_file and thumbnail_url together' , async() => {
+        const course = await createCourse();
+
+        await courseDatasource.setCourseThumbnail(
+            SetCourseThumbnailDto.fromUploadedFile( course._id.toString() , uploadedFile( new Types.ObjectId().toString() ) )
+        );
+
+        const cleared = await courseDatasource.setCourseThumbnail(
+            SetCourseThumbnailDto.cleared( course._id.toString() )
+        );
+
+        expect( cleared.id_file ).toBeNull();
+        expect( cleared.thumbnail_url ).toBeNull();
+    });
+
+    test('should not touch current_enrolled when setting the thumbnail' , async() => {
+        const course = await CourseModel.create({
+            title : 'Curso base',
+            description : 'd',
+            id_category : new Types.ObjectId(),
+            category_name : 'Programación',
+            id_owner : new Types.ObjectId(),
+            price : 100,
+            current_enrolled : 5,
+        });
+
+        await courseDatasource.setCourseThumbnail(
+            SetCourseThumbnailDto.cleared( course._id.toString() )
+        );
 
         const raw = await CourseModel.findById( course._id ).lean();
-        expect( raw!.thumbnail_url ).toBeNull();
-        expect( raw!.id_file ).toBeNull();
+        expect( raw!.current_enrolled ).toBe( 5 );
+    });
+
+    test('should reject a plain object' , async() => {
+        const course = await createCourse();
+
+        await expect(
+            courseDatasource.setCourseThumbnail({
+                id_course : course._id.toString(),
+                id_file : null,
+                thumbnail_url : null,
+            } as unknown as SetCourseThumbnailDto )
+        ).rejects.toThrow();
     });
 
 });

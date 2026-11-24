@@ -20,11 +20,11 @@ export class UpdateCourse implements UpdateCourseUseCase {
     ) {}
 
     async execute( updateCourseDto: UpdateCourseDto , id_user : string , role : string , file ?: UploadFileDto ) : Promise<CourseEntity> {
-        let toUpdateDto = { ...updateCourseDto };
+        let toUpdateDto = updateCourseDto;
         if( updateCourseDto.id_category ){
             const category = await this.categoryRepository.findCategoryById( updateCourseDto.id_category );
             if( !category ) throw CustomError.badRequest('La categoria que asignaste al curso no es valida.');
-            toUpdateDto.category_name = category.name;
+            toUpdateDto = UpdateCourseDto.withCategoryName( updateCourseDto , category.name );
         }
 
         const courseToUpdate = await this.courseRepository.findCourseById( updateCourseDto.id );
@@ -35,7 +35,7 @@ export class UpdateCourse implements UpdateCourseUseCase {
         }
 
         else{
-            // No hace falta forzar el id_owner acá: quedó fuera de UPDATABLE_COURSE_FIELDS,
+            // No hace falta forzar el id_owner acá: UpdateCourseDto ya no lo declara,
             // así que el update genérico no puede reasignar el dueño del curso.
             return await this.courseRepository.updateCourse( toUpdateDto );
         }

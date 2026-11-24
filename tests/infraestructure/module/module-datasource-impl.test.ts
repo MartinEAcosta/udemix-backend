@@ -66,6 +66,22 @@ describe('Module Datasource Implementation - updateModule' , () => {
         expect( raw!.id_lessons.map( id => id.toString() ) ).toEqual( lessonIds.map( id => id.toString() ) );
     });
 
+    test('should reject a plain object instead of silently filtering it' , async() => {
+        const module = await createModule();
+
+        await expect(
+            moduleDatasource.updateModule({
+                id : module._id.toString(),
+                title : 'Módulo renombrado',
+                id_lessons : [],
+            } as unknown as UpdateModuleDto )
+        ).rejects.toThrow();
+
+        const raw = await ModuleModel.findById( module._id ).lean();
+        expect( raw!.title ).toBe('Módulo base');
+        expect( raw!.id_lessons ).toHaveLength( 2 );
+    });
+
     test('should not leave the DTO id key inside the update document' , async() => {
         const module = await createModule();
 

@@ -1,10 +1,12 @@
 import { FileRepository } from "../../repository/file-repository";
-import { CustomError } from "../../errors/custom-error";
-import { UploadFileDto } from "../../dtos/file/file.dto";
-import { FileResponseDto } from "../../dtos/file/file-response.dto";
 import { AuthRepository, CourseRepository, LessonRepository } from "../../repository";
+import { CustomError } from "../../errors/custom-error";
 import { Folders } from "../../entities/file.entity";
+import { FileResponseDto } from "../../dtos/file/file-response.dto";
+import { UploadFileDto } from "../../dtos/file/file.dto";
 import { UpdateUserAvatarDto } from "../../dtos/auth/update-user-avatar.dto";
+import { SetCourseThumbnailDto } from "../../dtos/course/set-course-thumbnail.dto";
+import { SetLessonFileDto } from "../../dtos/lesson/set-lesson-file.dto";
 
 export interface UploadFileUseCase {
     execute( files : UploadFileDto , folder : Folders , id_entity : string , id_user : string , role : string ) : Promise<FileResponseDto>;
@@ -50,11 +52,9 @@ export class UploadSingle implements UploadFileUseCase {
                 return await this.courseRepository.findCourseById(id);
             },
             update : async( id : string , newFile : FileResponseDto ) => {
-                return await this.courseRepository.updateCourse(
-                    {
-                     id , id_file : newFile.id , thumbnail_url : newFile.url
-
-                });
+                return await this.courseRepository.setCourseThumbnail(
+                    SetCourseThumbnailDto.fromUploadedFile( id , newFile )
+                );
             },
         },
         lesson : {
@@ -62,11 +62,9 @@ export class UploadSingle implements UploadFileUseCase {
                 return await this.lessonRepository.findLessonById(id);
             },
             update : async( id : string , newFile : FileResponseDto ) => {
-                return await this.lessonRepository.updateLesson(
-                    {
-                        id,
-                        id_file : newFile.id,
-                    });
+                return await this.lessonRepository.setLessonFile(
+                    SetLessonFileDto.fromUploadedFile( id , newFile )
+                );
             },
         },
         user: {
@@ -74,8 +72,6 @@ export class UploadSingle implements UploadFileUseCase {
                 return await this.authRepository.findUserById(id);
             },
             update : async( id : string , newFile : FileResponseDto ) => {
-                // Igual que el thumbnail_url del curso, el avatar_url se guarda desnormalizado
-                // junto al id_file, en un solo $set, para no tener que poblar files en cada lectura.
                 return await this.authRepository.updateUserAvatar(
                     UpdateUserAvatarDto.fromUploadedFile( id , newFile )
                 );

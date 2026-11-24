@@ -46,5 +46,24 @@ export class UpdateUserDto {
     static balanceUpdate ( id : string , balance : number ) : UpdateUserDto {
         return new UpdateUserDto( id, undefined, undefined, undefined, undefined, undefined, balance );
     }
+
+    // Uso interno (UpdateUser): deriva el DTO a persistir del que llegó del body, reemplazando
+    // la password en claro por su hash y, si cambió el email, marcándolo como no verificado.
+    // Existe para que el use-case no spreadee el DTO a un objeto plano.
+    static withProfileChanges (
+        base : UpdateUserDto,
+        changes : { hashedPassword ?: string , unverifyEmail ?: boolean },
+    ) : UpdateUserDto {
+        return new UpdateUserDto(
+            base.id,
+            base.first_name,
+            base.last_name,
+            base.email,
+            // ?? y no ||: base.password puede ser null a propósito (reclaimUnverifiedAccount).
+            changes.hashedPassword ?? base.password,
+            changes.unverifyEmail ? false : base.isEmailVerified,
+            base.balance,
+        );
+    }
 }
 
