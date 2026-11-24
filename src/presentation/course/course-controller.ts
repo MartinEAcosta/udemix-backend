@@ -107,7 +107,6 @@ export class CourseController {
         const { user } = req;
         if( !user ) return HandlerResponses.handleError( CustomError.unauthorized('Debes estar autenticado para editar un curso.') , res );
 
-        const fileUploadDto = req.body.attachedFile;
         if( typeof req.params.id !== 'string' || !req.params.id ) {
             return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un id valido.') , res );
         }
@@ -117,7 +116,7 @@ export class CourseController {
         if( errorMessage ) return HandlerResponses.handleError( CustomError.badRequest( errorMessage ) , res );
 
         new UpdateCourse( this.courseRepository , this.categoryRepository  )
-            .execute( updateCourseDto! , user.id , user.role , fileUploadDto )
+            .execute( updateCourseDto! , user.id , user.role )
             .then( courseUpdated => HandlerResponses.handleSuccess( res , courseUpdated, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );
     }

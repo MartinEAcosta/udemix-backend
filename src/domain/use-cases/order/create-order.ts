@@ -73,7 +73,7 @@ export class CreateOrder implements CreateOrderUseCase {
         }
 
         return await this.paymentRepository.updatePayment(
-            PaymentUpdateDto.fromGatewayOrder( createdPayment.id , gatewayResponse.id , gatewayResponse.status )
+            PaymentUpdateDto.fromGatewayOrder({ id : createdPayment.id , id_payment : gatewayResponse.id , status : gatewayResponse.status })
         );
     }
 

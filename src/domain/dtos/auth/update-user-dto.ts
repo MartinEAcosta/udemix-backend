@@ -20,11 +20,15 @@ export class UpdateUserDto {
     //    se leía de acá con default null, cada actualización de perfil le borraba el avatar al
     //    usuario, y permitía apuntar el FK al File de otra persona.
     static create ( props : { [key:string] : any } ) : [string? , UpdateUserDto?] {
-        const { id, first_name , last_name , email , password } = props;
+        const { id, first_name , last_name , email , password } = props ?? {};
 
-        if( !id ) return ['El ID es requerido.', undefined];
-        if( email && !regularExps.email.test( email ) ) return ['El email no es valido.', undefined];
-        if( password && password.length < 6 ) return ['La longitud de la contraseña debe ser mayor a 6.', undefined];
+        if( typeof id !== 'string' || !regularExps.isValidId.test( id ) ) return ['El ID es requerido.', undefined];
+        // undefined = no tocar. null o vacío borraría un campo requerido: findByIdAndUpdate no
+        // corre los validadores del schema, así que esta factory es la única barrera.
+        if( first_name !== undefined && ( typeof first_name !== 'string' || first_name.trim().length === 0 ) ) return ['El nombre no puede estar vacío.', undefined];
+        if( last_name !== undefined && ( typeof last_name !== 'string' || last_name.trim().length === 0 ) ) return ['El apellido no puede estar vacío.', undefined];
+        if( email !== undefined && ( typeof email !== 'string' || !regularExps.email.test( email ) ) ) return ['El email no es valido.', undefined];
+        if( password !== undefined && ( typeof password !== 'string' || password.length < 6 ) ) return ['La longitud de la contraseña debe ser mayor a 6.', undefined];
 
         return [undefined, new UpdateUserDto( id, first_name, last_name, email, password )];
     }

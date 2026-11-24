@@ -66,20 +66,31 @@ describe('Module Datasource Implementation - updateModule' , () => {
         expect( raw!.id_lessons.map( id => id.toString() ) ).toEqual( lessonIds.map( id => id.toString() ) );
     });
 
-    test('should reject a plain object instead of silently filtering it' , async() => {
+    test('should never write keys injected into a legit DTO via Object.assign' , async() => {
         const module = await createModule();
+        const originalCourse = module.id_course.toString();
 
-        await expect(
-            moduleDatasource.updateModule({
-                id : module._id.toString(),
-                title : 'Módulo renombrado',
-                id_lessons : [],
-            } as unknown as UpdateModuleDto )
-        ).rejects.toThrow();
+        const [ , legit ] = UpdateModuleDto.create({ id : module._id.toString() , title : 'Módulo renombrado' });
+        const tampered = Object.assign( legit! , { id_lessons : [] , id_course : new Types.ObjectId().toString() });
+
+        await moduleDatasource.updateModule( tampered );
 
         const raw = await ModuleModel.findById( module._id ).lean();
-        expect( raw!.title ).toBe('Módulo base');
+        expect( raw!.title ).toBe('Módulo renombrado');
         expect( raw!.id_lessons ).toHaveLength( 2 );
+        expect( raw!.id_course.toString() ).toBe( originalCourse );
+    });
+
+    test('should allow updating only the unit (reordering)' , async() => {
+        const module = await createModule();
+
+        const [ error , updateDto ] = UpdateModuleDto.create({ id : module._id.toString() , unit : 3 });
+        expect( error ).toBeUndefined();
+
+        const updated = await moduleDatasource.updateModule( updateDto! );
+
+        expect( updated!.unit ).toBe( 3 );
+        expect( updated!.title ).toBe('Módulo base');
     });
 
     test('should not leave the DTO id key inside the update document' , async() => {

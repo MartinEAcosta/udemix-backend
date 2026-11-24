@@ -67,32 +67,50 @@ describe('Course Datasource Implementation - updateCourse' , () => {
     });
 
     test('should reject a capacity that is not a number nor null' , () => {
-        const [ error , updateDto ] = UpdateCourseDto.create( 'anyId' , { capacity : 'muchos' });
+        const [ error , updateDto ] = UpdateCourseDto.create( new Types.ObjectId().toString() , { capacity : 'muchos' });
 
-        expect( error ).toBe('La capacidad debe ser un número válido o nulo.');
+        expect( error ).toBe('La capacidad debe ser un entero mayor o igual a 0, o nulo.');
         expect( updateDto ).toBeUndefined();
     });
 
-    // El portón: un objeto plano con los campos que no se deben escribir (current_enrolled sólo
-    // se mueve con el $inc de saveEnrollment, id_owner no se reasigna) ya no se filtra en
-    // silencio — se rechaza. Y el documento queda intacto.
-    test('should reject a plain object instead of silently filtering it' , async() => {
+    // La whitelist del $set: current_enrolled sólo se mueve con el $inc de saveEnrollment e
+    // id_owner no se reasigna. Ni inyectándolos en una instancia legítima (Object.assign) ni con un
+    // impostor sobre el prototipo (Object.create) llegan al documento.
+    test('should never write keys injected into a legit DTO via Object.assign' , async() => {
         const course = await createCourse({ current_enrolled : 7 });
         const originalOwner = course.id_owner.toString();
 
-        await expect(
-            courseDatasource.updateCourse({
-                id : course._id.toString(),
-                title : 'Otro título',
-                current_enrolled : 0,
-                id_owner : new Types.ObjectId().toString(),
-            } as unknown as UpdateCourseDto )
-        ).rejects.toThrow();
+        const [ , legit ] = UpdateCourseDto.create( course._id.toString() , { title : 'Otro título' });
+        const tampered = Object.assign( legit! , {
+            current_enrolled : 0,
+            id_owner : new Types.ObjectId().toString(),
+            thumbnail_url : 'https://evil.test/x.png',
+        });
+
+        await courseDatasource.updateCourse( tampered );
+
+        const raw = await CourseModel.findById( course._id ).lean();
+        expect( raw!.title ).toBe('Otro título');
+        expect( raw!.current_enrolled ).toBe( 7 );
+        expect( raw!.id_owner.toString() ).toBe( originalOwner );
+        expect( raw!.thumbnail_url ).not.toBe('https://evil.test/x.png');
+    });
+
+    test('should never write keys of an Object.create impostor outside the whitelist' , async() => {
+        const course = await createCourse({ current_enrolled : 7 });
+        const originalOwner = course.id_owner.toString();
+
+        const impostor = Object.assign( Object.create( UpdateCourseDto.prototype ) , {
+            id : course._id.toString(),
+            current_enrolled : 0,
+            id_owner : new Types.ObjectId().toString(),
+        }) as UpdateCourseDto;
+
+        await courseDatasource.updateCourse( impostor );
 
         const raw = await CourseModel.findById( course._id ).lean();
         expect( raw!.current_enrolled ).toBe( 7 );
         expect( raw!.id_owner.toString() ).toBe( originalOwner );
-        expect( raw!.title ).toBe('Curso base');
     });
 
     test('should keep the owner untouched on a legit update built from the DTO' , async() => {

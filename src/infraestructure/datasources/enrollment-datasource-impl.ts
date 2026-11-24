@@ -66,11 +66,12 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
     }
 
     updateEnrollment = async( enrollmentRequestDTO : UpdateEnrollmentDto ) : Promise<EnrollmentResponseDTO> => {
-        if( !( enrollmentRequestDTO instanceof UpdateEnrollmentDto ) ) {
-            throw CustomError.internalServer('updateEnrollment exige un UpdateEnrollmentDto construido por su factory.');
-        }
-
-        const { id , ...fieldsToUpdate } = enrollmentRequestDTO;
+        // Whitelist explícita (no spread): sólo estos campos pueden llegar al $set.
+        const { id } = enrollmentRequestDTO;
+        const fieldsToUpdate = {
+            progress          : enrollmentRequestDTO.progress,
+            completed_lessons : enrollmentRequestDTO.completed_lessons,
+        };
 
         const updatedEnrollment = await EnrollmentModel.findByIdAndUpdate( id , { $set : fieldsToUpdate } , { new : true } );
         if( !updatedEnrollment ) throw 'Hubo un error al actualizar la inscripción.';

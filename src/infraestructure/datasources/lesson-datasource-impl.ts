@@ -19,11 +19,13 @@ export class LessonDatasourceImpl implements LessonDatasource {
     }
     
     async updateLesson( lessonRequestDto : UpdateLessonDto) : Promise<LessonResponseDto> {
-        if( !( lessonRequestDto instanceof UpdateLessonDto ) ) {
-            throw CustomError.internalServer('updateLesson exige un UpdateLessonDto construido por sus factories.');
-        }
-
-        const { id , ...fieldsToUpdate } = lessonRequestDto;
+        // Whitelist explícita (no spread): sólo estos campos pueden llegar al $set.
+        const { id } = lessonRequestDto;
+        const fieldsToUpdate = {
+            title         : lessonRequestDto.title,
+            description   : lessonRequestDto.description,
+            lesson_number : lessonRequestDto.lesson_number,
+        };
 
         const lessonUpdated = await LessonModel.findByIdAndUpdate(
                                                                 id,
@@ -37,10 +39,6 @@ export class LessonDatasourceImpl implements LessonDatasource {
 
     /** Único camino para escribir el id_file de una lección: lo setea el archivo recién subido. */
     async setLessonFile( fileDto : SetLessonFileDto ) : Promise<LessonResponseDto> {
-        if( !( fileDto instanceof SetLessonFileDto ) ) {
-            throw CustomError.internalServer('setLessonFile exige un SetLessonFileDto construido por su factory.');
-        }
-
         const lessonUpdated = await LessonModel.findByIdAndUpdate(
                                                                 fileDto.id_lesson,
                                                                 { $set : { id_file : fileDto.id_file } },

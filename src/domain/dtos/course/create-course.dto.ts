@@ -1,5 +1,13 @@
+import { regularExps } from "../../helpers/regular.exp";
+import { parseNonNegativeInteger, parseNonNegativeNumber } from "../../helpers/number-parsers";
 
-
+/**
+ * Campos que NO se leen del body:
+ *  - `id_file` / `thumbnail_url`: la portada se asigna sólo por /api/file (SetCourseThumbnailDto),
+ *    así un cliente no puede apuntar el FK al File de otro ni inventar una URL.
+ *  - `category_name`: lo estampa SaveCourse desde la categoría validada.
+ *  - `id_owner` sí se lee, pero lo pisa AuthMiddleware.validateAndAssignOwner con el usuario autenticado.
+ */
 export class CreateCourseDto {
 
     private constructor(
@@ -17,27 +25,32 @@ export class CreateCourseDto {
     // Retornaria un array con el error en caso de que haya y el dto undefined.
     // en caso de no haber error retorna undefined y el dto instanciandolo via el constructor
     static create = ( props : { [ key : string ] : any } ) : [ string?, CreateCourseDto? ]  => {
-        const { title , description , id_category , category_name , thumbnail_url , id_file , id_owner , price , capacity } = props;
+        const { title , description , id_category , id_owner , price , capacity } = props ?? {};
 
-        if( !title ) return ['El titulo es requerido.', undefined];
-        if( !description ) return ['La descripción es requerida.', undefined];
+        if( typeof title !== 'string' || title.trim().length === 0 ) return ['El titulo es requerido.', undefined];
+        if( typeof description !== 'string' || description.trim().length === 0 ) return ['La descripción es requerida.', undefined];
         if( !id_owner ) return ['El creador del curso es requerido.', undefined];
+        if( typeof id_category !== 'string' || !regularExps.isValidId.test( id_category ) ) return ['La categoría es requerida y debe ser válida.', undefined];
 
+        const parsedPrice = parseNonNegativeNumber( price );
+        if( parsedPrice === undefined ) return ['El precio es requerido y debe ser un número mayor o igual a 0.', undefined];
+
+        let parsedCapacity : number | null | undefined = capacity === null ? null : undefined;
         if( capacity !== undefined && capacity !== null ){
-            if( isNaN( capacity ) ) return ['La capacidad debe ser un número válido o nulo.', undefined];
-            if( capacity < 0 ) return ['La capacidad no puede ser negativa.', undefined];
+            parsedCapacity = parseNonNegativeInteger( capacity );
+            if( parsedCapacity === undefined ) return ['La capacidad debe ser un entero mayor o igual a 0, o nulo.', undefined];
         }
 
         return [undefined , new CreateCourseDto( 
-                                                title ,
-                                                description ,
+                                                title.trim() ,
+                                                description.trim() ,
                                                 id_category ,
-                                                category_name ,
-                                                thumbnail_url , 
-                                                id_file ,
+                                                '' ,
+                                                null , 
+                                                null ,
                                                 id_owner , 
-                                                price ,
-                                                capacity
+                                                parsedPrice ,
+                                                parsedCapacity
                                             )];
     }   
     
