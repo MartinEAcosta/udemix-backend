@@ -5,6 +5,7 @@ import { AuthRepository } from '../../../src/domain/repository/auth-repository';
 import { RegisterUserDto } from "../../../src/domain/dtos/auth/register-user.dto";
 import { UserEntity } from "../../../src/domain/entities/user.entity";
 import { UpdateUserDto } from "../../../src/domain/dtos/auth/update-user-dto";
+import { UpdateUserAvatarDto } from "../../../src/domain/dtos/auth/update-user-avatar.dto";
 
 describe( 'Auth Repository', () => {
 
@@ -23,6 +24,27 @@ describe( 'Auth Repository', () => {
 
         async updateUser ( user : UpdateUserDto , ts ?: TransactionSession ) : Promise<UserEntity> {
             return UserEntity.fromObject(user);
+        }
+
+        async updateUserAvatar ( avatarDto : UpdateUserAvatarDto ) : Promise<UserEntity> {
+            return UserEntity.fromObject({
+                id : avatarDto.id_user,
+                first_name : 'mockedFirstName',
+                last_name : 'mockedLastName',
+                email : 'mocked@email.com',
+                id_file : avatarDto.id_file,
+                avatar_url : avatarDto.avatar_url,
+            });
+        }
+
+        async updateUserPassword( userId : string , hashedPassword : string ) : Promise<UserEntity> {
+            return UserEntity.fromObject({
+                id : userId,
+                first_name : 'mockedFirstName',
+                last_name : 'mockedLastName',
+                email : 'mocked@email.com',
+                password : hashedPassword,
+            });
         }
     }
 

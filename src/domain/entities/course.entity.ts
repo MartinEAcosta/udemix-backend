@@ -1,7 +1,9 @@
+import { CourseOwnerResponseDto } from "../dtos/course/course.responses";
+
 interface CourseEntityOptions {
     id : string;
     title : string ;
-    description : string; 
+    description : string;
     id_category : string;
     category_name : string;
     thumbnail_url ?: string;
@@ -10,6 +12,7 @@ interface CourseEntityOptions {
     price : number;
     capacity ?: number;
     current_enrolled ?: number;
+    owner ?: CourseOwnerResponseDto | null;
 }
 
 
@@ -26,6 +29,12 @@ export class CourseEntity {
     public capacity ?: number;
     public current_enrolled : number;
     public spots_remaining : number | null;
+    /**
+     * Projection de sólo lectura del profesor dueño del curso (nombre + avatar), resuelta por
+     * $lookup. Como spots_remaining, nunca se persiste en el documento del curso.
+     * null cuando el curso no se leyó por un camino que traiga el owner, o cuando ya no existe.
+     */
+    public owner : CourseOwnerResponseDto | null;
 
 
     /** Cupo disponible. null = ilimitado. Nunca se persiste: se deriva de capacity y current_enrolled. */
@@ -36,7 +45,7 @@ export class CourseEntity {
 
 
     private constructor ( options : CourseEntityOptions){
-        const { id , title , description , id_category , category_name , thumbnail_url, id_file, id_owner , price , capacity , current_enrolled } = options;
+        const { id , title , description , id_category , category_name , thumbnail_url, id_file, id_owner , price , capacity , current_enrolled , owner } = options;
         this.id = id;       
         this.title = title;
         this.description = description;
@@ -49,12 +58,13 @@ export class CourseEntity {
         this.capacity = capacity;
         this.current_enrolled = current_enrolled ?? 0;
         this.spots_remaining = CourseEntity.calculateSpotsRemaining( this.capacity , this.current_enrolled );
+        this.owner = owner ?? null;
     }
 
 
     static fromObject = ( object: { [ key: string ] : any } ): CourseEntity => {
         const { id , title, description, id_category, category_name, thumbnail_url, id_file,
-                 id_owner , price , capacity = undefined , current_enrolled = 0 } = object;
+                 id_owner , price , capacity = undefined , current_enrolled = 0 , owner = null } = object;
 
         if( !title ) throw 'El titulo es requerido.';
         if( !description ) throw 'La descripción es requerida.';
@@ -76,6 +86,7 @@ export class CourseEntity {
                 price,
                 capacity,
                 current_enrolled,
+                owner,
             }
         );
     }

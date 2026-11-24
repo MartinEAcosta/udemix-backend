@@ -23,13 +23,9 @@ export class UpdateModule implements UpdateModuleUseCase {
         const course = await this.courseRepository.findCourseById( module.id_course );
         if( !course ) throw CustomError.notFound('No se encontro el curso al que intentas modificar el modulo.');
 
-        if( id_user != course.id_owner ) throw CustomError.unauthorized('No puedes modificar un modulo en donde el curso no te pertenece');
+        if( String( id_user ) !== String( course.id_owner ) ) throw CustomError.unauthorized('No puedes modificar un modulo en donde el curso no te pertenece');
 
-        const updatedModule = await this.moduleRepository.updateModule( {
-                                                                            ...updateModuleDto,
-                                                                            id_course : course.id
-                                                                        } 
-                                                                    );
+        const updatedModule = await this.moduleRepository.updateModule( updateModuleDto );
         if(!updatedModule) throw CustomError.internalServer('Hubo un error inesperado al intentar actualizar el modulo');
 
         return updatedModule;

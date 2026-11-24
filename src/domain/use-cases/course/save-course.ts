@@ -3,11 +3,10 @@ import { CourseRepository } from "../../repository/course-repository";
 import { CourseEntity } from "../../entities/course.entity";
 import { CreateCourseDto } from "../../dtos/course/create-course.dto";
 import { CustomError } from "../../errors/custom-error";
-import { UploadFileDto } from "../../dtos/file/file.dto";
 import { CategoryRepository } from "../../repository/category-repository";
 
 export interface SaveCourseUseCase {
-    execute( createCourseDto : CreateCourseDto , file ?: UploadFileDto ) : Promise<CourseEntity>;
+    execute( createCourseDto : CreateCourseDto ) : Promise<CourseEntity>;
 }
 
 export class SaveCourse implements SaveCourseUseCase {
@@ -18,16 +17,14 @@ export class SaveCourse implements SaveCourseUseCase {
     ) {}
 
     async execute( createCourseDto : CreateCourseDto ) : Promise<CourseEntity> {
-        let category;
-        if( createCourseDto.id_category ){
-            category = await this.categoryRepository.findCategoryById( createCourseDto.id_category );
-            if( !category ) throw CustomError.badRequest('La categoria que asignaste al curso no es valida.');
-        }
-        
+        const category = await this.categoryRepository.findCategoryById( createCourseDto.id_category );
+        if( !category || !category.name ) throw CustomError.badRequest('La categoria que asignaste al curso no es valida.');
+
+
         return this.courseRepository.saveCourse( 
             {
             ...createCourseDto,
-            category_name : category?.name ?? ''
+            category_name : category.name
             } 
         );
     }

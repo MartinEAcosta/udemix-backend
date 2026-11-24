@@ -2,6 +2,7 @@ import { LessonDatasource } from '../../domain/datasources/lesson-datasource';
 import { CreateLessonDto } from '../../domain/dtos/lesson/create-lesson.dto';
 import { LessonResponsePopulateDto } from '../../domain/dtos/lesson/lesson.response.dto';
 import { UpdateLessonDto } from '../../domain/dtos/lesson/update-lesson.dto';
+import { SetLessonFileDto } from '../../domain/dtos/lesson/set-lesson-file.dto';
 import { LessonEntity } from '../../domain/entities/lesson.entity';
 import { LessonRepository } from '../../domain/repository/lesson-repository';
 import { TransactionSession } from '../../domain/services/UnitOfWork';
@@ -29,7 +30,18 @@ export class LessonRepositoryImpl implements LessonRepository {
             const updatedLesson = await this.lessonDatasource.updateLesson( lessonRequestDto );
 
             return LessonEntity.fromObject( updatedLesson );
-        } 
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
+    async setLessonFile( fileDto : SetLessonFileDto ) : Promise<LessonEntity> {
+        try{
+            const updatedLesson = await this.lessonDatasource.setLessonFile( fileDto );
+
+            return LessonEntity.fromObject( updatedLesson );
+        }
         catch( error ){
             throw error;
         }

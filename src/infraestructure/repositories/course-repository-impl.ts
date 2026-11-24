@@ -5,6 +5,7 @@ import { CourseEntity } from '../../domain/entities/course.entity';
 import { CourseFilterDto } from '../../domain/dtos/course/course-filter.dto';
 import { CreateCourseDto } from '../../domain/dtos/course/create-course.dto';
 import { UpdateCourseDto } from '../../domain/dtos/course/update-course.dto';
+import { SetCourseThumbnailDto } from '../../domain/dtos/course/set-course-thumbnail.dto';
 import { PaginatedResult, PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 
 export class CourseRepositoryImpl implements CourseRepository{
@@ -59,6 +60,16 @@ export class CourseRepositoryImpl implements CourseRepository{
         }
     }
 
+    async findCourseWithOwnerById( id: string ) : Promise<CourseEntity | null> {
+        try{
+            const course = await this.courseDatasource.findCourseWithOwnerById(id);
+            return course ? CourseEntity.fromObject( course ) : null;
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
     async saveCourse( createCourseDto : CreateCourseDto ) : Promise<CourseEntity> {
         try{
             const courseSaved = await this.courseDatasource.saveCourse( createCourseDto );
@@ -73,6 +84,17 @@ export class CourseRepositoryImpl implements CourseRepository{
     async updateCourse( updateCourseDto : UpdateCourseDto ) : Promise<CourseEntity> {
         try{
             const courseUpdated = await this.courseDatasource.updateCourse( updateCourseDto );
+
+            return CourseEntity.fromObject(courseUpdated);
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
+    async setCourseThumbnail( thumbnailDto : SetCourseThumbnailDto ) : Promise<CourseEntity> {
+        try{
+            const courseUpdated = await this.courseDatasource.setCourseThumbnail( thumbnailDto );
 
             return CourseEntity.fromObject(courseUpdated);
         }

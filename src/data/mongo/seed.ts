@@ -78,6 +78,7 @@ const seedUsers = async () => {
             password: hashedPassword,
             balance: user.balance,
             id_file: avatarFiles[ index ]._id,
+            avatar_url: avatarFiles[ index ].url,
         }) )
     );
 

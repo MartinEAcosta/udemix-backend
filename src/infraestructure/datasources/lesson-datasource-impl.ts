@@ -5,7 +5,9 @@ import { LessonMapper } from '../mappers/lesson.mapper';
 import { CreateLessonDto } from '../../domain/dtos/lesson/create-lesson.dto';
 import { LessonResponseDto, LessonResponsePopulateDto } from '../../domain/dtos/lesson/lesson.response.dto';
 import { UpdateLessonDto } from '../../domain/dtos/lesson/update-lesson.dto';
+import { SetLessonFileDto } from '../../domain/dtos/lesson/set-lesson-file.dto';
 import { TransactionSession } from '../../domain/services/UnitOfWork';
+import { CustomError } from '../../domain/errors/custom-error';
 
 export class LessonDatasourceImpl implements LessonDatasource {
 
@@ -17,19 +19,34 @@ export class LessonDatasourceImpl implements LessonDatasource {
     }
     
     async updateLesson( lessonRequestDto : UpdateLessonDto) : Promise<LessonResponseDto> {
-        const { id , ...rest } = lessonRequestDto;
-        console.log(rest);
+        // Whitelist explícita (no spread): sólo estos campos pueden llegar al $set.
+        const { id } = lessonRequestDto;
+        const fieldsToUpdate = {
+            title         : lessonRequestDto.title,
+            description   : lessonRequestDto.description,
+            lesson_number : lessonRequestDto.lesson_number,
+        };
+
         const lessonUpdated = await LessonModel.findByIdAndUpdate(
-                                                                {
-                                                                    _id : id,
-                                                                },
-                                                                rest,
-                                                                {
-                                                                    new : true,
-                                                                }
+                                                                id,
+                                                                { $set : fieldsToUpdate },
+                                                                { new : true },
                                                                 ).exec();
-        
-        return LessonMapper.fromLessonResponseDto( lessonUpdated! );
+        if( !lessonUpdated ) throw CustomError.notFound('La lección que intentas actualizar no existe.');
+
+        return LessonMapper.fromLessonResponseDto( lessonUpdated );
+    }
+
+    /** Único camino para escribir el id_file de una lección: lo setea el archivo recién subido. */
+    async setLessonFile( fileDto : SetLessonFileDto ) : Promise<LessonResponseDto> {
+        const lessonUpdated = await LessonModel.findByIdAndUpdate(
+                                                                fileDto.id_lesson,
+                                                                { $set : { id_file : fileDto.id_file } },
+                                                                { new : true },
+                                                                ).exec();
+        if( !lessonUpdated ) throw CustomError.notFound('La lección a la que intentas asignar el archivo no existe.');
+
+        return LessonMapper.fromLessonResponseDto( lessonUpdated );
     }
 
     async deleteLesson( id : string ) : Promise<boolean> {

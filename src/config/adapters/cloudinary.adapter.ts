@@ -20,7 +20,8 @@ export class CloudinaryAdapter implements FileStorage {
             const resource_type = file.type! as ResourceValidTypes;
             // El recorte solo aplica a imágenes (thumbnails/avatars), los videos se suben sin transformar.
             const transformation = resource_type === 'image'
-                                        ? { width: 355, height: 240, crop: 'fill' }
+                                        // antiguo :  ? { width: 355, height: 240, crop: 'fill' }
+                                        ? { width: 64, height: 64, crop: 'c_fill' }
                                         : {};
 
             cloudinary.uploader.upload_stream( { 

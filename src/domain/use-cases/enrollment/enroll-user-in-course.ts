@@ -6,6 +6,7 @@ import { CustomError } from "../../errors/custom-error";
 import { AuthRepository } from "../../repository/auth-repository";
 import { CourseRepository } from "../../repository/course-repository";
 import { UnitOfWork } from '../../services/UnitOfWork';
+import { UpdateUserDto } from "../../dtos/auth/update-user-dto";
 
 export interface EnrollUserInCourseUseCase {
     execute( enrollmentRequestDTO : CreateEnrollmentRequestDTO ) : Promise<EnrollmentEntity>;
@@ -42,7 +43,10 @@ export class EnrollUserInCourse implements EnrollUserInCourseUseCase {
                 enrollmentCreated = await this.enrollmentRepository.saveEnrollment( enrollmentRequestDTO , ts );
                 if( !enrollmentCreated ) throw CustomError.internalServer('Hubo un error al crear la inscripción del curso.');
                 
-                const updatedUser = await this.authRepository.updateUser( {...user} , ts );
+                // Sólo el saldo: antes se spreadeaba la UserEntity completa, lo que reescribía de
+                // rebote todos los campos del usuario (entre ellos id_file y avatar_url) con los
+                // valores leídos al principio de la inscripción.
+                const updatedUser = await this.authRepository.updateUser( UpdateUserDto.balanceUpdate( user.id , user.balance ) , ts );
                 if( !updatedUser ) throw CustomError.internalServer('Hubo un error al actualizar el usuario con el curso adquirido.');
                 
                 

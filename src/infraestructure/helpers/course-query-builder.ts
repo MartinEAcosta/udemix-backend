@@ -1,4 +1,4 @@
-import { FilterQuery } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
 
 import { CourseFilterDto } from "../../domain/dtos/course/course-filter.dto";
 import { ICourseModel } from "../../data/mongo/models/course.model";
@@ -25,7 +25,10 @@ export class CourseQueryBuilder {
 
     public withCategoryId( id_category ?: string ) {
         if( id_category ){
-            this.query.id_category = id_category;
+            // Casteo explícito: .find() auto-castea el string a ObjectId, pero .aggregate() no,
+            // y un $match con el id como string no matchea ningún documento.
+            // El formato ya lo validó CourseFilterDto.create con regularExps.isValidId.
+            this.query.id_category = new Types.ObjectId( id_category );
         }
         return this;
     }

@@ -1,4 +1,3 @@
-import { CustomError } from "../errors/custom-error";
 
 export interface UserEntityOptions {
     id : string,
@@ -42,9 +41,9 @@ export class UserEntity {
     static fromObject( object : { [ key : string ] : any } ) {
         const { id , first_name , last_name , email , isEmailVerified , role , password, balance, id_file, avatar_url } = object;
 
-        if( !first_name ) throw CustomError.badRequest('El nombre es requerido.');
-        if( !last_name ) throw CustomError.badRequest('El apellido es requerido.');
-        if( !email ) throw CustomError.badRequest('El email es requerido.');
+        if( !first_name ) throw 'El nombre es requerido.';
+        if( !last_name ) throw 'El apellido es requerido.';
+        if( !email ) throw 'El email es requerido.';
 
         return new UserEntity(
             {

@@ -2,7 +2,8 @@ import { CreateEnrollmentRequestDTO } from "../../domain/dtos/enrollment/create-
 import { EnrollmentEntity } from "../../domain/entities/enrollment.entity";
 import { EnrollmentRepository } from "../../domain/repository/enrollment-repository";
 import { EnrollmentDatasource } from '../../domain/datasources/enrollment-datasource';
-import { EnrollmentDetailedResponseDTO, UpdateEnrollmentRequestDTO } from "../../domain/dtos/enrollment/enrollment.response.dto";
+import { EnrollmentDetailedResponseDTO } from "../../domain/dtos/enrollment/enrollment.response.dto";
+import { UpdateEnrollmentDto } from "../../domain/dtos/enrollment/update-enrollment.dto";
 import { TransactionSession } from "../../domain/services/UnitOfWork";
 
 
@@ -74,7 +75,7 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
         }
     }
 
-    async updateEnrollment( enrollment: UpdateEnrollmentRequestDTO ): Promise<EnrollmentEntity> {
+    async updateEnrollment( enrollment: UpdateEnrollmentDto ): Promise<EnrollmentEntity> {
         try{
 
             const updatedEnrollment = await this.enrollmentDatasource.updateEnrollment( enrollment );

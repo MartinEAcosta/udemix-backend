@@ -15,12 +15,17 @@ export interface ICourseModel {
     current_enrolled : number,
 }
 
+/** Lo que el $lookup a `users` proyecta del profesor dueño del curso. */
+export type ICourseOwnerLookup = Pick<IUserModel , '_id' | 'first_name' | 'last_name' | 'avatar_url'>;
+
 /**
- * Mismo documento pero con `id_owner` poblado: es el campo que .populate('id_owner') reemplaza.
- * Puede ser null: si el usuario referenciado ya no existe, populate deja el campo en null.
+ * Curso con el owner resuelto por $lookup en un campo aparte.
+ * `id_owner` se conserva intacto como ObjectId — a diferencia de .populate, que lo sobreescribe
+ * con el documento y haría fallar a CourseEntity.fromObject cuando el owner ya no existe.
+ * `owner` puede faltar o ser null por esa misma razón.
  */
-export interface ICoursePopulateOwnerModel extends Omit<ICourseModel , 'id_owner'> {
-    id_owner : Pick<IUserModel , '_id' | 'first_name' | 'last_name' | 'email'> | null,
+export interface ICourseWithOwnerModel extends ICourseModel {
+    owner ?: ICourseOwnerLookup | null,
 }
 
 const courseSchema = new mongoose.Schema({

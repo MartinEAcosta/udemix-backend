@@ -8,15 +8,22 @@ import { TransactionSession } from '../../domain/services/UnitOfWork';
 import { ModuleMapper } from '../mappers/module.mapper';
 
 export class ModuleDatasourceImpl implements ModuleDatasource{
-    
+
     async createModule ( createModuleDto : CreateModuleDto ) : Promise<ModuleResponseDto> {
         const moduleCreated = await ModuleModel.create( createModuleDto );
-        
+
         return ModuleMapper.fromModuleResponseDto( moduleCreated );
     }
 
     async updateModule ( updateModuleDto : UpdateModuleDto ) : Promise<ModuleResponseDto | null> {
-        const moduleUpdated = await ModuleModel.findOneAndUpdate({ _id : updateModuleDto.id } , updateModuleDto , { new : true });
+        // Whitelist explícita (no spread): sólo estos campos pueden llegar al $set.
+        const { id } = updateModuleDto;
+        const fieldsToUpdate = {
+            title : updateModuleDto.title,
+            unit  : updateModuleDto.unit,
+        };
+
+        const moduleUpdated = await ModuleModel.findOneAndUpdate({ _id : id } , { $set : fieldsToUpdate } , { new : true });
         return moduleUpdated ? ModuleMapper.fromModuleResponseDto( moduleUpdated ) : null;
     }
     

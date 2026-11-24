@@ -9,7 +9,8 @@
     "dev": "tsnd --respawn --clear src/app.ts",
     "build": "rimraf ./dist && tsc",
     "start": "node dist/app.js",
-    "seed": "ts-node src/data/mongo/seed.ts"
+    "seed": "ts-node src/data/mongo/seed.ts",
+    "migrate:avatar-url": "ts-node src/data/mongo/migrations/backfill-user-avatar-url.ts"
   },
   "keywords": [],
   "author": "",

@@ -42,3 +42,9 @@ export * from './payment/payment.response';
 
 // SHARED
 export * from './shared/pagination.dto';
+
+// TEACHER REQUEST
+export * from './teacher-request/create-teacher-request.dto';
+export * from './teacher-request/review-teacher-request.dto';
+export * from './teacher-request/teacher-request-filter.dto';
+export * from './teacher-request/teacher-request.response';
