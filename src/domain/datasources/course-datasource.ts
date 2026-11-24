@@ -11,7 +11,6 @@ export abstract class CourseDatasource {
     abstract findCoursesByIds( id_courses : string[] ) : Promise<CourseResponseDto[]>;
     abstract findCourseById( id : string ) : Promise<CourseResponseDto | null>;
     abstract findCourseWithOwnerById( id : string ) : Promise<CourseWithOwnerResponseDto | null>;
-    abstract findCoursesByCategoryId ( category_id : string ) : Promise<CourseResponseDto[]>;
     abstract saveCourse( createCourseDto : CreateCourseDto ) : Promise<CourseResponseDto>;
     abstract updateCourse( updateCourseDto : UpdateCourseDto ) : Promise<CourseResponseDto>;
     /** Único camino para escribir id_file + thumbnail_url. updateCourse no los toca. */

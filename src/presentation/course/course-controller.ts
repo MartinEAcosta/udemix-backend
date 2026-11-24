@@ -3,16 +3,15 @@ import { Request, Response } from "express";
 import { CourseRepository } from "../../domain/repository/course-repository";
 import { DeleteCourse, FindAllCourses, FindCourseById, SaveCourse, UpdateCourse } from '../../domain/use-cases';
 import { CreateCourseDto , UpdateCourseDto } from "../../domain/dtos";
-import { buildPaginationResponse } from "../../domain/dtos/shared/pagination.dto";
+import { CourseFilterDto } from "../../domain/dtos/course/course-filter.dto";
+import { PaginationDto } from "../../domain/dtos/shared/pagination.dto";
+import { buildPaginationResponse } from "../helpers/pagination-response";
 import { HandlerResponses } from '../helpers/handler-responses';
 import { AuthenticatedRequest } from "../middlewares/auth.middleware";
-import { FindCoursesByCategory } from "../../domain/use-cases/course/find-courses-by-category";
 import { CategoryRepository } from "../../domain/repository/category-repository";
-import { FileRepository } from "../../domain/repository/file-repository";
 import { CustomError } from "../../domain/errors/custom-error";
 import { regularExps } from "../../domain/helpers/regular.exp";
 import { FindCoursesByIds } from "../../domain/use-cases/course/find-courses-by-ids";
-import { CourseFilterRequest } from "../middlewares";
 
 const COURSES_BASE_PATH = '/api/courses';
 
@@ -23,22 +22,23 @@ export class CourseController {
         private readonly categoryRepository : CategoryRepository,
     ){ }
 
-    public findAllCourses = ( req : CourseFilterRequest , res : Response ) => {
-        const { courseFilter , pagination } = req;
-        if( !courseFilter || !pagination ) {
-            return HandlerResponses.handleError(
-                CustomError.internalServer('La ruta debe incluir los middlewares de filtros y paginación.') , res );
-        }
+    public findAllCourses = ( req : Request , res : Response ) => {
+        const [ filterError , courseFilter ] = CourseFilterDto.create( req.query );
+        if( filterError ) return HandlerResponses.handleError( CustomError.badRequest( filterError ) , res );
+
+        const [ paginationError , pagination ] = PaginationDto.create( req.query );
+        if( paginationError ) return HandlerResponses.handleError( CustomError.badRequest( paginationError ) , res );
 
         new FindAllCourses( this.courseRepository )
-            .execute( courseFilter , pagination )
+            .execute( courseFilter! , pagination! )
             .then( ({ items , total }) => HandlerResponses.handleSuccess(
                                                 res,
                                                 buildPaginationResponse({
                                                     items,
                                                     total,
-                                                    pagination,
-                                                    basePath : COURSES_BASE_PATH,
+                                                    pagination : pagination!,
+                                                    basePath   : COURSES_BASE_PATH,
+                                                    filters    : courseFilter,
                                                 }),
                                                 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ));
@@ -77,20 +77,6 @@ export class CourseController {
             .execute( id )
             .then( course => HandlerResponses.handleSuccess( res, course, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ));
-    }
-
-    public findCoursesByCategory = ( req : Request , res : Response ) => {
-        if( typeof req.params.slug !== 'string' || !req.params.slug ) {
-            return HandlerResponses.handleError( CustomError.badRequest('Debes indicar un slug valido.') , res );
-        }
-
-        const { slug } = req.params;
-
-        new FindCoursesByCategory( this.courseRepository , this.categoryRepository )
-            .execute( slug )
-            .then( course => HandlerResponses.handleSuccess( res, course, 200 ) )
-            .catch( error => HandlerResponses.handleError( error , res ));
-
     }
 
     public saveCourse = ( req : AuthenticatedRequest , res : Response ) => {

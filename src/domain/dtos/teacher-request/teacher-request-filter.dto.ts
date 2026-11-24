@@ -1,5 +1,5 @@
 import { isTeacherRequestStatus, TeacherRequestStatus } from "../../entities/teacher-request.entity";
-import { regularExps } from "../../helpers/regular.exp";
+import { optionalId, parseQueryParams, rejectIf } from "../../helpers/query-parsers";
 
 /**
  * Filtro de intención para el listado de solicitudes de profesor.
@@ -14,22 +14,13 @@ export class TeacherRequestFilterDto {
     ){ }
 
     static create = ( props : { [ key : string ] : any } = {} ) : [ string? , TeacherRequestFilterDto? ] => {
-        const { status , id_user } = props;
+        return parseQueryParams( () => {
+            const { status } = props;
+            rejectIf( status !== undefined && !isTeacherRequestStatus( status ) , 'El estado de la solicitud no es válido.' );
 
-        let parsedStatus : TeacherRequestStatus | undefined = undefined;
-        if( status !== undefined ){
-            if( !isTeacherRequestStatus( status ) ) return [ 'El estado de la solicitud no es válido.' , undefined ];
-            parsedStatus = status;
-        }
+            const id_user = optionalId( props.id_user , 'El id del usuario no es válido.' );
 
-        let parsedIdUser : string | undefined = undefined;
-        if( id_user !== undefined ){
-            if( typeof id_user !== 'string' || !regularExps.isValidId.test( id_user ) ){
-                return [ 'El id del usuario no es válido.' , undefined ];
-            }
-            parsedIdUser = id_user;
-        }
-
-        return [ undefined , new TeacherRequestFilterDto( parsedStatus , parsedIdUser ) ];
+            return new TeacherRequestFilterDto( status as TeacherRequestStatus | undefined , id_user );
+        });
     }
 }

@@ -9,11 +9,12 @@ export class CourseRouter {
 
         const router = Router();
 
-        const { courseMiddleware, courseController, paginationMiddleware, authMiddleware } = DependencyContainer.getInstance();
+        const { courseController, authMiddleware } = DependencyContainer.getInstance();
 
+        // Listado con filtros (id_category, category_name, title, priceMin, priceMax,
+        // notFullyEnrolled) y paginación (current_page, limit) por query string.
         router.get(
           '/',
-          [ courseMiddleware.validateQueryParams , paginationMiddleware.containPageOrLimit ],
           courseController.findAllCourses
         );
 
@@ -27,11 +28,6 @@ export class CourseRouter {
           courseController.findCourseById
         );
 
-        router.get(
-          '/category/:slug',
-          courseController.findCoursesByCategory
-        );
-        
         // Create Course
         router.post(
           '/new',

@@ -9,7 +9,7 @@ import { SetCourseThumbnailDto } from "../../domain/dtos/course/set-course-thumb
 import { CourseResponseDto, CourseWithOwnerResponseDto } from "../../domain/dtos/course/course.responses";
 import { CourseMapper } from "../mappers/course.mapper";
 import { PaginatedResult, PaginationDto } from "../../domain/dtos/shared/pagination.dto";
-import { CourseQueryBuilder } from "../helpers/course-query-builder";
+import { buildCourseQuery } from "../helpers/course-query-builder";
 import { CustomError } from "../../domain/errors/custom-error";
 
 export class CourseDatasourceImpl implements CourseDatasource {
@@ -28,13 +28,13 @@ export class CourseDatasourceImpl implements CourseDatasource {
     ];
 
     async findAllCourses( filter : CourseFilterDto , pagination : PaginationDto ) : Promise<PaginatedResult<CourseWithOwnerResponseDto[]>> {
-        const query = CourseQueryBuilder.fromFilter( filter );
+        const query = buildCourseQuery( filter );
 
         const [ courses , total ] = await Promise.all([
             CourseModel.aggregate<ICourseWithOwnerModel>([
                 { $match : query },
                 { $sort : { _id : 1 } },
-                { $skip : (pagination.current_page - 1) * pagination.limit } , { $limit : pagination.limit },
+                { $skip : pagination.skip } , { $limit : pagination.limit },
                 ...CourseDatasourceImpl.ownerLookupStages,
             ]),
             CourseModel.countDocuments(query)
@@ -73,12 +73,6 @@ export class CourseDatasourceImpl implements CourseDatasource {
         return CourseMapper.fromCourseWithOwnerResponseDto( course );
     }
     
-    async findCoursesByCategoryId( category_id : string ) : Promise<CourseResponseDto[]> {
-        const courses = await CourseModel.find({ id_category : category_id }).lean<ICourseModel[]>();
-
-        return courses.map( CourseMapper.fromCourseResponseDto );
-    }
-
     async saveCourse( createCourseDto : CreateCourseDto) : Promise<CourseResponseDto> {
         const newCourse = await CourseModel.create({
             ...createCourseDto

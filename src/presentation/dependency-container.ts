@@ -7,7 +7,7 @@ import { EnrollmentController } from "./enrollment/enrollment-controller";
 import { FileController } from "./file/file-controller";
 import { LessonController } from "./lesson/lesson-controller";
 import { ModuleController } from "./module/module.controller";
-import { AuthMiddleware, CourseMiddleware, PaginationMiddleware , FileMiddleware, PaymentMiddleware } from "./middlewares";
+import { AuthMiddleware, FileMiddleware, PaymentMiddleware } from "./middlewares";
 import { MailerService , Encrypter , FileStorage , PaymentService, TokenManager , UnitOfWork } from "../domain/services";
 import { MongooseUnitOfWork } from "../data/mongoose-unit-of-work";
 import { BcryptAdapter , CloudinaryAdapter , EmailSenderAdapter , JwtAdapter } from "../config/adapters";
@@ -36,10 +36,8 @@ export class DependencyContainer {
 
     //* Middlewares
     readonly authMiddleware : AuthMiddleware;
-    readonly courseMiddleware : CourseMiddleware;
     readonly fileMiddleware   : FileMiddleware;
     readonly paymentMiddleware : PaymentMiddleware;
-    readonly paginationMiddleware : PaginationMiddleware;
 
     //* Controladores
     readonly authController       : AuthController;
@@ -103,10 +101,8 @@ export class DependencyContainer {
         this.singleUseTokenRepository = new SingleUseTokenRepositoryImpl( new SingleUseTokenDatasourceImpl() );
 
         this.authMiddleware       = new AuthMiddleware( this.tokenManager , this.authRepository);
-        this.courseMiddleware     = new CourseMiddleware( );
         this.fileMiddleware       = new FileMiddleware();
         this.paymentMiddleware    = new PaymentMiddleware();
-        this.paginationMiddleware = new PaginationMiddleware();
         
 
         this.authController       = new AuthController( this.authRepository, this.encrypter , this.tokenManager , this.googleAuthClient , this.mailerService , this.singleUseTokenRepository );
