@@ -43,7 +43,7 @@ src/
     services/          # abstract service contracts (Encrypter, TokenManager, FileStorage, MailerService,
                        # SocialAuthProvider, PaymentService, UnitOfWork)
     errors/custom-error.ts   # CustomError — static factories (badRequest/unauthorized/forbidden/notFound/internalServer), the only error type controllers translate to HTTP
-    helpers/            # query builders, regex constants
+    helpers/            # regex constants (`regular.exp.ts`), transactional email HTML builders (`email-templates.ts`)
 
   infraestructure/     # implements domain contracts
     datasources/<feature>-datasource-impl.ts   # talks to Mongoose models directly — OR, when the feature's state lives in an
@@ -52,13 +52,15 @@ src/
     mappers/            # raw Mongo doc -> domain entity mapping; also domain DTO <-> third-party SDK types (see order.mapper.ts)
 
   data/
-    mongo/models/       # Mongoose schemas/models: category, course, enrollment, file, lesson, module, payment, user
+    mongo/models/       # Mongoose schemas/models: category, course, enrollment, file, lesson, module, payment,
+                        # single-use-token, user
     mongo/seed.ts       # `npm run seed` — populates categories, users, courses, modules, lessons, enrollments, payments
     init.ts             # MongoDatabase.connect() (mongoose connection)
     mongoose-unit-of-work.ts   # UnitOfWork impl using Mongoose ClientSession for multi-step transactions (used by enrollment/lesson-completion flows)
 
   presentation/         # Express layer
     <feature>/<feature>-controller.ts   # thin: extracts req data, builds DTO, calls use-case, calls HandlerResponses
+                                        # auth/ has two: auth-controller.ts + email-controller.ts (validation-email endpoints)
     <feature>/<feature>-routes.ts       # express.Router() wiring middlewares + controller methods
                                         # feature dirs: auth, category, course, enrollment, file, lesson, module, order, payment
     middlewares/          # AuthMiddleware (JWT validation, role checks, owner-assignment), CourseMiddleware, FileMiddleware, PaymentMiddleware, PaginationMiddleware
@@ -122,16 +124,41 @@ Email sending (validation links, password reset) goes through the `MailerService
 
 Password changes are split by whether the user already has a local password: `POST /api/auth/password/set` (JWT) -> `SetPassword` use-case, for users with no password yet (e.g. Google-created accounts) — rejects with 400 if `user.password` is already set. `PUT /api/auth/password` (JWT) -> `UpdatePassword` use-case, for users changing an existing password — requires a valid `current_password`.
 
+Full `/api/auth` route set (`src/presentation/auth/auth-routes.ts`): `POST /register`, `POST /login`, `POST /login/google`, `PUT /update/user[/:id]` (JWT), `GET /renew` (JWT), `POST /forgot-password`, `POST /reset-password`, `PUT /password` (JWT), `POST /password/set` (JWT), `POST /send-validation-email` (JWT), `POST /validate-email/:token`. Email validation is `POST`, not `GET`, deliberately — browser/link prefetch would otherwise consume the token without the user clicking.
+
+#### Single-use tokens (email validation + password reset)
+
+Both email flows issue a JWT **plus** a matching DB row, so the link can be invalidated after one use. The DB row is the authority on "already used"; the JWT only carries identity and expiry.
+
+- `SingleUseTokenModel` (`src/data/mongo/models/single-use-token.model.ts`): `{ id_user, jti (unique), purpose, expires_at }`, `purpose` enum `['password_reset','email_verification']`, plus a TTL index on `expires_at` (`expireAfterSeconds: 0`) so Mongo reaps expired rows itself.
+- Contract is the normal stack: `SingleUseTokenDatasource` / `SingleUseTokenRepository` with `create` / `findValidByJti(jti, purpose)` / `consume(id)`. `consume` is a hard `findByIdAndDelete` — used tokens are deleted, not flagged.
+- Issue side: `ForgotPassword` (15m, link `${mailerService.baseURL}/auth/reset-password/<token>`) and `SendEmailValidationLink` (2h, link `.../auth/verify-email/<token>`) both `crypto.randomUUID()` a `jti`, persist the row with a matching `expires_at`, then `tokenManager.generateToken({ email, jti }, duration)`.
+- Redeem side: `ResetPassword` and `ValidateEmail` validate the JWT, require both `email` and `jti` in the payload, look the row up via `findValidByJti(jti, <purpose>)`, do the write, then `consume(...)`. Every failure path returns the same 401 `'El token no es valido o ya fue utilizado.'` — do not make these messages more specific; they are deliberately indistinguishable.
+- Note: `findValidByJti` filters only by `jti` + `purpose` — expiry enforcement comes from the JWT `exp` check plus the TTL index, not from the query.
+- HTML bodies come from `src/domain/helpers/email-templates.ts` (`buildEmailValidationHtml`, `buildForgotPasswordHtml`); use-cases build options and never inline markup.
+
+#### User concept
+
+`UserEntity` / `UserModel` use `first_name` + `last_name` (there is no `username`). `last_name` defaults to `''` in the schema, but `UserEntity.fromObject` requires both — a legacy doc with no `last_name` throws. `password` is nullable (Google-created accounts have none).
+
+`avatar_url` is **derived, never persisted**: `UserModel` stores only `id_file`, and every `AuthDatasource` read `.populate('id_file')`s it (`IUserPopulateModel`) so the mapper can hydrate `avatar_url` from the related `File.url`. Do not add an `avatar_url` column back — the whole point was dropping the consistency burden (commits `d6a5c45`, `bd327c2`).
+
+Anti-hijacking on social login: `SocialLoginWithGoogle` reuses a matching email only if the account is verified; if it finds an **unverified** row (a planted account) it calls `UpdateUserDto.reclaimUnverifiedAccount(id)`, which nulls any existing password and sets `isEmailVerified: true`, since Google just proved ownership. `UpdateUserDto.create()` never reads `isEmailVerified` from `req.body` — self-verification is only reachable through the internal `markEmailVerified` factory used by `ValidateEmail`.
+
+### Courses: capacity
+
+`CourseModel` persists `capacity` (nullable = unlimited) and `current_enrolled`. `spots_remaining` is **computed**, not stored — `CourseEntity.calculateSpotsRemaining(capacity, current_enrolled)`, called from the entity constructor and from `course.mapper.ts`. Both `EnrollUserInCourse` and `CreateOrder` reject on `spots_remaining === 0`.
+
 ### Transactions
 
 Multi-step domain operations that must be atomic (e.g. enrolling a user, marking a lesson complete) take a `UnitOfWork` dependency and run through `unitOfWork.startTransaction(async (ts) => { ... })`, which wraps a Mongoose `ClientSession` (commit/abort handled in `MongooseUnitOfWork`).
 
 ## Specs
 
-`specs/*.md` holds versioned work specs (`01-standardize-upload-folder-names.md`, `02-seed-mock-inicializacion-db.md`). Workflow is spec -> branch -> PR (see commits `83b3be3`, `dd21905`). Check `specs/` before starting a numbered feature.
+`specs/*.md` holds versioned work specs, numbered `01`..`07` (upload folder names, seed, `spots_remaining`, Google-user password login, anti-hijacking social-login merge, single-use reset-password token, single-use email-validation token). Workflow is spec -> branch (`spec-NN-<slug>`) -> PR. Check `specs/` before starting a numbered feature, and add the next-numbered spec before building one.
 
 ## Testing
 
 Tests live under `tests/`, mirroring `src/` structure (`tests/domain/...`, `tests/infraestructure/...`, `tests/presentation/...`). Jest uses `ts-jest` preset, `jest-environment-node`, coverage collection on by default. No path alias config — imports in tests use relative paths into `src/`.
 
-Coverage is partial, not mirrored: only `auth` (datasource, repository, register-user, user entity), `envs`, `server`, `init` and `user.model` are covered. There are no tests for payment, order, course, lesson, module, category, enrollment or file.
+Coverage is partial, not mirrored: only `auth` (datasource, datasource-impl, repository, register-user, user entity, auth-controller), `envs`, `server`, `init` and `user.model` are covered. There are no tests for payment, order, course, lesson, module, category, enrollment, file, or the single-use-token flows.
