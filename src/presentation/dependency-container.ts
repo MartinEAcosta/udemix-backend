@@ -111,7 +111,7 @@ export class DependencyContainer {
 
         this.authController       = new AuthController( this.authRepository, this.encrypter , this.tokenManager , this.googleAuthClient , this.mailerService , this.singleUseTokenRepository );
         this.categoryController   = new CategoryController( this.categoryRepository );
-        this.courseController     = new CourseController( this.courseRepository , this.categoryRepository , this.fileRepository );
+        this.courseController     = new CourseController( this.courseRepository , this.categoryRepository );
         this.emailController      = new EmailController( this.authRepository , this.mailerService , this.tokenManager , this.singleUseTokenRepository );
         this.enrollmentController = new EnrollmentController( this.enrollmentRepository , this.authRepository , this.courseRepository , this.lessonRepository , this.moduleRepository , this.unitOfWork );
         this.fileController       = new FileController( this.fileRepository , this.courseRepository , this.lessonRepository , this.authRepository);

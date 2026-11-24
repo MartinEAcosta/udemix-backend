@@ -21,7 +21,6 @@ export class CourseController {
     constructor (
         private readonly courseRepository : CourseRepository,
         private readonly categoryRepository : CategoryRepository,
-        private readonly fileRepository : FileRepository,
     ){ }
 
     public findAllCourses = ( req : CourseFilterRequest , res : Response ) => {
@@ -117,7 +116,7 @@ export class CourseController {
         const [ errorMessage , updateCourseDto ] = UpdateCourseDto.create( id , req.body );
         if( errorMessage ) return HandlerResponses.handleError( CustomError.badRequest( errorMessage ) , res );
 
-        new UpdateCourse( this.courseRepository , this.fileRepository , this.categoryRepository  )
+        new UpdateCourse( this.courseRepository , this.categoryRepository  )
             .execute( updateCourseDto! , user.id , user.role , fileUploadDto )
             .then( courseUpdated => HandlerResponses.handleSuccess( res , courseUpdated, 200 ) )
             .catch( error => HandlerResponses.handleError( error , res ) );

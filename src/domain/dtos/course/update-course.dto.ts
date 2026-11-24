@@ -1,14 +1,3 @@
-
-/**
- * Metadata editable de un curso. Declara exactamente lo que el update genérico puede escribir,
- * así que la forma del DTO ES la whitelist y no hace falta filtrar nada en persistencia.
- *
- * Deliberadamente afuera:
- *  - `id_file` / `thumbnail_url`: los escribe CourseDatasource.setCourseThumbnail, en un solo
- *    $set, para que el FK y su copia desnormalizada no se separen.
- *  - `id_owner`: no existe feature de transferencia de propiedad.
- *  - `current_enrolled`: sólo se mueve con el $inc de saveEnrollment.
- */
 export class UpdateCourseDto {
 
     private constructor(

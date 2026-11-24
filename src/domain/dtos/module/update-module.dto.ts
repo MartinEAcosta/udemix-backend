@@ -7,14 +7,9 @@ interface UpdateModuleOptions {
 }
 
 /**
- * Campos editables de un módulo.
- *
  * `id_lessons` queda deliberadamente afuera: el array se construye con el $addToSet de
  * ModuleDatasource.addLessonToModule. Cuando se leía del body, un cliente podía reemplazarlo
  * entero y huerfanar lecciones, sin ninguna validación.
- *
- * `unit` e `id_course` son opcionales porque `create()` no los valida: antes estaban declarados
- * como requeridos y en runtime llegaban `undefined` en cualquier update parcial.
  */
 export class UpdateModuleDto {
 
