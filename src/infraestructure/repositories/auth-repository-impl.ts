@@ -4,6 +4,7 @@ import { AuthDatasource } from "../../domain/datasources/auth-datasource";
 import { UserEntity } from "../../domain/entities/user.entity";
 import { RegisterUserDto } from "../../domain/dtos/auth/register-user.dto";
 import { UpdateUserDto } from "../../domain/dtos/auth/update-user-dto";
+import { UpdateUserAvatarDto } from "../../domain/dtos/auth/update-user-avatar.dto";
 
 export class AuthRepositoryImpl implements AuthRepository {
 
@@ -14,6 +15,17 @@ export class AuthRepositoryImpl implements AuthRepository {
     async updateUser( userDto : UpdateUserDto ) : Promise<UserEntity> {
         try{
             const updatedUser = await this.authDatasource.updateUser( userDto );
+
+            return UserEntity.fromObject( updatedUser );
+        }
+        catch( error ){
+            throw error;
+        }
+    }
+
+    async updateUserAvatar( avatarDto : UpdateUserAvatarDto ) : Promise<UserEntity> {
+        try{
+            const updatedUser = await this.authDatasource.updateUserAvatar( avatarDto );
 
             return UserEntity.fromObject( updatedUser );
         }

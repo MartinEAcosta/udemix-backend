@@ -1,4 +1,5 @@
 import { PaymentEntity } from "../../entities/payment.entity";
+import { PaymentUpdateDto } from "../../dtos/payment/payment-update.dto";
 import { CustomError } from "../../errors/custom-error";
 import { EnrollmentRepository } from "../../repository";
 import { OrderRepository } from "../../repository/order-repository";
@@ -23,10 +24,7 @@ export class FulfillPayment implements FulfillPaymentUseCase {
         const order = await this.orderRepository.findOrderById( id_order );
 
         const updatedPayment = await this.paymentRepository.updatePaymentByIdPayment(
-            {
-                id_payment : id_order,
-                status : order.status,
-            }
+            PaymentUpdateDto.statusFromGateway({ id_payment : id_order , status : order.status })
         );
 
         if( order.status === 'processed' ){

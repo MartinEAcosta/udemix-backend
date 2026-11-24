@@ -1,11 +1,12 @@
-import { CourseModel, EnrollmentModel } from "../../data";
 import { EnrollmentDatasource } from "../../domain/datasources/enrollment-datasource";
-import { CreateEnrollmentRequestDTO } from "../../domain/dtos/enrollment/create-enrollment.dto";
-import { EnrollmentMapper } from "../mappers/enrollment.mapper";
-import { EnrollmentDetailedResponseDTO, EnrollmentResponseDTO, UpdateEnrollmentRequestDTO } from '../../domain/dtos/enrollment/enrollment.response.dto';
+import { CourseModel, EnrollmentModel } from "../../data";
 import { IEnrollmentDetailedModel } from '../../data/mongo/models/enrollment.model';
-import { CustomError } from "../../domain/errors/custom-error";
 import { TransactionSession } from "../../domain/services/UnitOfWork";
+import { CustomError } from "../../domain/errors/custom-error";
+import { EnrollmentMapper } from "../mappers/enrollment.mapper";
+import { CreateEnrollmentRequestDTO } from "../../domain/dtos/enrollment/create-enrollment.dto";
+import { EnrollmentDetailedResponseDTO, EnrollmentResponseDTO } from '../../domain/dtos/enrollment/enrollment.response.dto';
+import { UpdateEnrollmentDto } from '../../domain/dtos/enrollment/update-enrollment.dto';
 
 export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
 
@@ -54,7 +55,7 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
             },
             { $inc : { current_enrolled : 1 } },
             { new : true , session },
-        );
+        ).lean();
         if( !course ) throw CustomError.badRequest('El curso no existe o ya no tiene cupos disponibles.');
 
         // Mongoose ignora las options si el documento no va en un array.
@@ -64,8 +65,15 @@ export class EnrollmentDatasourceImpl extends EnrollmentDatasource {
         return EnrollmentMapper.fromEnrollmentResponseDTO( savedEnrollment );
     }
 
-    updateEnrollment = async( enrollmentRequestDTO : UpdateEnrollmentRequestDTO ) : Promise<EnrollmentResponseDTO> => {
-        const updatedEnrollment = await EnrollmentModel.findByIdAndUpdate( enrollmentRequestDTO.id , enrollmentRequestDTO , { new : true } );
+    updateEnrollment = async( enrollmentRequestDTO : UpdateEnrollmentDto ) : Promise<EnrollmentResponseDTO> => {
+        // Whitelist explícita (no spread): sólo estos campos pueden llegar al $set.
+        const { id } = enrollmentRequestDTO;
+        const fieldsToUpdate = {
+            progress          : enrollmentRequestDTO.progress,
+            completed_lessons : enrollmentRequestDTO.completed_lessons,
+        };
+
+        const updatedEnrollment = await EnrollmentModel.findByIdAndUpdate( id , { $set : fieldsToUpdate } , { new : true } );
         if( !updatedEnrollment ) throw 'Hubo un error al actualizar la inscripción.';
 
         return EnrollmentMapper.fromEnrollmentResponseDTO( updatedEnrollment );

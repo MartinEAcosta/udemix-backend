@@ -40,11 +40,6 @@ const enrollmentSchema = new mongoose.Schema({
         required : [true , 'El id del curso es requerido.'],
     },
 
-    purchaseDate : {
-        type    : Date,
-        default : Date.now,
-    },
-
     progress : {
         type    : Number,
         default : 0,
@@ -71,8 +66,11 @@ const enrollmentSchema = new mongoose.Schema({
         type    : Date,
         default : null,
     },
+},
+{
+    timestamps: { createdAt : 'purchaseDate' , updatedAt : false }
 });
 
 enrollmentSchema.index({ id_user: 1, id_course: 1 }, { unique: true });
 
-export const EnrollmentModel = mongoose.model( 'Enrollment' , enrollmentSchema );
+export const EnrollmentModel = mongoose.model<IEnrollmentModel>( 'Enrollment' , enrollmentSchema );

@@ -1,4 +1,5 @@
 import { EnrollmentEntity } from "../../entities/enrollment.entity";
+import { UpdateEnrollmentDto } from "../../dtos/enrollment/update-enrollment.dto";
 import { CustomError } from "../../errors/custom-error";
 import { AuthRepository, CourseRepository, EnrollmentRepository, LessonRepository, ModuleRepository } from "../../repository";
 
@@ -37,9 +38,14 @@ export class MarkLessonAsCompleted implements MarkLessonAsCompletedUseCase {
 
         const modules = await this.moduleRepository.findModulesByCourseId( id_course );
         const totalLessons = modules.reduce( ( total , module ) => { return total + module.lessons.length } , 0 );
-        enrollment.progress = ( enrollment.completed_lessons.length / totalLessons ) * 100;
+        // Sin este guard, un curso sin lecciones en sus módulos daba Infinity (x/0) y se persistía
+        // en un campo Number. El techo de 100 cubre lecciones completadas que ya no están en ningún módulo.
+        if( totalLessons === 0 ) throw CustomError.badRequest('El curso no tiene lecciones para completar.');
+        enrollment.progress = Math.min( 100 , ( enrollment.completed_lessons.length / totalLessons ) * 100 );
 
-        return await this.enrollmentRepository.updateEnrollment( enrollment );
+        return await this.enrollmentRepository.updateEnrollment(
+            UpdateEnrollmentDto.progressUpdate( enrollment.id , enrollment.progress , enrollment.completed_lessons )
+        );
     }
 
 }

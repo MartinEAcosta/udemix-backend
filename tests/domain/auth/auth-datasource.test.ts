@@ -2,6 +2,7 @@ import { describe, expect, test } from "@jest/globals";
 import { RegisterUserDto } from "../../../src/domain/dtos/auth/register-user.dto";
 import { UserResponseDto } from '../../../src/domain/dtos/auth/auth.responses.dto';
 import { UpdateUserDto } from '../../../src/domain/dtos/auth/update-user-dto';
+import { UpdateUserAvatarDto } from '../../../src/domain/dtos/auth/update-user-avatar.dto';
 import { AuthDatasource } from '../../../src/domain/datasources/auth-datasource';
 
 // TODO : FALTA EL TESTING CON EL DTO
@@ -31,6 +32,35 @@ describe( 'Auth Datasource' , () => {
                 email: userDto.email ?? 'mocked@email.com',
                 isEmailVerified : false,
                 role : 'student',
+                balance : 0,
+                id_file : null,
+                avatar_url : null,
+            }
+        }
+
+        async updateUserAvatar ( avatarDto : UpdateUserAvatarDto ) : Promise<UserResponseDto> {
+            return {
+                id: avatarDto.id_user,
+                first_name: 'mockedFirstName',
+                last_name: 'mockedLastName',
+                email: 'mocked@email.com',
+                isEmailVerified : false,
+                role : 'student',
+                balance : 0,
+                id_file : avatarDto.id_file,
+                avatar_url : avatarDto.avatar_url,
+            }
+        }
+
+        async updateUserPassword( userId : string , hashedPassword : string ) : Promise<UserResponseDto> {
+            return {
+                id: userId,
+                first_name: 'mockedFirstName',
+                last_name: 'mockedLastName',
+                email: 'mocked@email.com',
+                isEmailVerified : false,
+                role : 'student',
+                password : hashedPassword,
                 balance : 0,
                 id_file : null,
                 avatar_url : null,

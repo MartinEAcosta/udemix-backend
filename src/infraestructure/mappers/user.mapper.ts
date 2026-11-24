@@ -1,9 +1,9 @@
-import { IUserPopulateModel } from "../../data";
+import { IUserModel } from "../../data";
 import { UserResponseDto } from "../../domain/dtos/auth/auth.responses.dto";
 
 export class UserMapper {
 
-    static fromUserResponseDto ( userDoc : IUserPopulateModel ) : UserResponseDto {
+    static fromUserResponseDto ( userDoc : IUserModel ) : UserResponseDto {
         return {
             id: userDoc._id.toString(),
             first_name: userDoc.first_name,
@@ -13,8 +13,8 @@ export class UserMapper {
             role: userDoc.role,
             password: userDoc.password ?? null,
             balance: userDoc.balance,
-            id_file: userDoc.id_file?._id.toString() ?? null,
-            avatar_url: userDoc.id_file?.url ?? null,
+            id_file: userDoc.id_file?.toString() ?? null,
+            avatar_url: userDoc.avatar_url ?? null,
         }
     }
 

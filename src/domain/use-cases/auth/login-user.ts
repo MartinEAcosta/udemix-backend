@@ -21,7 +21,7 @@ export class LoginUser implements LoginUserUseCase{
     async execute(loginUserDto: LoginUserDto) : Promise<AuthSuccessResponseDto> {
 
         const userExists = await this.authRepository.findUserByEmail( loginUserDto.email );
-        if( !userExists ) throw CustomError.badRequest('El email ingresado no se encuentra vinculado a una cuenta.');
+        if( !userExists ) throw CustomError.notFound('El email ingresado no se encuentra vinculado a una cuenta.');
 
         const { password } = loginUserDto;
         if( !userExists.password ) throw CustomError.badRequest('Chequee las credenciales e intente nuevamente.');

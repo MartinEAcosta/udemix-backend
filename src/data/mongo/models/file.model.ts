@@ -5,6 +5,7 @@ import { FOLDERS } from "../../../domain/entities/file.entity";
 export interface IFileModel {
     _id?             : Types.ObjectId; // Podría venir de la DB
     public_id        : string;
+    url              : string;
     size             : number;
     extension        : string;
     resource_type    : ResourceValidTypes;

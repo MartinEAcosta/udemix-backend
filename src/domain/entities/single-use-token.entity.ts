@@ -1,4 +1,3 @@
-import { CustomError } from "../errors/custom-error";
 
 export type SingleUseTokenPurpose = 'password_reset' | 'email_verification';
 
@@ -30,10 +29,10 @@ export class SingleUseTokenEntity {
     static fromObject( object : { [ key : string ] : any } ) {
         const { id , id_user , jti , purpose , expires_at } = object;
 
-        if( !id_user ) throw CustomError.badRequest('El id_user del token es requerido.');
-        if( !jti ) throw CustomError.badRequest('El jti del token es requerido.');
-        if( !purpose ) throw CustomError.badRequest('El purpose del token es requerido.');
-        if( !expires_at ) throw CustomError.badRequest('La fecha de expiración del token es requerida.');
+        if( !id_user ) throw 'El id_user del token es requerido.';
+        if( !jti ) throw 'El jti del token es requerido.';
+        if( !purpose ) throw 'El purpose del token es requerido.';
+        if( !expires_at ) throw 'La fecha de expiración del token es requerida.';
 
         return new SingleUseTokenEntity({ id , id_user , jti , purpose , expires_at });
     }

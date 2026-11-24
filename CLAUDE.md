@@ -108,6 +108,15 @@ The payment feature targets MercadoPago's **Orders API**, not the legacy v1 Paym
 
 Convention is `PascalCase` + `Dto` suffix (`PaymentUpdateDto`, `OrderRequestAdapterDto`). Pure response shapes are plain interfaces with no `create()` factory (`PaymentResponseDto`, `OrderGatewayResult`, `PaymentMethodsResponse`). `PaymentRequestDTO` (all-caps `DTO`) is a deviation to normalize, not a pattern to copy.
 
+### Update DTOs and `$set` (write-path rule)
+
+- `findByIdAndUpdate` / `findOneAndUpdate` do **not** run schema validators (`required`, `enum`, `min`). The update DTO factories (`UpdateCourseDto.create`, `UpdateModuleDto.create`, `UpdateLessonDto.create`, `UpdateUserDto.create`, ...) are the only validation layer: they type-check each field, reject `null` on required fields, and reject an update with no editable field.
+- `undefined` means "don't touch" (Mongoose drops undefined keys from `$set`). `null` is only accepted where it has meaning (e.g. `capacity: null` = unlimited).
+- Datasource update methods build `$set` **field by field** from named DTO properties — never `{ id, ...rest } = dto`. That explicit list is the whitelist; do not rely on `instanceof` or on the DTO's prototype.
+- Fields owned by another flow are never read from `req.body`: `category_name` (stamped from the validated category), `id_file`/`thumbnail_url`/`avatar_url` (only `/api/file`), `id_lessons` (`$addToSet`), a lesson's `id_module`, a module's `id_course`, `current_enrolled` (`$inc`).
+- Numeric body fields go through `src/domain/helpers/number-parsers.ts` (`isNaN` accepts `''`, `true`, `[]` by coercion).
+- Programming-invariant violations throw a plain `Error` (logged + generic 500), not `CustomError.internalServer`, whose message is sent to the client.
+
 ### Error handling
 
 Use-cases and repositories throw `CustomError` (or let underlying errors propagate); repositories generally `try/catch` and rethrow. Controllers catch at the boundary and call `HandlerResponses.handleError(error, res)`, which maps `CustomError` to its `statusCode`/`message` and anything else to a generic 500.

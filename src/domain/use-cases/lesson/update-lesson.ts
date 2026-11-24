@@ -30,9 +30,7 @@ export class UpdateLesson implements UpdateLessonUseCase {
 
         if( course.id_owner != id_user ) throw CustomError.unauthorized('No puedes editar una lección de un curso que no te pertenece.');
 
-        return await this.lessonRepository.updateLesson( {
-                                                            ...lessonRequestDto,
-                                                        } );
+        return await this.lessonRepository.updateLesson( lessonRequestDto );
     }
 
 }
