@@ -88,11 +88,18 @@ export class CourseDatasourceImpl implements CourseDatasource {
     }
 
     async updateCourse( updateCourseDTO : UpdateCourseDto ) : Promise<CourseResponseDto> {
-        if( !( updateCourseDTO instanceof UpdateCourseDto ) ) {
-            throw CustomError.internalServer('updateCourse exige un UpdateCourseDto construido por sus factories.');
-        }
-
-        const { id , ...fieldsToUpdate } = updateCourseDTO;
+        // Whitelist explícita: se nombra cada campo en vez de spreadear el DTO, así una propiedad
+        // que alguien agregue a la instancia (Object.assign, Object.create) nunca llega al $set.
+        // Las claves undefined las descarta Mongoose ("no tocar").
+        const { id } = updateCourseDTO;
+        const fieldsToUpdate = {
+            title         : updateCourseDTO.title,
+            description   : updateCourseDTO.description,
+            price         : updateCourseDTO.price,
+            capacity      : updateCourseDTO.capacity,
+            id_category   : updateCourseDTO.id_category,
+            category_name : updateCourseDTO.category_name,
+        };
 
         const updatedCourse = await CourseModel
                                         .findByIdAndUpdate(
@@ -112,10 +119,6 @@ export class CourseDatasourceImpl implements CourseDatasource {
      * que el FK. Mismo molde que AuthDatasource.updateUserAvatar.
      */
     async setCourseThumbnail( thumbnailDto : SetCourseThumbnailDto ) : Promise<CourseResponseDto> {
-        if( !( thumbnailDto instanceof SetCourseThumbnailDto ) ) {
-            throw CustomError.internalServer('setCourseThumbnail exige un SetCourseThumbnailDto construido por sus factories.');
-        }
-
         const updatedCourse = await CourseModel
                                         .findByIdAndUpdate(
                                             thumbnailDto.id_course,

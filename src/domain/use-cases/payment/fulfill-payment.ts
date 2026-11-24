@@ -24,7 +24,7 @@ export class FulfillPayment implements FulfillPaymentUseCase {
         const order = await this.orderRepository.findOrderById( id_order );
 
         const updatedPayment = await this.paymentRepository.updatePaymentByIdPayment(
-            PaymentUpdateDto.statusFromGateway( id_order , order.status )
+            PaymentUpdateDto.statusFromGateway({ id_payment : id_order , status : order.status })
         );
 
         if( order.status === 'processed' ){

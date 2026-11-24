@@ -22,11 +22,12 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
     }
     
     async updatePayment( paymentRequest : PaymentUpdateDto ) : Promise<PaymentResponseDto> {
-        if( !( paymentRequest instanceof PaymentUpdateDto ) ) {
-            throw CustomError.internalServer('updatePayment exige un PaymentUpdateDto construido por sus factories.');
-        }
+        const { id } = paymentRequest;
+        // Error de programación (DTO de statusFromGateway pasado acá): Error plano, no CustomError,
+        // para que HandlerResponses lo loguee y responda un 500 genérico sin filtrar el mensaje.
+        if( !id ) throw new Error('updatePayment exige un PaymentUpdateDto de fromGatewayOrder (con id local).');
 
-        const { id , ...fieldsToUpdate } = paymentRequest;
+        const fieldsToUpdate = PaymentDataSourceImpl.pickUpdateFields( paymentRequest );
 
         // El id va directo: findByIdAndUpdate ya envuelve en { _id : ... }, y pasarle el objeto
         // armaba { _id : { _id : id } }, que sólo funcionaba por el fallback del cast de ObjectId.
@@ -37,17 +38,23 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
     }
 
     async updatePaymentByIdPayment( paymentRequest : PaymentUpdateDto ) : Promise<PaymentResponseDto> {
-        if( !( paymentRequest instanceof PaymentUpdateDto ) ) {
-            throw CustomError.internalServer('updatePaymentByIdPayment exige un PaymentUpdateDto construido por sus factories.');
-        }
+        if( !paymentRequest.id_payment ) throw new Error('updatePaymentByIdPayment exige un PaymentUpdateDto con id_payment.');
 
-        const { id , ...fieldsToUpdate } = paymentRequest;
+        const fieldsToUpdate = PaymentDataSourceImpl.pickUpdateFields( paymentRequest );
 
         const paymentToUpdate = await PaymentModel.findOneAndUpdate({ id_payment : paymentRequest.id_payment }, { $set : fieldsToUpdate } , { new : true }).exec();
         if( !paymentToUpdate ) throw CustomError.notFound('El pago que intentas actualizar no existe.');
 
         return PaymentMapper.fromPaymentResponseDto( paymentToUpdate );
     }
+
+    /** Whitelist explícita (no spread): sólo estos campos pueden llegar al $set. */
+    private static pickUpdateFields = ( paymentRequest : PaymentUpdateDto ) => ({
+        id_payment : paymentRequest.id_payment,
+        status     : paymentRequest.status,
+        date       : paymentRequest.date,
+        method     : paymentRequest.method,
+    });
 
     async findPaymentsMethods() : Promise<PaymentMethodsResponse[]> {
         const paymentsMethods = await this.paymentService.findPaymentsMethods();

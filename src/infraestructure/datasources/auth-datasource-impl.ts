@@ -19,16 +19,20 @@ export class AuthDatasourceImpl implements AuthDatasource {
    *
    * `id_file` y `avatar_url` quedan deliberadamente fuera de la whitelist: los escribe
    * únicamente updateUserAvatar, para que el FK y su copia desnormalizada no se separen.
-   * La lista es lo que defiende el documento, no la firma del parámetro: un caller puede
-   * pasar un objeto más ancho con un spread y eso compila igual (TypeScript no aplica
-   * excess property check a las propiedades spreadeadas).
+   * La lista explícita de abajo es lo que defiende el documento, no la firma del parámetro ni
+   * el prototipo: se nombra cada campo en vez de spreadear el DTO, así una propiedad agregada a
+   * la instancia (Object.assign, Object.create) nunca llega al $set.
    */
   async updateUser(userDto : UpdateUserDto): Promise<UserResponseDto> {
-    if( !( userDto instanceof UpdateUserDto ) ) {
-      throw CustomError.internalServer('updateUser exige un UpdateUserDto construido por sus factories.');
-    }
-
-    const { id , ...fieldsToUpdate } = userDto;
+    const { id } = userDto;
+    const fieldsToUpdate = {
+      first_name      : userDto.first_name,
+      last_name       : userDto.last_name,
+      email           : userDto.email,
+      password        : userDto.password,
+      isEmailVerified : userDto.isEmailVerified,
+      balance         : userDto.balance,
+    };
 
     const updatedUser = await UserModel
       .findByIdAndUpdate( id , { $set : fieldsToUpdate } , { new : true } )

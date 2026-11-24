@@ -6,7 +6,6 @@ import { UpdateModuleDto } from '../../domain/dtos/module/update-module.dto';
 import { ModuleEntity } from '../../domain/entities/module.entity';
 import { TransactionSession } from '../../domain/services/UnitOfWork';
 import { ModuleMapper } from '../mappers/module.mapper';
-import { CustomError } from '../../domain/errors/custom-error';
 
 export class ModuleDatasourceImpl implements ModuleDatasource{
 
@@ -17,11 +16,12 @@ export class ModuleDatasourceImpl implements ModuleDatasource{
     }
 
     async updateModule ( updateModuleDto : UpdateModuleDto ) : Promise<ModuleResponseDto | null> {
-        if( !( updateModuleDto instanceof UpdateModuleDto ) ) {
-            throw CustomError.internalServer('updateModule exige un UpdateModuleDto construido por sus factories.');
-        }
-
-        const { id , ...fieldsToUpdate } = updateModuleDto;
+        // Whitelist explícita (no spread): sólo estos campos pueden llegar al $set.
+        const { id } = updateModuleDto;
+        const fieldsToUpdate = {
+            title : updateModuleDto.title,
+            unit  : updateModuleDto.unit,
+        };
 
         const moduleUpdated = await ModuleModel.findOneAndUpdate({ _id : id } , { $set : fieldsToUpdate } , { new : true });
         return moduleUpdated ? ModuleMapper.fromModuleResponseDto( moduleUpdated ) : null;

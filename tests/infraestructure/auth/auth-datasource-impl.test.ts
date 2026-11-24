@@ -187,7 +187,7 @@ describe('Auth Datasource Implementation' , () => {
 
     // El portón: un objeto plano con id_file/avatar_url inyectados ya no se filtra en silencio,
     // se rechaza. Y el documento queda intacto.
-    test('should reject a plain object instead of silently filtering it' , async() => {
+    test('should never write avatar keys injected into a legit DTO via Object.assign' , async() => {
         const createdUser = await authDatasource.registerUser(registerUserDto!);
         const avatarFile = await createAvatarFile('5');
 
@@ -197,17 +197,18 @@ describe('Auth Datasource Implementation' , () => {
 
         const foreignFile = await createAvatarFile('ajeno');
 
-        await expect(
-            authDatasource.updateUser({
-                id : createdUser.id!,
-                first_name : 'Renamed',
-                id_file : foreignFile.id,
-                avatar_url : 'https://evil.test/spoofed.png',
-            } as unknown as UpdateUserDto )
-        ).rejects.toThrow();
+        const [ , legit ] = UpdateUserDto.create({ id : createdUser.id! , first_name : 'Renamed' });
+        const tampered = Object.assign( legit! , {
+            id_file : foreignFile.id,
+            avatar_url : 'https://evil.test/spoofed.png',
+            role : 'admin',
+        });
+
+        await authDatasource.updateUser( tampered );
 
         const rawUser = await UserModel.findById( createdUser.id ).lean();
-        expect( rawUser!.first_name ).toBe( registerUserDto!.first_name );
+        expect( rawUser!.first_name ).toBe( 'Renamed' );
+        expect( rawUser!.role ).not.toBe( 'admin' );
         expect( rawUser!.id_file!.toString() ).toBe( avatarFile.id );
         expect( rawUser!.avatar_url ).toBe( avatarFile.url );
     });

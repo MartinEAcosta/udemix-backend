@@ -101,20 +101,22 @@ describe('Lesson Datasource Implementation - updateLesson y setLessonFile' , () 
         expect( raw!.id_file!.toString() ).toBe( originalFileId.toString() );
     });
 
-    test('should reject a plain object instead of silently filtering it' , async() => {
+    test('should never write keys injected into a legit DTO via Object.assign' , async() => {
         const lesson = await createLesson();
+        const originalModule = lesson.id_module.toString();
 
-        await expect(
-            lessonDatasource.updateLesson({
-                id : lesson._id.toString(),
-                title : 'Lección renombrada',
-                id_file : new Types.ObjectId().toString(),
-            } as unknown as UpdateLessonDto )
-        ).rejects.toThrow();
+        const [ , legit ] = UpdateLessonDto.create({ id : lesson._id.toString() , title : 'Lección renombrada' });
+        const tampered = Object.assign( legit! , {
+            id_file : new Types.ObjectId().toString(),
+            id_module : new Types.ObjectId().toString(),
+        });
+
+        await lessonDatasource.updateLesson( tampered );
 
         const raw = await LessonModel.findById( lesson._id ).lean();
-        expect( raw!.title ).toBe('Lección base');
+        expect( raw!.title ).toBe('Lección renombrada');
         expect( raw!.id_file!.toString() ).toBe( originalFileId.toString() );
+        expect( raw!.id_module.toString() ).toBe( originalModule );
     });
 
     test('should write id_file through setLessonFile' , async() => {
@@ -128,15 +130,20 @@ describe('Lesson Datasource Implementation - updateLesson y setLessonFile' , () 
         expect( updated.id_file ).toBe( newFileId );
     });
 
-    test('should reject a plain object on setLessonFile' , async() => {
+    test('should only write id_file on setLessonFile, even with injected keys' , async() => {
         const lesson = await createLesson();
+        const newFileId = new Types.ObjectId().toString();
 
-        await expect(
-            lessonDatasource.setLessonFile({
-                id_lesson : lesson._id.toString(),
-                id_file : new Types.ObjectId().toString(),
-            } as unknown as SetLessonFileDto )
-        ).rejects.toThrow();
+        const tampered = Object.assign(
+            SetLessonFileDto.fromUploadedFile( lesson._id.toString() , uploadedFile( newFileId ) ),
+            { title : 'Inyectado' },
+        );
+
+        await lessonDatasource.setLessonFile( tampered );
+
+        const raw = await LessonModel.findById( lesson._id ).lean();
+        expect( raw!.id_file!.toString() ).toBe( newFileId );
+        expect( raw!.title ).toBe('Lección base');
     });
 
 });
