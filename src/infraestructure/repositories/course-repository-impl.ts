@@ -39,17 +39,6 @@ export class CourseRepositoryImpl implements CourseRepository{
         }
     }
 
-    async findCoursesByCategory( category_id : string) : Promise<CourseEntity[]> {
-        try{
-            const courses = await this.courseDatasource.findCoursesByCategoryId( category_id );
-            
-            return courses.map( CourseEntity.fromObject );
-        }  
-        catch( error ){
-            throw error;
-        }
-    }
-
     async findCourseById( id: string ) : Promise<CourseEntity | null> {
         try{
             const course = await this.courseDatasource.findCourseById(id);

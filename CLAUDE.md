@@ -43,7 +43,8 @@ src/
     services/          # abstract service contracts (Encrypter, TokenManager, FileStorage, MailerService,
                        # SocialAuthProvider, PaymentService, UnitOfWork)
     errors/custom-error.ts   # CustomError — static factories (badRequest/unauthorized/forbidden/notFound/internalServer), the only error type controllers translate to HTTP
-    helpers/            # regex constants (`regular.exp.ts`), transactional email HTML builders (`email-templates.ts`)
+    helpers/            # regex constants (`regular.exp.ts`), transactional email HTML builders (`email-templates.ts`),
+                        # number parsers (`number-parsers.ts`), optional query-param parsers (`query-parsers.ts`)
 
   infraestructure/     # implements domain contracts
     datasources/<feature>-datasource-impl.ts   # talks to Mongoose models directly — OR, when the feature's state lives in an
@@ -63,8 +64,9 @@ src/
                                         # auth/ has two: auth-controller.ts + email-controller.ts (validation-email endpoints)
     <feature>/<feature>-routes.ts       # express.Router() wiring middlewares + controller methods
                                         # feature dirs: auth, category, course, enrollment, file, lesson, module, order, payment
-    middlewares/          # AuthMiddleware (JWT validation, role checks, owner-assignment), CourseMiddleware, FileMiddleware, PaymentMiddleware, PaginationMiddleware
+    middlewares/          # AuthMiddleware (JWT validation, role checks, owner-assignment), FileMiddleware, PaymentMiddleware
     helpers/handler-responses.ts   # HandlerResponses.handleSuccess/handleError/handleAuthSuccess — the only place HTTP status/JSON shape is decided
+    helpers/pagination-response.ts # buildPaginationResponse — paginated envelope + next/prev links (links keep the applied filters)
     dependency-container.ts   # manual DI, singleton (DependencyContainer.getInstance()) — wires adapters -> repositories -> middlewares -> controllers by hand; this is where new features get registered
     routes.ts              # AppRoutes.routes mounts each feature router under /api/<feature>
     server.ts              # Server class: express app setup (json body parser, cors, express-fileupload 50MB limit, static /public), listens on configured port
@@ -158,16 +160,20 @@ Anti-hijacking on social login: `SocialLoginWithGoogle` reuses a matching email 
 
 `CourseModel` persists `capacity` (nullable = unlimited) and `current_enrolled`. `spots_remaining` is **computed**, not stored — `CourseEntity.calculateSpotsRemaining(capacity, current_enrolled)`, called from the entity constructor and from `course.mapper.ts`. Both `EnrollUserInCourse` and `CreateOrder` reject on `spots_remaining === 0`.
 
+### Listing: filters and pagination
+
+`GET /api/courses` is the only course listing. The controller builds both DTOs straight from `req.query` (no middlewares): `CourseFilterDto.create(req.query)` (`id_category`, `category_name`, `title`, `priceMin`, `priceMax`, `notFullyEnrolled`) and `PaginationDto.create(req.query)` (`current_page` default 1, `limit` default 10, integers only, `limit` 1..100, `skip` getter). Filter DTOs use `query-parsers.ts` (`optionalId`/`optionalText`/`optionalNumber`/`optionalBoolean`/`rejectIf` inside `parseQueryParams`). `buildCourseQuery(filter)` (`infraestructure/helpers/course-query-builder.ts`) translates the DTO to Mongo; `category_name` is an anchored, case-insensitive match on the denormalized `Course.category_name`. There is no `/category/:slug` route any more (spec 08). Filter DTO property names must match their query param names, because pagination links rebuild the query from the DTO.
+
 ### Transactions
 
 Multi-step domain operations that must be atomic (e.g. enrolling a user, marking a lesson complete) take a `UnitOfWork` dependency and run through `unitOfWork.startTransaction(async (ts) => { ... })`, which wraps a Mongoose `ClientSession` (commit/abort handled in `MongooseUnitOfWork`).
 
 ## Specs
 
-`specs/*.md` holds versioned work specs, numbered `01`..`07` (upload folder names, seed, `spots_remaining`, Google-user password login, anti-hijacking social-login merge, single-use reset-password token, single-use email-validation token). Workflow is spec -> branch (`spec-NN-<slug>`) -> PR. Check `specs/` before starting a numbered feature, and add the next-numbered spec before building one.
+`specs/*.md` holds versioned work specs, numbered `01`..`08` (upload folder names, seed, `spots_remaining`, Google-user password login, anti-hijacking social-login merge, single-use reset-password token, single-use email-validation token, Course filters/pagination refactor). Workflow is spec -> branch (`spec-NN-<slug>`) -> PR. Check `specs/` before starting a numbered feature, and add the next-numbered spec before building one.
 
 ## Testing
 
 Tests live under `tests/`, mirroring `src/` structure (`tests/domain/...`, `tests/infraestructure/...`, `tests/presentation/...`). Jest uses `ts-jest` preset, `jest-environment-node`, coverage collection on by default. No path alias config — imports in tests use relative paths into `src/`.
 
-Coverage is partial, not mirrored: only `auth` (datasource, datasource-impl, repository, register-user, user entity, auth-controller), `envs`, `server`, `init` and `user.model` are covered. There are no tests for payment, order, course, lesson, module, category, enrollment, file, or the single-use-token flows.
+Coverage is partial, not mirrored: only `auth` (datasource, datasource-impl, repository, register-user, user entity, auth-controller), `envs`, `server`, `init`, `user.model`, and the course listing pieces (`CourseFilterDto`, `PaginationDto`, `buildCourseQuery`, `buildPaginationResponse`, all DB-free) are covered. There are no tests for payment, order, course, lesson, module, category, enrollment, file, or the single-use-token flows.

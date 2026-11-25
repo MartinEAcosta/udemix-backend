@@ -1,9 +1,12 @@
-import { regularExps } from "../../helpers/regular.exp";
+import { optionalBoolean, optionalId, optionalNumber, optionalText, parseQueryParams, rejectIf } from "../../helpers/query-parsers";
 
 /**
  * Filtro de intención para la búsqueda de cursos.
  * Representa lo que el cliente pidió, no cómo se consulta la base de datos:
  * la traducción a una query concreta vive en infraestructura.
+ *
+ * Los nombres de las propiedades coinciden con los de los query params, así los links de
+ * paginación pueden reconstruir la query a partir del DTO.
  */
 export class CourseFilterDto {
 
@@ -17,67 +20,20 @@ export class CourseFilterDto {
     ){ }
 
     static create = ( props : { [ key : string ] : any } = {} ) : [ string? , CourseFilterDto? ] => {
-        const { id_category , category_name , title , priceMin , priceMax , notFullyEnrolled } = props;
+        return parseQueryParams( () => {
+            const id_category      = optionalId( props.id_category , 'El id de la categoría no es válido.' );
+            const category_name    = optionalText( props.category_name , 'El nombre de la categoría a buscar no puede estar vacío.' );
+            const title            = optionalText( props.title , 'El título a buscar no puede estar vacío.' );
+            const priceMin         = optionalNumber( props.priceMin , 'El precio mínimo debe ser un número.' );
+            const priceMax         = optionalNumber( props.priceMax , 'El precio máximo debe ser un número.' );
+            const notFullyEnrolled = optionalBoolean( props.notFullyEnrolled , 'El filtro notFullyEnrolled debe ser true o false.' );
 
-        let parsedIdCategory : string | undefined = undefined;
-        if( id_category !== undefined ){
-            if( typeof id_category !== 'string' || !regularExps.isValidId.test( id_category ) ){
-                return [ 'El id de la categoría no es válido.' , undefined ];
-            }
-            parsedIdCategory = id_category;
-        }
+            rejectIf( priceMin !== undefined && priceMin < 0 , 'El precio mínimo no puede ser negativo.' );
+            rejectIf( priceMax !== undefined && priceMax < 0 , 'El precio máximo no puede ser negativo.' );
+            rejectIf( priceMin !== undefined && priceMax !== undefined && priceMin > priceMax ,
+                      'El precio mínimo no puede ser mayor al precio máximo.' );
 
-        let parsedCategoryName : string | undefined = undefined;
-        if( category_name !== undefined ){
-            if( typeof category_name !== 'string' || category_name.trim().length === 0 ){
-                return [ 'El título a buscar no puede estar vacío.' , undefined ];
-            }
-            parsedCategoryName = category_name;
-        }
-
-        let parsedTitle : string | undefined = undefined;
-        if( title !== undefined ){
-            if( typeof title !== 'string' || title.trim().length === 0 ){
-                return [ 'El título a buscar no puede estar vacío.' , undefined ];
-            }
-            parsedTitle = title.trim();
-        }
-
-        let parsedPriceMin : number | undefined = undefined;
-        if( priceMin !== undefined ){
-            parsedPriceMin = Number( priceMin );
-            if( isNaN( parsedPriceMin ) ) return [ 'El precio mínimo debe ser un número.' , undefined ];
-            if( parsedPriceMin < 0 ) return [ 'El precio mínimo no puede ser negativo.' , undefined ];
-        }
-
-        let parsedPriceMax : number | undefined = undefined;
-        if( priceMax !== undefined ){
-            parsedPriceMax = Number( priceMax );
-            if( isNaN( parsedPriceMax ) ) return [ 'El precio máximo debe ser un número.' , undefined ];
-            if( parsedPriceMax < 0 ) return [ 'El precio máximo no puede ser negativo.' , undefined ];
-        }
-
-        if( parsedPriceMin !== undefined && parsedPriceMax !== undefined && parsedPriceMin > parsedPriceMax ){
-            return [ 'El precio mínimo no puede ser mayor al precio máximo.' , undefined ];
-        }
-
-        let parsedNotFullyEnrolled : boolean | undefined = undefined;
-        if( notFullyEnrolled !== undefined ){
-            const raw = String( notFullyEnrolled );
-            if( raw !== 'true' && raw !== 'false' ){
-                return [ 'El filtro notFullyEnrolled debe ser true o false.' , undefined ];
-            }
-            parsedNotFullyEnrolled = raw === 'true';
-        }
-
-        return [ undefined , new CourseFilterDto(
-                                    parsedIdCategory,
-                                    parsedCategoryName,
-                                    parsedTitle,
-                                    parsedPriceMin,
-                                    parsedPriceMax,
-                                    parsedNotFullyEnrolled,
-                                )
-        ];
+            return new CourseFilterDto( id_category , category_name , title , priceMin , priceMax , notFullyEnrolled );
+        });
     }
 }

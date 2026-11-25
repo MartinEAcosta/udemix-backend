@@ -1,3 +1,5 @@
+import { parseNonNegativeInteger } from "../../helpers/number-parsers";
+
 export interface PaginationResponseDto<T> {
     pages         : number,
     current_page  : number,
@@ -14,6 +16,10 @@ export interface PaginatedResult<T> {
     total : number,
 }
 
+export const DEFAULT_PAGE  = 1;
+export const DEFAULT_LIMIT = 10;
+export const MAX_LIMIT     = 100;
+
 export class PaginationDto {
 
     private constructor (
@@ -21,41 +27,25 @@ export class PaginationDto {
         public readonly limit : number,
     ){ }
 
-    static create( current_page : number = 1 , limit : number = 10 ) : [string? , PaginationDto?] {
-        if( isNaN(current_page) || isNaN(limit) ) return ['La página y los limites, deben ser numeros.', undefined];
-        
-        if( current_page <= 0 ) return ['La página debe ser mayor a 0.', undefined];
-        if( limit <= 0 || limit > 100) return ['El limite debe ser mayor a 0 y menor a 100.', undefined];
+    /** Cantidad de documentos a saltear para llegar a la página actual. */
+    get skip() : number {
+        return ( this.current_page - 1 ) * this.limit;
+    }
 
-        return [undefined , new PaginationDto( current_page , limit )];
+    /**
+     * Recibe la query cruda (`req.query`). Ausente = default; presente = entero, porque Mongo
+     * no acepta decimales en $skip/$limit.
+     */
+    static create( props : { [ key : string ] : any } = {} ) : [string? , PaginationDto?] {
+        const { current_page = DEFAULT_PAGE , limit = DEFAULT_LIMIT } = props;
+
+        const parsedPage  = parseNonNegativeInteger( current_page );
+        const parsedLimit = parseNonNegativeInteger( limit );
+        if( parsedPage === undefined || parsedLimit === undefined ) return ['La página y el límite deben ser números enteros.', undefined];
+
+        if( parsedPage <= 0 ) return ['La página debe ser mayor a 0.', undefined];
+        if( parsedLimit <= 0 || parsedLimit > MAX_LIMIT ) return [`El límite debe estar entre 1 y ${ MAX_LIMIT }.`, undefined];
+
+        return [undefined , new PaginationDto( parsedPage , parsedLimit )];
     }
 }
-
-interface BuildPaginationResponseOptions<T> {
-    items      : T,
-    total      : number,
-    pagination : PaginationDto,
-    /** Ruta sobre la que se construyen los links next/prev, p. ej. '/api/courses'. */
-    basePath   : string,
-}
-
-/** Único lugar donde se arma el envoltorio paginado: páginas y links next/prev. */
-export const buildPaginationResponse = <T>(
-    { items , total , pagination , basePath } : BuildPaginationResponseOptions<T>
-) : PaginationResponseDto<T> => {
-
-    const { current_page , limit } = pagination;
-    const pages = Math.ceil( total / limit );
-
-    const linkTo = ( page : number ) => `${ basePath }?current_page=${ page }&limit=${ limit }`;
-
-    return {
-        pages,
-        current_page,
-        limit,
-        total,
-        next  : current_page < pages ? linkTo( current_page + 1 ) : null,
-        prev  : current_page > 1     ? linkTo( current_page - 1 ) : null,
-        items,
-    };
-};

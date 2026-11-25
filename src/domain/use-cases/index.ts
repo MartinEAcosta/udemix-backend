@@ -17,7 +17,6 @@ export * from './category/find-all-categories';
 export * from './course/delete-course';
 export * from './course/find-all-courses';
 export * from './course/find-course-by-id';
-export * from './course/find-courses-by-category';
 export * from './course/find-courses-by-ids';
 export * from './course/save-course';
 export * from './course/update-course';
